@@ -2,7 +2,6 @@
 
 namespace App\Tests\Service;
 
-use App\Entity\Participant;
 use App\Entity\Trial;
 use App\Entity\Flavor;
 use App\Entity\Song;
@@ -31,8 +30,6 @@ final class StimuliManagerTest extends TestCase
 
     public function testGetNextTrialWithSmells2MusicTaskType(): void
     {
-        $participant = new Participant();
-
         // Create mock flavors
         $flavor1 = $this->createMockFlavor(1, 'Vanilla', 'vanilla.png');
         $flavor2 = $this->createMockFlavor(2, 'Chocolate', 'chocolate.png');
@@ -42,16 +39,14 @@ final class StimuliManagerTest extends TestCase
         $song = $this->createMockSong(1, 'http://example.com/song1.mp3', 'A sweet melody');
 
         $this->flavorRepository
-            ->expects($this->exactly(2)) // Called once for getNextTrial, once for getAllPossibleCombinations in balanced method
             ->method('findAll')
             ->willReturn($flavors);
 
         $this->songRepository
-            ->expects($this->once())
             ->method('findBy')
             ->willReturn([$song]);
 
-        $result = $this->stimuliManager->getNextTrial($participant, Trial::SMELLS2MUSIC);
+        $result = $this->stimuliManager->getNextTrial(Trial::SMELLS2MUSIC);
 
         $this->assertEquals(Trial::SMELLS2MUSIC, $result['taskType']);
         $this->assertInstanceOf(Song::class, $result['primarySong']);
@@ -64,8 +59,6 @@ final class StimuliManagerTest extends TestCase
 
     public function testGetNextTrialWithMusics2SmellTaskType(): void
     {
-        $participant = new Participant();
-
         // Create mock flavors
         $flavor1 = $this->createMockFlavor(1, 'Vanilla', 'vanilla.png');
         $flavor2 = $this->createMockFlavor(2, 'Chocolate', 'chocolate.png');
@@ -76,16 +69,14 @@ final class StimuliManagerTest extends TestCase
         $song2 = $this->createMockSong(2, 'http://example.com/song2.mp3', 'A rich harmony');
 
         $this->flavorRepository
-            ->expects($this->exactly(2)) // Called once for getNextTrial, once for getAllPossibleCombinations in balanced method
             ->method('findAll')
             ->willReturn($flavors);
 
         $this->songRepository
-            ->expects($this->exactly(2))
             ->method('findBy')
             ->willReturnOnConsecutiveCalls([$song1], [$song2]);
 
-        $result = $this->stimuliManager->getNextTrial($participant, Trial::MUSICS2SMELL);
+        $result = $this->stimuliManager->getNextTrial(Trial::MUSICS2SMELL);
 
         $this->assertEquals(Trial::MUSICS2SMELL, $result['taskType']);
         $this->assertInstanceOf(Song::class, $result['primarySong']);
@@ -99,8 +90,6 @@ final class StimuliManagerTest extends TestCase
 
     public function testGetNextTrialThrowsExceptionWithInsufficientFlavors(): void
     {
-        $participant = new Participant();
-
         $this->flavorRepository
             ->expects($this->once())
             ->method('findAll')
@@ -109,13 +98,11 @@ final class StimuliManagerTest extends TestCase
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('At least 2 flavors are required for trial generation.');
 
-        $this->stimuliManager->getNextTrial($participant, Trial::SMELLS2MUSIC);
+        $this->stimuliManager->getNextTrial(Trial::SMELLS2MUSIC);
     }
 
     public function testGetNextTrialThrowsExceptionWithInvalidTaskType(): void
     {
-        $participant = new Participant();
-
         $flavor1 = $this->createMockFlavor(1, 'Vanilla', 'vanilla.png');
         $flavor2 = $this->createMockFlavor(2, 'Chocolate', 'chocolate.png');
 
@@ -127,7 +114,7 @@ final class StimuliManagerTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid task type: invalid_task');
 
-        $this->stimuliManager->getNextTrial($participant, 'invalid_task');
+        $this->stimuliManager->getNextTrial('invalid_task');
     }
 
     public function testGetAllPossibleCombinations(): void
@@ -142,7 +129,7 @@ final class StimuliManagerTest extends TestCase
             ->method('findAll')
             ->willReturn([$flavor1, $flavor2, $flavor3, $flavor4]);
 
-        $combinations = $this->stimuliManager->getAllPossibleCombinations();
+        $combinations = $this->stimuliManager->getAllPossibleCombinations($this->flavorRepository->findAll());
 
         // With 4 flavors, we should have 4 * 3 = 12 combinations (not 16 as mentioned in requirements)
         // because we exclude same-flavor combinations
@@ -157,8 +144,6 @@ final class StimuliManagerTest extends TestCase
 
     public function testSmells2MusicTrialThrowsExceptionWhenNoSongsFound(): void
     {
-        $participant = new Participant();
-
         $flavor1 = $this->createMockFlavor(1, 'Vanilla', 'vanilla.png');
         $flavor2 = $this->createMockFlavor(2, 'Chocolate', 'chocolate.png');
 
@@ -172,13 +157,11 @@ final class StimuliManagerTest extends TestCase
 
         $this->expectException(\RuntimeException::class);
 
-        $this->stimuliManager->getNextTrial($participant, Trial::SMELLS2MUSIC);
+        $this->stimuliManager->getNextTrial(Trial::SMELLS2MUSIC);
     }
 
     public function testBalancedCombinationDistribution(): void
     {
-        $participant = new Participant();
-
         // Create 4 mock flavors as in requirements
         $flavor1 = $this->createMockFlavor(1, 'Vanilla', 'vanilla.png');
         $flavor2 = $this->createMockFlavor(2, 'Chocolate', 'chocolate.png');
@@ -201,7 +184,7 @@ final class StimuliManagerTest extends TestCase
         // Test multiple trials to ensure different combinations are generated
         $combinationsGenerated = [];
         for ($i = 0; $i < 10; $i++) {
-            $result = $this->stimuliManager->getNextTrial($participant, Trial::SMELLS2MUSIC);
+            $result = $this->stimuliManager->getNextTrial(Trial::SMELLS2MUSIC);
 
             $this->assertArrayHasKey('combination', $result);
             $combination = $result['combination'];
