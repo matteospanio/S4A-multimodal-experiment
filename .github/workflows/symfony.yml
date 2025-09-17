@@ -41,7 +41,7 @@ jobs:
             # 2) PHP + estensioni pdo_pgsql
             - uses: shivammathur/setup-php@2cb9b829437ee246e9b3cac53555a39208ca6d28
               with:
-                  php-version: '8.2'
+                  php-version: '8.3'
                   extensions: mbstring, intl, pdo, pdo_pgsql
 
             # 3) Copia del .env di test
