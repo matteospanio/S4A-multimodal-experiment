@@ -1,0 +1,199 @@
+<?php
+
+namespace App\Tests\Service;
+
+use App\Entity\Participant;
+use App\Entity\Trial;
+use App\Entity\Flavor;
+use App\Entity\Song;
+use App\Repository\FlavorRepository;
+use App\Repository\SongRepository;
+use App\Service\StimuliManager;
+use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\MockObject\MockObject;
+
+final class StimuliManagerTest extends TestCase
+{
+    private StimuliManager $stimuliManager;
+    private FlavorRepository|MockObject $flavorRepository;
+    private SongRepository|MockObject $songRepository;
+
+    protected function setUp(): void
+    {
+        $this->flavorRepository = $this->createMock(FlavorRepository::class);
+        $this->songRepository = $this->createMock(SongRepository::class);
+        
+        $this->stimuliManager = new StimuliManager(
+            $this->flavorRepository,
+            $this->songRepository
+        );
+    }
+
+    public function testGetNextTrialWithSmells2MusicTaskType(): void
+    {
+        $participant = new Participant();
+        
+        // Create mock flavors
+        $flavor1 = $this->createMockFlavor(1, 'Vanilla', 'vanilla.png');
+        $flavor2 = $this->createMockFlavor(2, 'Chocolate', 'chocolate.png');
+        $flavors = [$flavor1, $flavor2];
+        
+        // Create mock song
+        $song = $this->createMockSong(1, 'http://example.com/song1.mp3', 'A sweet melody');
+        
+        $this->flavorRepository
+            ->expects($this->once())
+            ->method('findAll')
+            ->willReturn($flavors);
+            
+        $this->songRepository
+            ->expects($this->once())
+            ->method('findBy')
+            ->with(['flavor' => $this->anything()])
+            ->willReturn([$song]);
+
+        $result = $this->stimuliManager->getNextTrial($participant, Trial::SMELLS2MUSIC);
+
+        $this->assertEquals(Trial::SMELLS2MUSIC, $result['taskType']);
+        $this->assertInstanceOf(Song::class, $result['primarySong']);
+        $this->assertInstanceOf(Flavor::class, $result['primaryFlavor']);
+        $this->assertInstanceOf(Flavor::class, $result['secondaryFlavor']);
+        $this->assertIsArray($result['flavorLabels']);
+        $this->assertCount(2, $result['flavorLabels']);
+    }
+
+    public function testGetNextTrialWithMusics2SmellTaskType(): void
+    {
+        $participant = new Participant();
+        
+        // Create mock flavors
+        $flavor1 = $this->createMockFlavor(1, 'Vanilla', 'vanilla.png');
+        $flavor2 = $this->createMockFlavor(2, 'Chocolate', 'chocolate.png');
+        $flavors = [$flavor1, $flavor2];
+        
+        // Create mock songs
+        $song1 = $this->createMockSong(1, 'http://example.com/song1.mp3', 'A sweet melody');
+        $song2 = $this->createMockSong(2, 'http://example.com/song2.mp3', 'A rich harmony');
+        
+        $this->flavorRepository
+            ->expects($this->once())
+            ->method('findAll')
+            ->willReturn($flavors);
+            
+        $this->songRepository
+            ->expects($this->exactly(2))
+            ->method('findBy')
+            ->willReturnOnConsecutiveCalls([$song1], [$song2]);
+
+        $result = $this->stimuliManager->getNextTrial($participant, Trial::MUSICS2SMELL);
+
+        $this->assertEquals(Trial::MUSICS2SMELL, $result['taskType']);
+        $this->assertInstanceOf(Song::class, $result['primarySong']);
+        $this->assertInstanceOf(Song::class, $result['secondarySong']);
+        $this->assertInstanceOf(Flavor::class, $result['primaryFlavor']);
+        $this->assertInstanceOf(Flavor::class, $result['secondaryFlavor']);
+        $this->assertIsArray($result['songLabels']);
+        $this->assertCount(2, $result['songLabels']);
+    }
+
+    public function testGetNextTrialThrowsExceptionWithInsufficientFlavors(): void
+    {
+        $participant = new Participant();
+        
+        $this->flavorRepository
+            ->expects($this->once())
+            ->method('findAll')
+            ->willReturn([]);
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('At least 2 flavors are required for trial generation.');
+
+        $this->stimuliManager->getNextTrial($participant, Trial::SMELLS2MUSIC);
+    }
+
+    public function testGetNextTrialThrowsExceptionWithInvalidTaskType(): void
+    {
+        $participant = new Participant();
+        
+        $flavor1 = $this->createMockFlavor(1, 'Vanilla', 'vanilla.png');
+        $flavor2 = $this->createMockFlavor(2, 'Chocolate', 'chocolate.png');
+        
+        $this->flavorRepository
+            ->expects($this->once())
+            ->method('findAll')
+            ->willReturn([$flavor1, $flavor2]);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid task type: invalid_task');
+
+        $this->stimuliManager->getNextTrial($participant, 'invalid_task');
+    }
+
+    public function testGetAllPossibleCombinations(): void
+    {
+        $flavor1 = $this->createMockFlavor(1, 'Vanilla', 'vanilla.png');
+        $flavor2 = $this->createMockFlavor(2, 'Chocolate', 'chocolate.png');
+        $flavor3 = $this->createMockFlavor(3, 'Strawberry', 'strawberry.png');
+        $flavor4 = $this->createMockFlavor(4, 'Mint', 'mint.png');
+        
+        $this->flavorRepository
+            ->expects($this->once())
+            ->method('findAll')
+            ->willReturn([$flavor1, $flavor2, $flavor3, $flavor4]);
+
+        $combinations = $this->stimuliManager->getAllPossibleCombinations();
+
+        // With 4 flavors, we should have 4 * 3 = 12 combinations (not 16 as mentioned in requirements)
+        // because we exclude same-flavor combinations
+        $this->assertCount(12, $combinations);
+        
+        foreach ($combinations as $combination) {
+            $this->assertArrayHasKey('primary', $combination);
+            $this->assertArrayHasKey('secondary', $combination);
+            $this->assertNotEquals($combination['primary'], $combination['secondary']);
+        }
+    }
+
+    public function testSmells2MusicTrialThrowsExceptionWhenNoSongsFound(): void
+    {
+        $participant = new Participant();
+        
+        $flavor1 = $this->createMockFlavor(1, 'Vanilla', 'vanilla.png');
+        $flavor2 = $this->createMockFlavor(2, 'Chocolate', 'chocolate.png');
+        
+        $this->flavorRepository
+            ->expects($this->once())
+            ->method('findAll')
+            ->willReturn([$flavor1, $flavor2]);
+            
+        $this->songRepository
+            ->expects($this->once())
+            ->method('findBy')
+            ->willReturn([]);
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('No songs found for flavor: Vanilla');
+
+        $this->stimuliManager->getNextTrial($participant, Trial::SMELLS2MUSIC);
+    }
+
+    private function createMockFlavor(int $id, string $name, string $icon): Flavor|MockObject
+    {
+        $flavor = $this->createMock(Flavor::class);
+        $flavor->method('getId')->willReturn($id);
+        $flavor->method('getName')->willReturn($name);
+        $flavor->method('getIcon')->willReturn($icon);
+        
+        return $flavor;
+    }
+
+    private function createMockSong(int $id, string $url, string $prompt): Song|MockObject
+    {
+        $song = $this->createMock(Song::class);
+        $song->method('getId')->willReturn($id);
+        $song->method('getUrl')->willReturn($url);
+        $song->method('getPrompt')->willReturn($prompt);
+        
+        return $song;
+    }
+}
