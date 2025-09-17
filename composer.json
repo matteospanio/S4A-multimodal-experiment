@@ -1,5 +1,7 @@
 {
     "type": "project",
+    "name": "science4all/multimodal-experiment",
+    "description": "Science4All multimodal experiment",
     "license": "proprietary",
     "minimum-stability": "stable",
     "prefer-stable": true,
