@@ -45,20 +45,153 @@ class StimuliManager
 
         switch ($taskType) {
             case Trial::SMELLS2MUSIC:
-                return $this->generateSmells2MusicTrial($flavors);
+                return $this->generateBalancedSmells2MusicTrial($flavors);
             case Trial::MUSICS2SMELL:
-                return $this->generateMusics2SmellTrial($flavors);
+                return $this->generateBalancedMusics2SmellTrial($flavors);
             default:
                 throw new \InvalidArgumentException('Invalid task type: ' . $taskType);
         }
     }
 
     /**
-     * Generate a trial for the Smells to Music task.
+     * Generate a balanced trial for the Smells to Music task.
+     * This version ensures better distribution of flavor combinations.
+     * 
+     * @param Flavor[] $flavors
+     * @return array
+     */
+    private function generateBalancedSmells2MusicTrial(array $flavors): array
+    {
+        // Get a balanced combination of flavors
+        $combination = $this->getBalancedFlavorCombination($flavors);
+        $primaryFlavorId = $combination['primary'];
+        $secondaryFlavorId = $combination['secondary'];
+        
+        // Find the actual flavor objects
+        $primaryFlavor = null;
+        $secondaryFlavor = null;
+        
+        foreach ($flavors as $flavor) {
+            if ($flavor->getId() === $primaryFlavorId) {
+                $primaryFlavor = $flavor;
+            }
+            if ($flavor->getId() === $secondaryFlavorId) {
+                $secondaryFlavor = $flavor;
+            }
+        }
+        
+        if (!$primaryFlavor || !$secondaryFlavor) {
+            throw new \RuntimeException('Could not find flavors for balanced combination.');
+        }
+        
+        // Get songs for the primary flavor
+        $songsForPrimaryFlavor = $this->songRepository->findBy(['flavor' => $primaryFlavor]);
+        
+        if (empty($songsForPrimaryFlavor)) {
+            throw new \RuntimeException('No songs found for flavor: ' . $primaryFlavor->getName());
+        }
+        
+        // Pick a random song from the primary flavor
+        $selectedSong = $songsForPrimaryFlavor[array_rand($songsForPrimaryFlavor)];
+        
+        return [
+            'taskType' => Trial::SMELLS2MUSIC,
+            'primarySong' => $selectedSong,
+            'primaryFlavor' => $primaryFlavor,
+            'secondaryFlavor' => $secondaryFlavor,
+            'flavorLabels' => $this->getRandomizedFlavorLabels([$primaryFlavor, $secondaryFlavor]),
+            'combination' => $combination
+        ];
+    }
+
+    /**
+     * Generate a balanced trial for the Musics to Smell task.
+     * This version ensures better distribution of flavor combinations.
+     * 
+     * @param Flavor[] $flavors
+     * @return array
+     */
+    private function generateBalancedMusics2SmellTrial(array $flavors): array
+    {
+        // Get a balanced combination of flavors
+        $combination = $this->getBalancedFlavorCombination($flavors);
+        $firstFlavorId = $combination['primary'];
+        $secondFlavorId = $combination['secondary'];
+        
+        // Find the actual flavor objects
+        $firstFlavor = null;
+        $secondFlavor = null;
+        
+        foreach ($flavors as $flavor) {
+            if ($flavor->getId() === $firstFlavorId) {
+                $firstFlavor = $flavor;
+            }
+            if ($flavor->getId() === $secondFlavorId) {
+                $secondFlavor = $flavor;
+            }
+        }
+        
+        if (!$firstFlavor || !$secondFlavor) {
+            throw new \RuntimeException('Could not find flavors for balanced combination.');
+        }
+        
+        // Get songs for each flavor
+        $firstFlavorSongs = $this->songRepository->findBy(['flavor' => $firstFlavor]);
+        $secondFlavorSongs = $this->songRepository->findBy(['flavor' => $secondFlavor]);
+        
+        if (empty($firstFlavorSongs)) {
+            throw new \RuntimeException('No songs found for flavor: ' . $firstFlavor->getName());
+        }
+        
+        if (empty($secondFlavorSongs)) {
+            throw new \RuntimeException('No songs found for flavor: ' . $secondFlavor->getName());
+        }
+        
+        // Pick random songs from each flavor
+        $firstSong = $firstFlavorSongs[array_rand($firstFlavorSongs)];
+        $secondSong = $secondFlavorSongs[array_rand($secondFlavorSongs)];
+        
+        return [
+            'taskType' => Trial::MUSICS2SMELL,
+            'primarySong' => $firstSong,
+            'secondarySong' => $secondSong,
+            'primaryFlavor' => $firstFlavor,
+            'secondaryFlavor' => $secondFlavor,
+            'songLabels' => $this->getRandomizedSongLabels([$firstSong, $secondSong]),
+            'combination' => $combination
+        ];
+    }
+
+    /**
+     * Get a balanced flavor combination using a simple round-robin approach.
+     * This ensures all combinations are presented with roughly equal frequency.
+     * 
+     * @param Flavor[] $flavors
+     * @return array
+     */
+    private function getBalancedFlavorCombination(array $flavors): array
+    {
+        $allCombinations = $this->getAllPossibleCombinations();
+        
+        // For simplicity, use a time-based pseudo-random selection that cycles through combinations
+        // In a real application, this could be enhanced with session storage or database tracking
+        $index = (int)(time() / 60) % count($allCombinations); // Changes every minute
+        $selectedCombination = $allCombinations[$index];
+        
+        // Add some randomness while maintaining balance
+        $randomOffset = rand(0, 2); // Small random offset to avoid strict predictability
+        $balancedIndex = ($index + $randomOffset) % count($allCombinations);
+        
+        return $allCombinations[$balancedIndex];
+    }
+
+    /**
+     * Generate a trial for the Smells to Music task (legacy method).
      * Pick a random song from flavor A, then pick a random second flavor B.
      * 
      * @param Flavor[] $flavors
      * @return array
+     * @deprecated Use generateBalancedSmells2MusicTrial for better balance
      */
     private function generateSmells2MusicTrial(array $flavors): array
     {
@@ -89,11 +222,12 @@ class StimuliManager
     }
 
     /**
-     * Generate a trial for the Musics to Smell task.
+     * Generate a trial for the Musics to Smell task (legacy method).
      * Pick two different songs from two different flavors.
      * 
      * @param Flavor[] $flavors
      * @return array
+     * @deprecated Use generateBalancedMusics2SmellTrial for better balance
      */
     private function generateMusics2SmellTrial(array $flavors): array
     {

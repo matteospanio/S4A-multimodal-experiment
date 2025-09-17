@@ -42,7 +42,7 @@ final class StimuliManagerTest extends TestCase
         $song = $this->createMockSong(1, 'http://example.com/song1.mp3', 'A sweet melody');
         
         $this->flavorRepository
-            ->expects($this->once())
+            ->expects($this->exactly(2)) // Called once for getNextTrial, once for getAllPossibleCombinations in balanced method
             ->method('findAll')
             ->willReturn($flavors);
             
@@ -60,6 +60,7 @@ final class StimuliManagerTest extends TestCase
         $this->assertInstanceOf(Flavor::class, $result['secondaryFlavor']);
         $this->assertIsArray($result['flavorLabels']);
         $this->assertCount(2, $result['flavorLabels']);
+        $this->assertArrayHasKey('combination', $result); // New balanced feature
     }
 
     public function testGetNextTrialWithMusics2SmellTaskType(): void
@@ -76,7 +77,7 @@ final class StimuliManagerTest extends TestCase
         $song2 = $this->createMockSong(2, 'http://example.com/song2.mp3', 'A rich harmony');
         
         $this->flavorRepository
-            ->expects($this->once())
+            ->expects($this->exactly(2)) // Called once for getNextTrial, once for getAllPossibleCombinations in balanced method
             ->method('findAll')
             ->willReturn($flavors);
             
@@ -94,6 +95,7 @@ final class StimuliManagerTest extends TestCase
         $this->assertInstanceOf(Flavor::class, $result['secondaryFlavor']);
         $this->assertIsArray($result['songLabels']);
         $this->assertCount(2, $result['songLabels']);
+        $this->assertArrayHasKey('combination', $result); // New balanced feature
     }
 
     public function testGetNextTrialThrowsExceptionWithInsufficientFlavors(): void
@@ -175,6 +177,48 @@ final class StimuliManagerTest extends TestCase
         $this->expectExceptionMessage('No songs found for flavor: Vanilla');
 
         $this->stimuliManager->getNextTrial($participant, Trial::SMELLS2MUSIC);
+    }
+
+    public function testBalancedCombinationDistribution(): void
+    {
+        $participant = new Participant();
+        
+        // Create 4 mock flavors as in requirements
+        $flavor1 = $this->createMockFlavor(1, 'Vanilla', 'vanilla.png');
+        $flavor2 = $this->createMockFlavor(2, 'Chocolate', 'chocolate.png');
+        $flavor3 = $this->createMockFlavor(3, 'Strawberry', 'strawberry.png');
+        $flavor4 = $this->createMockFlavor(4, 'Mint', 'mint.png');
+        $flavors = [$flavor1, $flavor2, $flavor3, $flavor4];
+        
+        // Create mock songs for each flavor
+        $song1 = $this->createMockSong(1, 'http://example.com/song1.mp3', 'Sweet melody');
+        $song2 = $this->createMockSong(2, 'http://example.com/song2.mp3', 'Rich harmony');
+        
+        $this->flavorRepository
+            ->method('findAll')
+            ->willReturn($flavors);
+            
+        $this->songRepository
+            ->method('findBy')
+            ->willReturn([$song1]); // Return at least one song for any flavor
+
+        // Test multiple trials to ensure different combinations are generated
+        $combinationsGenerated = [];
+        for ($i = 0; $i < 10; $i++) {
+            $result = $this->stimuliManager->getNextTrial($participant, Trial::SMELLS2MUSIC);
+            
+            $this->assertArrayHasKey('combination', $result);
+            $combination = $result['combination'];
+            $this->assertArrayHasKey('primary', $combination);
+            $this->assertArrayHasKey('secondary', $combination);
+            $this->assertNotEquals($combination['primary'], $combination['secondary']);
+            
+            $combKey = $combination['primary'] . '-' . $combination['secondary'];
+            $combinationsGenerated[$combKey] = true;
+        }
+        
+        // Should generate multiple different combinations over 10 trials
+        $this->assertGreaterThan(1, count($combinationsGenerated));
     }
 
     private function createMockFlavor(int $id, string $name, string $icon): Flavor|MockObject
