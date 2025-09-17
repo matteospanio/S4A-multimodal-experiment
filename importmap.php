@@ -19,14 +19,23 @@ return [
     '@symfony/stimulus-bundle' => [
         'path' => './vendor/symfony/stimulus-bundle/assets/dist/loader.js',
     ],
-    // Commented out external dependencies that require network access
-    // '@hotwired/stimulus' => [
-    //     'version' => '3.2.2',
-    // ],
-    // '@hotwired/turbo' => [
-    //     'version' => '7.3.0',
-    // ],
-    // 'chart.js' => [
-    //     'version' => '3.9.1',
-    // ],
+    '@hotwired/stimulus' => [
+        'version' => '3.2.2',
+    ],
+    '@hotwired/turbo' => [
+        'version' => '7.3.0',
+    ],
+    'chart.js' => [
+        'version' => '3.9.1',
+    ],
+    'bootstrap' => [
+        'version' => '5.3.8',
+    ],
+    '@popperjs/core' => [
+        'version' => '2.11.8',
+    ],
+    'bootstrap/dist/css/bootstrap.min.css' => [
+        'version' => '5.3.8',
+        'type' => 'css',
+    ],
 ];
