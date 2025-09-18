@@ -3,7 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Participant;
-use App\Entity\Trial;
+use App\Entity\Trial\Trial;
 
 /**
  * This service is responsible to collect and store data about the experiment.

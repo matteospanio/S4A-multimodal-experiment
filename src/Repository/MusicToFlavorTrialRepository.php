@@ -2,39 +2,39 @@
 
 namespace App\Repository;
 
-use App\Entity\Stimulus\Flavor;
+use App\Entity\Trial\MusicToFlavorTrial;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Flavor>
+ * @extends ServiceEntityRepository<MusicToFlavorTrial>
  */
-class FlavorRepository extends ServiceEntityRepository
+class MusicToFlavorTrialRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Flavor::class);
+        parent::__construct($registry, MusicToFlavorTrial::class);
     }
 
     //    /**
-    //     * @return Flavor[] Returns an array of Flavor objects
+    //     * @return MusicToFlavorTrial[] Returns an array of MusicToFlavorTrial objects
     //     */
     //    public function findByExampleField($value): array
     //    {
-    //        return $this->createQueryBuilder('f')
-    //            ->andWhere('f.exampleField = :val')
+    //        return $this->createQueryBuilder('m')
+    //            ->andWhere('m.exampleField = :val')
     //            ->setParameter('val', $value)
-    //            ->orderBy('f.id', 'ASC')
+    //            ->orderBy('m.id', 'ASC')
     //            ->setMaxResults(10)
     //            ->getQuery()
     //            ->getResult()
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?Flavor
+    //    public function findOneBySomeField($value): ?MusicToFlavorTrial
     //    {
-    //        return $this->createQueryBuilder('f')
-    //            ->andWhere('f.exampleField = :val')
+    //        return $this->createQueryBuilder('m')
+    //            ->andWhere('m.exampleField = :val')
     //            ->setParameter('val', $value)
     //            ->getQuery()
     //            ->getOneOrNullResult()

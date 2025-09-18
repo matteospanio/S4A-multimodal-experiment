@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Stimulus;
 
+use App\Entity\Trial\MusicToFlavorTrial;
 use App\Repository\FlavorRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -31,9 +32,16 @@ class Flavor
     #[ORM\OneToMany(targetEntity: Song::class, mappedBy: 'flavor')]
     private Collection $songs;
 
+    /**
+     * @var Collection<int, MusicToFlavorTrial>
+     */
+    #[ORM\OneToMany(targetEntity: MusicToFlavorTrial::class, mappedBy: 'flavor')]
+    private Collection $musicToFlavorTrials;
+
     public function __construct()
     {
         $this->songs = new ArrayCollection();
+        $this->musicToFlavorTrials = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -101,6 +109,36 @@ class Flavor
             // set the owning side to null (unless already changed)
             if ($song->getFlavor() === $this) {
                 $song->setFlavor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, MusicToFlavorTrial>
+     */
+    public function getMusicToFlavorTrials(): Collection
+    {
+        return $this->musicToFlavorTrials;
+    }
+
+    public function addMusicToFlavorTrial(MusicToFlavorTrial $musicToFlavorTrial): static
+    {
+        if (!$this->musicToFlavorTrials->contains($musicToFlavorTrial)) {
+            $this->musicToFlavorTrials->add($musicToFlavorTrial);
+            $musicToFlavorTrial->setFlavor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMusicToFlavorTrial(MusicToFlavorTrial $musicToFlavorTrial): static
+    {
+        if ($this->musicToFlavorTrials->removeElement($musicToFlavorTrial)) {
+            // set the owning side to null (unless already changed)
+            if ($musicToFlavorTrial->getFlavor() === $this) {
+                $musicToFlavorTrial->setFlavor(null);
             }
         }
 

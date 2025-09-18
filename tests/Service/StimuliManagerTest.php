@@ -2,14 +2,14 @@
 
 namespace App\Tests\Service;
 
-use App\Entity\Trial;
-use App\Entity\Flavor;
-use App\Entity\Song;
+use App\Entity\Stimulus\Flavor;
+use App\Entity\Stimulus\Song;
+use App\Entity\Trial\Trial;
 use App\Repository\FlavorRepository;
 use App\Repository\SongRepository;
 use App\Service\StimuliManager;
-use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 
 final class StimuliManagerTest extends TestCase
 {
