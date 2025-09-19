@@ -2,14 +2,17 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\Stimulus\Flavor;
+use App\Entity\Experiment;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
-class FlavorCrudController extends AbstractCrudController
+class ExperimentCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
-        return Flavor::class;
+        return Experiment::class;
     }
 
     /*

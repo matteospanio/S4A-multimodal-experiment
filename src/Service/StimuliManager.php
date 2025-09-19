@@ -2,12 +2,14 @@
 
 namespace App\Service;
 
-use App\Entity\Participant;
-use App\Entity\Trial;
-use App\Entity\Flavor;
-use App\Entity\Song;
+use App\Entity\Stimulus\Flavor;
+use App\Entity\Stimulus\Song;
+use App\Entity\Trial\FlavorToMusicTrial;
+use App\Entity\Trial\MusicToFlavorTrial;
+use App\Entity\Trial\Trial;
 use App\Repository\FlavorRepository;
 use App\Repository\SongRepository;
+use Doctrine\Common\Collections\Collection;
 
 /**
  * This service is responsible to manage the stimuli presentation logic.
@@ -24,12 +26,13 @@ final readonly class StimuliManager
     }
 
     /**
+     * @template T of Trial
      * Get the next trial for a participant based on balanced combination logic.
      *
      * @param string $taskType Either Trial::SMELLS2MUSIC or Trial::MUSICS2SMELL
-     * @return array Trial data with stimuli information
+     * @return T Trial data with stimuli information
      */
-    public function getNextTrial(string $taskType): array
+    public function getNextTrial(string $taskType): Trial
     {
         $flavors = $this->flavorRepository->findAll();
 
@@ -49,50 +52,31 @@ final readonly class StimuliManager
      * This version ensures better distribution of flavor combinations.
      *
      * @param Flavor[] $flavors
-     * @return array
+     * @return FlavorToMusicTrial
      */
-    private function generateBalancedSmells2MusicTrial(array $flavors): array
+    private function generateBalancedSmells2MusicTrial(array $flavors): FlavorToMusicTrial
     {
+        $trial = new FlavorToMusicTrial();
+
         // Get a balanced combination of flavors
         $combination = $this->getBalancedFlavorCombination($flavors);
         $primaryFlavorId = $combination['primary'];
         $secondaryFlavorId = $combination['secondary'];
 
-        // Find the actual flavor objects
-        $primaryFlavor = null;
-        $secondaryFlavor = null;
-
         foreach ($flavors as $flavor) {
             if ($flavor->getId() === $primaryFlavorId) {
-                $primaryFlavor = $flavor;
+                $trial->addFlavor($flavor);
             }
             if ($flavor->getId() === $secondaryFlavorId) {
-                $secondaryFlavor = $flavor;
+                $trial->addFlavor($flavor);
             }
-        }
-
-        if (!$primaryFlavor || !$secondaryFlavor) {
-            throw new \RuntimeException('Could not find flavors for balanced combination.');
         }
 
         // Get songs for the primary flavor
-        $songsForPrimaryFlavor = $this->songRepository->findBy(['flavor' => $primaryFlavor]);
+        $selectedSong = $this->randomPick($trial->getFlavors()->first()->getSongs());
+        $trial->setSong($selectedSong);
 
-        if (empty($songsForPrimaryFlavor)) {
-            throw new \RuntimeException('No songs found for flavor: ' . $primaryFlavor->getName());
-        }
-
-        // Pick a random song from the primary flavor
-        $selectedSong = $songsForPrimaryFlavor[array_rand($songsForPrimaryFlavor)];
-
-        return [
-            'taskType' => Trial::SMELLS2MUSIC,
-            'primarySong' => $selectedSong,
-            'primaryFlavor' => $primaryFlavor,
-            'secondaryFlavor' => $secondaryFlavor,
-            'flavorLabels' => $this->getRandomizedFlavorLabels([$primaryFlavor, $secondaryFlavor]),
-            'combination' => $combination
-        ];
+        return $trial;
     }
 
     /**
@@ -100,9 +84,9 @@ final readonly class StimuliManager
      * This version ensures better distribution of flavor combinations.
      *
      * @param Flavor[] $flavors
-     * @return array
+     * @return MusicToFlavorTrial
      */
-    private function generateBalancedMusics2SmellTrial(array $flavors): array
+    private function generateBalancedMusics2SmellTrial(array $flavors): MusicToFlavorTrial
     {
         // Get a balanced combination of flavors
         $combination = $this->getBalancedFlavorCombination($flavors);
@@ -320,5 +304,21 @@ final readonly class StimuliManager
         }
 
         return $combinations;
+    }
+
+    /**
+     * Pick a random element from a Doctrine Collection.
+     * @template T
+     * @param Collection<int, T> $collection
+     * @return T|null
+     */
+    private function randomPick(Collection $collection): mixed
+    {
+        if ($collection->isEmpty()) {
+            return null;
+        }
+
+        $array = $collection->toArray();
+        return $array[array_rand($array)];
     }
 }
