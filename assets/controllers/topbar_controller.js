@@ -7,49 +7,20 @@ import { Controller } from '@hotwired/stimulus';
  */
 export default class extends Controller {
     static targets = ['themeSelect', 'languageSelect']
-
-    connect() {
-        // Initialize theme from localStorage or default to light
-        this.initializeTheme();
-        
-        // Initialize language from current locale
-        this.initializeLanguage();
+    static values = {
+        theme: String,
+        language: String,
     }
 
-    initializeTheme() {
-        const savedTheme = localStorage.getItem('s4a-theme') || 'light';
-        this.setTheme(savedTheme);
-        
-        if (this.hasThemeSelectTarget) {
-            this.themeSelectTarget.value = savedTheme;
-        }
+    themeValueChanged() {
+        document.documentElement.setAttribute('data-bs-theme', this.themeValue);
     }
 
-    initializeLanguage() {
-        const currentLocale = document.documentElement.lang || 'en';
-        
-        if (this.hasLanguageSelectTarget) {
-            this.languageSelectTarget.value = currentLocale;
-        }
-    }
-
+    /**
+     * @param {Event} event
+     */
     changeTheme(event) {
-        const theme = event.target.value;
-        this.setTheme(theme);
-        localStorage.setItem('s4a-theme', theme);
-    }
-
-    setTheme(theme) {
-        const body = document.body;
-        
-        // Remove existing theme classes
-        body.classList.remove('theme-light', 'theme-dark');
-        
-        // Add new theme class
-        body.classList.add(`theme-${theme}`);
-        
-        // Update Bootstrap theme attribute for proper styling
-        document.documentElement.setAttribute('data-bs-theme', theme);
+        this.themeValue = event.currentTarget.value;
     }
 
     changeLanguage(event) {
@@ -58,7 +29,7 @@ export default class extends Controller {
         const currentPath = window.location.pathname;
         const searchParams = new URLSearchParams(window.location.search);
         searchParams.set('_locale', locale);
-        
+
         window.location.href = `${currentPath}?${searchParams.toString()}`;
     }
 }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ app.locale }}">
+<html lang="{{ app.locale }}" data-bs-theme="light">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,23 +13,15 @@
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
     </head>
-    <body>
+    <body data-controller="topbar" data-topbar-language-value="{{ app.locale }}" data-topbar-theme-value="light">
         <!-- Topbar -->
-        <div class="topbar" data-controller="topbar">
+        <div class="topbar">
             <button class="topbar-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#settingsOffcanvas" aria-controls="settingsOffcanvas" title="{{ 'topbar.menu'|trans }}">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="3" y1="6" x2="21" y2="6"></line>
-                    <line x1="3" y1="12" x2="21" y2="12"></line>
-                    <line x1="3" y1="18" x2="21" y2="18"></line>
-                </svg>
+                <twig:ux:icon name="bi:list" height="1.5rem" />
             </button>
-            
+
             <button class="topbar-btn" type="button" data-bs-toggle="modal" data-bs-target="#privacyModal" title="{{ 'topbar.info'|trans }}">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <path d="m9,9 0,0a3,3 0 1,1 6,0c0,2 -3,3 -3,3"></path>
-                    <path d="m9 17h.01"></path>
-                </svg>
+                <twig:ux:icon name="bi:info-circle" height="1.5rem" />
             </button>
         </div>
 
@@ -47,7 +39,7 @@
                         <option value="dark">{{ 'topbar.theme_dark'|trans }}</option>
                     </select>
                 </div>
-                
+
                 <div class="mb-4">
                     <label for="languageSelect" class="form-label">{{ 'topbar.language'|trans }}</label>
                     <select class="form-select" id="languageSelect" data-topbar-target="languageSelect" data-action="change->topbar#changeLanguage">
