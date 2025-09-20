@@ -9,6 +9,7 @@ use App\Entity\Trial\MusicToFlavorTrial;
 use App\Entity\Trial\Trial;
 use App\Repository\FlavorRepository;
 use App\Repository\SongRepository;
+use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * This service is responsible to manage the stimuli presentation logic.
@@ -20,7 +21,8 @@ final readonly class StimuliManager
 {
     public function __construct(
         private FlavorRepository $flavorRepository,
-        private SongRepository   $songRepository
+        private SongRepository   $songRepository,
+        private EntityManagerInterface $entityManager
     ) {
     }
 
@@ -41,8 +43,8 @@ final readonly class StimuliManager
         }
 
         return match ($taskType) {
-            Trial::SMELLS2MUSIC => $this->generateFlavorToMusicTrial($flavors, $songs, $usedCombinations),
-            Trial::MUSICS2SMELL => $this->generateMusicToFlavorTrial($flavors, $songs, $usedCombinations),
+            Trial::SMELLS2MUSIC => $this->persistTrial($this->generateFlavorToMusicTrial($flavors, $songs, $usedCombinations)),
+            Trial::MUSICS2SMELL => $this->persistTrial($this->generateMusicToFlavorTrial($flavors, $songs, $usedCombinations)),
             default => throw new \InvalidArgumentException('Tipo task non valido: ' . $taskType),
         };
     }
@@ -193,5 +195,15 @@ final readonly class StimuliManager
             Trial::MUSICS2SMELL => array_column($this->getAllMusicToFlavorCombinations($flavors, $songs), 'comboKey'),
             default => [],
         };
+    }
+
+    /**
+     * Persists a trial to the database and returns it.
+     */
+    private function persistTrial(Trial $trial): Trial
+    {
+        $this->entityManager->persist($trial);
+        $this->entityManager->flush();
+        return $trial;
     }
 }
