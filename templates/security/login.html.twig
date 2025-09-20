@@ -1,22 +1,22 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Sign In - S4A Multimodal Experiment{% endblock %}
+{% block title %}{{ 'login.sign_in'|trans }} - S4A Multimodal Experiment{% endblock %}
 
 {% block body %}
 <div class="login-container">
     {% if app.user %}
         <div class="already-logged-in">
-            🧪 You are already logged in as <strong>{{ app.user.userIdentifier }}</strong>
+            🧪 {{ 'login.already_logged_in'|trans }} <strong>{{ app.user.userIdentifier }}</strong>
             <br>
-            <a href="{{ path('app_logout') }}">Click here to logout</a>
+            <a href="{{ path('app_logout') }}">{{ 'login.click_to_logout'|trans }}</a>
         </div>
     {% endif %}
 
     <div class="login-card">
         <div class="login-header">
             <span class="app-icon">🧪</span>
-            <h1>S4A Experiment</h1>
-            <p style="margin: 0; opacity: 0.9; font-size: 0.9rem;">Please sign in to continue</p>
+            <h1>S4A {{ 'general.experiment'|trans }}</h1>
+            <p style="margin: 0; opacity: 0.9; font-size: 0.9rem;">{{ 'login.sign_in_to_continue'|trans }}</p>
         </div>
 
         <div class="login-body">
@@ -35,7 +35,7 @@
                            id="username"
                            class="form-control"
                            autocomplete="username"
-                           placeholder="Enter your username"
+                           placeholder="{{ 'login.username_placeholder'|trans }}"
                            required
                            autofocus>
                 </div>
@@ -47,14 +47,14 @@
                            id="password"
                            class="form-control"
                            autocomplete="current-password"
-                           placeholder="Enter your password"
+                           placeholder="{{ 'login.password_placeholder'|trans }}"
                            required>
                 </div>
 
                 <input type="hidden" data-controller="csrf-protection" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
                 <button id="btn-login" class="btn btn-login" type="submit">
-                    🚀 Sign In
+                    🚀 {{ 'login.sign_in'|trans }}
                 </button>
             </form>
 

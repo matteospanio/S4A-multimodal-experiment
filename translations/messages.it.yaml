@@ -1,0 +1,30 @@
+general:
+    audio: Suono|Suoni
+    perfume: Profumo|Profumi
+    stimulus: Stimolo|Stimoli
+    task: Compito|Compiti
+    experiment: Esperimento|Esperimenti
+
+home:
+    task_1: 'Associazione Suoni-Profumo'
+    task_2: 'Associazione Profumi-Suono'
+
+login:
+    sign_in: Accedi
+    already_logged_in: Hai già effettuato l'accesso come
+    click_to_logout: Clicca qui per uscire
+    sign_in_to_continue: Accedi per continuare
+    username_placeholder: Inserisci il tuo nome utente
+    password_placeholder: Inserisci la tua password
+
+task:
+    m2f:
+        instructions: Mentre ascolti entrambi gli stimoli sonori, annusa il profumo, poi scegli quale suono corrisponde meglio alla fragranza
+        question: Quale suono accompagna meglio il profumo?
+    f2m:
+        instructions: Ascolta il file audio, poi scegli a quale dei due profumi si abbina meglio
+        question: Quale profumo risuona meglio con il brano?
+    audio_error: Il tuo browser non supporta l'elemento audio.
+    choose: Scegli
+    back: Torna al Menu
+    submit: Invia la Scelta

@@ -1,0 +1,32 @@
+general:
+    audio: Audio|Audio
+    experiment: Experiment|Experiments
+    perfume: Perfume|Perfumes
+    stimulus: Stimulus|Stimuli
+    task: Task|Tasks
+
+home:
+    task_1: Audio-Perfume Matching
+    task_2: Perfume-Audio Association
+
+login:
+    already_logged_in: You are already logged in as
+    click_to_logout: Click here to logout
+    password_placeholder: Enter your password
+    sign_in: Sign In
+    sign_in_to_continue: Please sign in to continue
+    username_placeholder: Enter your username
+
+task:
+    audio_option: Audio Option
+    perfume_option: Perfume Option
+    audio_error: Your browser does not support the audio element.
+    m2f:
+        instructions: Listen to both audio stimuli, smell the perfume, then choose which audio best matches the scent
+        question: Which audio best matches the perfume?
+    f2m:
+        instructions: Listen to the audio stimulus, then choose which of the two perfumes best matches
+        question: Which perfume best matches the audio?
+    back: Back to Menu
+    choose: Choose
+    submit: Submit Choice

@@ -7,9 +7,9 @@
     <div class="app-header">
         <h1 class="app-title">{{ task_name }}</h1>
         {% if task_type == 1 %}
-            <p class="app-subtitle">Listen to both audio stimuli, smell the perfume, then choose which audio best matches the scent</p>
+            <p class="app-subtitle">{{ 'task.m2f.instructions'|trans }}</p>
         {% else %}
-            <p class="app-subtitle">Listen to the audio stimulus, then choose which of the two perfumes best matches</p>
+            <p class="app-subtitle">{{ 'task.f2m.instructions'|trans }}</p>
         {% endif %}
     </div>
 
@@ -29,7 +29,7 @@
                                         <h5>Audio Option A</h5>
                                         <audio controls preload="metadata">
                                             <source src="{{ trial.songs[0].url }}" type="audio/wav">
-                                            Your browser does not support the audio element.
+                                            {{ 'task.audio_error'|trans }}
                                         </audio>
                                     </div>
 
@@ -37,7 +37,7 @@
                                         <h5>Audio Option B</h5>
                                         <audio controls preload="metadata">
                                             <source src="{{ trial.songs[1].url }}" type="audio/wav">
-                                            Your browser does not support the audio element.
+                                            {{ 'task.audio_error'|trans }}
                                         </audio>
                                     </div>
                                 </div>
@@ -59,7 +59,7 @@
 
                     <div class="row mt-4">
                         <div class="col-md-12">
-                            <h4 class="text-center mb-3">Which audio best matches the perfume?</h4>
+                            <h4 class="text-center mb-3">{{ 'task.m2f.question'|trans }}</h4>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="card stimulus-card"
@@ -70,7 +70,7 @@
                                             <div class="icon-md text-primary">
                                                 🎵
                                             </div>
-                                            <h5>Choose Audio A</h5>
+                                            <h5>{{ 'task.choose'|trans }} Audio A</h5>
                                         </div>
                                     </div>
                                 </div>
@@ -83,7 +83,7 @@
                                             <div class="icon-md text-primary">
                                                 🎵
                                             </div>
-                                            <h5>Choose Audio B</h5>
+                                            <h5>{{ 'task.choose'|trans }} Audio B</h5>
                                         </div>
                                     </div>
                                 </div>
@@ -101,7 +101,7 @@
                                     <div class="audio-control">
                                         <audio controls preload="metadata">
                                             <source src="{{ trial.song.url }}" type="audio/wav">
-                                            Your browser does not support the audio element.
+                                            {{ 'task.audio_error'|trans }}
                                         </audio>
                                     </div>
                                 </div>
@@ -111,7 +111,7 @@
 
                     <div class="row">
                         <div class="col-md-12">
-                            <h4 class="text-center mb-3">Which perfume best matches the audio?</h4>
+                            <h4 class="text-center mb-3">{{ 'task.f2m.question'|trans }}</h4>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="card stimulus-card"
@@ -151,10 +151,10 @@
         <div class="row mt-4">
             <div class="col-md-12 text-center">
                 <button class="btn btn-secondary me-3" type="button" onclick="window.history.back()">
-                    ← Back to Menu
+                    ← {{ 'task.back'|trans }}
                 </button>
                 <button class="btn btn-primary" data-stimulus-selector-target="submitButton" type="submit" disabled>
-                    Submit Choice →
+                    {{ 'task.submit'|trans }} →
                 </button>
             </div>
         </div>
