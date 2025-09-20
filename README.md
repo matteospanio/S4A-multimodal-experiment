@@ -1,6 +1,12 @@
 # S4A Multimodal Experiment
 
+<p align="center">
+  <img src="assets/images/logo-s4a.svg" alt="Science for All Logo" width="300">
+</p>
+
 A Symfony-based web application for conducting multimodal experiments exploring the relationships between music and sensory experiences. This project is specifically designed for the **Science4All** event in Padova, scheduled for the last weekend of September 2025.
+
+**Data Privacy Notice**: All participant data are collected anonymously and are processed and analyzed only in aggregated form to ensure privacy protection.
 
 ## About Science4All
 
@@ -62,6 +68,8 @@ This application facilitates research into multimodal perception by presenting p
    ```bash
    php bin/console doctrine:database:create
    php bin/console doctrine:migrations:migrate
+   # Load foundry fixtures for development data
+   php bin/console foundry:make-story:main
    ```
 
 4. **Start the development server**
@@ -96,8 +104,8 @@ This application facilitates research into multimodal perception by presenting p
 ### Running Tests
 
 ```bash
-# Run all tests
-php bin/phpunit
+# Run all tests with detailed output
+symfony php vendor/bin/phpunit --testdox
 ```
 
 ### Code Quality
@@ -106,6 +114,27 @@ php bin/phpunit
 # Check code style (if configured)
 php bin/console lint:yaml config/
 php bin/console lint:twig templates/
+
+# Run Rector for automated code refactoring and modernization
+vendor/bin/rector process --dry-run
+
+# Apply Rector changes
+vendor/bin/rector process
+```
+
+### Development Tools
+
+For a better development experience, you can install pre-commit hooks:
+
+```bash
+# Install pre-commit (requires Python)
+pip install pre-commit
+
+# Install the git hook scripts
+pre-commit install
+
+# Optionally, run against all files
+pre-commit run --all-files
 ```
 
 ## Deployment
@@ -149,6 +178,24 @@ This project is developed for the Science4All event. If you'd like to contribute
 3. Make your changes
 4. Add tests if applicable
 5. Submit a pull request
+
+## Bibliography
+
+If you use this software or reference this work, please cite:
+
+```bibtex
+@article{spanio_frontiers_2025,
+  language = {en},
+  author = {Spanio, Matteo and Zampini, Massimiliano and Rodà, Antonio and Pierucci, Franco},
+  title = {A multimodal symphony: integrating taste and sound through generative AI},
+  journal = {Frontiers in Computer Science},
+  volume = {Volume 7 - 2025},
+  year = {2025},
+  url = {https://www.frontiersin.org/journals/computer-science/articles/10.3389/fcomp.2025.1575741},
+  doi = {10.3389/fcomp.2025.1575741},
+  issn = {2624-9898}
+}
+```
 
 ## Support
 
