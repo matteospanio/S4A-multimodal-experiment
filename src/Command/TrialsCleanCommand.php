@@ -8,11 +8,13 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Scheduler\Attribute\AsCronTask;
 
 #[AsCommand(
     name: 'app:trials:clean',
     description: 'Delete all trials without recorded choice.',
 )]
+#[AsCronTask('#hourly', arguments: '--no-interaction')]
 class TrialsCleanCommand extends Command
 {
     public function __construct(
@@ -28,7 +30,7 @@ class TrialsCleanCommand extends Command
     ): int
     {
         $io = new SymfonyStyle($input, $output);
-        $confirm = $io->ask('This will delete all trials without recorded choice. Are you sure you want to proceed? (yes/no)', 'no');
+        $confirm = $io->ask('This will delete all trials without recorded choice. Are you sure you want to proceed? (yes/no)', 'yes');
         if (strtolower($confirm) !== 'yes') {
             $io->warning('Operation cancelled. No trials were deleted.');
             return Command::SUCCESS;
