@@ -2,41 +2,46 @@ import { Controller } from '@hotwired/stimulus';
 
 /*
  * Stimulus Selector Controller
- * 
+ *
  * Handles selection of audio/perfume stimuli choices
  */
 export default class extends Controller {
     static values = { choice: String }
-    static targets = []
+    static targets = ['card', 'choiceInput', 'submitButton']
 
-    connect() {
-        this.element.addEventListener('click', this.selectStimulus.bind(this));
+    choiceValueChanged() {
+        // This method is called whenever the choiceValue changes
+        console.log(`Choice value changed to: ${this.choiceValue}`);
+        this.choiceInputTarget.value = this.choiceValue;
     }
 
+    unselectAllCards(event) {
+        this.cardTargets.forEach(card => {
+            card.classList.remove('selected');
+            if (card === event.currentTarget) {
+                card.classList.add('selected');
+            }
+        });
+    }
+
+    /**
+     * @param {Event} event
+     */
     selectStimulus(event) {
         event.preventDefault();
-        
-        // Remove selection from all other stimulus cards
-        document.querySelectorAll('.stimulus-card').forEach(card => {
-            card.classList.remove('selected');
-        });
-        
-        // Add selection to this card
-        this.element.classList.add('selected');
-        
+        const target = event.currentTarget;
+        console.log(target);
+
+        this.unselectAllCards(event);
+
         // Store the selected choice
-        window.selectedChoice = this.choiceValue;
-        
-        // Enable submit button
-        const submitButton = document.getElementById('submit-choice');
-        if (submitButton) {
-            submitButton.disabled = false;
-        }
-        
+        this.choiceValue = target.id;
+        this.submitButtonTarget.disabled = false;
+
         // Visual feedback
-        this.element.style.transform = 'scale(1.05)';
+        target.style.transform = 'scale(1.05)';
         setTimeout(() => {
-            this.element.style.transform = 'scale(1)';
+            target.style.transform = 'scale(1)';
         }, 150);
     }
 }

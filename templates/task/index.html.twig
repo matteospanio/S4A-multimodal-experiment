@@ -3,7 +3,7 @@
 {% block title %}{{ task_name }} - S4A Experiment{% endblock %}
 
 {% block body %}
-<div class="container">
+<div class="container" data-controller="stimulus-selector">
     <div class="app-header">
         <h1 class="app-title">{{ task_name }}</h1>
         {% if task_type == 1 %}
@@ -14,7 +14,7 @@
     </div>
 
     {{ form_start(form, {'action': path('app_task_submit', {'type': task_type, 'id': trial.id}), 'attr': {'id': 'trial-form'}}) }}
-        {{ form_widget(form.choice, {'attr': {'id': 'choice-input', 'style': 'display: none;'}}) }}
+        {{ form_widget(form.choice, {'attr': {'data-stimulus-selector-target': 'choiceInput', 'style': 'display: none;'}}) }}
         <div class="row">
             <div class="col-md-12">
                 {% if task_type == 1 %}
@@ -63,8 +63,9 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="card stimulus-card"
-                                         data-controller="stimulus-selector"
-                                         data-stimulus-selector-choice-value="{{ trial.songs[0].id }}">
+                                         data-stimulus-selector-target="card"
+                                         data-action="click->stimulus-selector#selectStimulus"
+                                         id="{{ trial.songs[0].id }}">
                                         <div class="card-body text-center">
                                             <div class="icon-md text-primary">
                                                 🎵
@@ -75,8 +76,9 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="card stimulus-card"
-                                         data-controller="stimulus-selector"
-                                         data-stimulus-selector-choice-value="{{ trial.songs[1].id }}">
+                                         data-stimulus-selector-target="card"
+                                         data-action="click->stimulus-selector#selectStimulus"
+                                         id="{{ trial.songs[1].id }}">
                                         <div class="card-body text-center">
                                             <div class="icon-md text-primary">
                                                 🎵
@@ -113,8 +115,9 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="card stimulus-card"
-                                         data-controller="stimulus-selector"
-                                         data-stimulus-selector-choice-value="{{ trial.flavors[0].id }}">
+                                         data-stimulus-selector-target="card"
+                                         data-action="click->stimulus-selector#selectStimulus"
+                                         id="{{ trial.flavors[0].id }}">
                                         <div class="card-body text-center">
                                             <div class="icon-md text-primary">
                                                 {{ trial.flavors[0].icon }}
@@ -126,8 +129,9 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="card stimulus-card"
-                                         data-controller="stimulus-selector"
-                                         data-stimulus-selector-choice-value="{{ trial.flavors[1].id }}">
+                                         data-stimulus-selector-target="card"
+                                         data-action="click->stimulus-selector#selectStimulus"
+                                         id="{{ trial.flavors[1].id }}">
                                         <div class="card-body text-center">
                                             <div class="icon-md text-primary">
                                                 {{ trial.flavors[1].icon }}
@@ -149,23 +153,11 @@
                 <button class="btn btn-secondary me-3" type="button" onclick="window.history.back()">
                     ← Back to Menu
                 </button>
-                <button class="btn btn-primary" id="submit-choice" type="submit" disabled>
+                <button class="btn btn-primary" data-stimulus-selector-target="submitButton" type="submit" disabled>
                     Submit Choice →
                 </button>
             </div>
         </div>
     {{ form_end(form) }}
 </div>
-
-<script>
-    // Aggiorna il campo hidden e abilita il submit quando una carta viene selezionata
-    document.addEventListener('DOMContentLoaded', function () {
-        document.querySelectorAll('.stimulus-card[data-controller="stimulus-selector"]').forEach(card => {
-            card.addEventListener('click', function () {
-                document.getElementById('choice-input').value = card.getAttribute('data-stimulus-selector-choice-value');
-                document.getElementById('submit-choice').disabled = false;
-            });
-        });
-    });
-</script>
 {% endblock %}
