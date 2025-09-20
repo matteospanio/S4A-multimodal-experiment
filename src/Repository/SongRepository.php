@@ -16,6 +16,22 @@ class SongRepository extends ServiceEntityRepository
         parent::__construct($registry, Song::class);
     }
 
+    /**
+     * Returns an array of arrays with 'flavor' and 'song_count' keys.
+     */
+    public function findGroupedByFlavor(): array
+    {
+        $query = $this->createQueryBuilder('s')
+            ->select('f.name AS flavor, COUNT(s.id) AS song_count')
+            ->join('s.flavor', 'f')
+            ->groupBy('f.name')
+            ->orderBy('f.name')
+            ->getQuery()
+        ;
+
+        return $query->getResult();
+    }
+
     //    /**
     //     * @return Song[] Returns an array of Song objects
     //     */
