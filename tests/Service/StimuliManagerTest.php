@@ -8,6 +8,7 @@ use App\Entity\Trial\Trial;
 use App\Repository\FlavorRepository;
 use App\Repository\SongRepository;
 use App\Service\StimuliManager;
+use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -21,10 +22,12 @@ final class StimuliManagerTest extends TestCase
     {
         $this->flavorRepository = $this->createMock(FlavorRepository::class);
         $this->songRepository = $this->createMock(SongRepository::class);
+        $this->em = $this->createMock(EntityManagerInterface::class);
 
         $this->stimuliManager = new StimuliManager(
             $this->flavorRepository,
-            $this->songRepository
+            $this->songRepository,
+            $this->em,
         );
     }
 

@@ -16,8 +16,8 @@ use Doctrine\ORM\Mapping as ORM;
 ])]
 class Trial
 {
-    const SMELLS2MUSIC = 'smells2music';
-    const MUSICS2SMELL = 'musics2smell';
+    const string SMELLS2MUSIC = 'smells2music';
+    const string MUSICS2SMELL = 'musics2smell';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]

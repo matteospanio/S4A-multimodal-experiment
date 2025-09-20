@@ -6,12 +6,16 @@
 <div class="container">
     <div class="app-header">
         <img src="{{ asset('images/logo-red-s4a.svg') }}" alt="S4A Logo" >
-        <p class="app-subtitle">Please select one of the two experimental tasks</p>
     </div>
 
     <div class="row justify-content-center">
         <div class="col-md-6">
-            <div class="card task-card" data-controller="task-selector" data-task-selector-url-value="{{ path('app_task', {type: 1}) }}">
+            <div
+                class="card task-card"
+                data-controller="task-selector"
+                data-action="click->task-selector#selectTask"
+                data-task-selector-url-value="{{ path('app_task', {type: 1}) }}"
+            >
                 <div class="card-body">
                     <div class="icon-lg text-primary">
                         🎵
@@ -30,7 +34,12 @@
         </div>
 
         <div class="col-md-6">
-            <div class="card task-card" data-controller="task-selector" data-task-selector-url-value="{{ path('app_task', {type: 2}) }}">
+            <div
+                class="card task-card"
+                data-controller="task-selector"
+                data-action="click->task-selector#selectTask"
+                data-task-selector-url-value="{{ path('app_task', {type: 2}) }}"
+            >
                 <div class="card-body">
                     <div class="icon-lg text-primary">
                         🌺
