@@ -2,15 +2,18 @@
 
 namespace App\Tests\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Zenstruck\Browser\Test\HasBrowser;
 
-final class HomeControllerTest extends WebTestCase
+final class HomeControllerTest extends KernelTestCase
 {
+    use HasBrowser;
+
     public function testIndex(): void
     {
-        $client = static::createClient();
-        $client->request('GET', '/');
-
-        self::assertResponseIsSuccessful();
+        $this->browser()
+            ->visit('/')
+            ->assertSuccessful()
+        ;
     }
 }
