@@ -3,6 +3,8 @@
 namespace App\Service;
 
 use App\Entity\Stimulus\StimulusInterface;
+use App\Entity\Trial\FlavorToMusicTrial;
+use App\Entity\Trial\MusicToFlavorTrial;
 use App\Entity\Trial\TrialInterface;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -12,9 +14,11 @@ use Doctrine\ORM\EntityManagerInterface;
  *
  * @author Matteo Spanio <spanio@dei.unipd.it>
  */
-class DataCollector
+readonly class DataCollector
 {
-    public function __construct(private readonly EntityManagerInterface $entityManager)
+    public function __construct(
+        private EntityManagerInterface $entityManager
+    )
     {
     }
 
@@ -26,6 +30,23 @@ class DataCollector
     public function recordVote(StimulusInterface $choice, TrialInterface $trial): void
     {
         $trial->setChoice($choice);
+        $this->entityManager->flush();
+    }
+
+    /**
+     * Deletes all trials that have no recorded choice.
+     *
+     * @return void
+     */
+    public function deleteEmptyTrials(): void
+    {
+        $f2m = $this->entityManager->getRepository(FlavorToMusicTrial::class)->findBy(['choice' => null]);
+        $m2f = $this->entityManager->getRepository(MusicToFlavorTrial::class)->findBy(['choice' => null]);
+
+        foreach (array_merge($f2m, $m2f) as $trial) {
+            $this->entityManager->remove($trial);
+        }
+
         $this->entityManager->flush();
     }
 }
