@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ app.locale }}">
+<html lang="{{ app.locale }}" data-bs-theme="light">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,7 +13,63 @@
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
     </head>
-    <body>
+    <body data-controller="topbar" data-topbar-language-value="{{ app.locale }}" data-topbar-theme-value="light">
+        <!-- Topbar -->
+        <div class="topbar">
+            <button class="topbar-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#settingsOffcanvas" aria-controls="settingsOffcanvas" title="{{ 'topbar.menu'|trans }}">
+                <twig:ux:icon name="bi:list" height="1.5rem" />
+            </button>
+
+            <button class="topbar-btn" type="button" data-bs-toggle="modal" data-bs-target="#privacyModal" title="{{ 'topbar.info'|trans }}">
+                <twig:ux:icon name="bi:info-circle" height="1.5rem" />
+            </button>
+        </div>
+
+        <!-- Settings Offcanvas -->
+        <div class="offcanvas offcanvas-start" tabindex="-1" id="settingsOffcanvas" aria-labelledby="settingsOffcanvasLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="settingsOffcanvasLabel">{{ 'topbar.settings'|trans }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <div class="mb-4">
+                    <label for="themeSelect" class="form-label">{{ 'topbar.theme'|trans }}</label>
+                    <select class="form-select" id="themeSelect" data-topbar-target="themeSelect" data-action="change->topbar#changeTheme">
+                        <option value="light">{{ 'topbar.theme_light'|trans }}</option>
+                        <option value="dark">{{ 'topbar.theme_dark'|trans }}</option>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label for="languageSelect" class="form-label">{{ 'topbar.language'|trans }}</label>
+                    <select class="form-select" id="languageSelect" data-topbar-target="languageSelect" data-action="change->topbar#changeLanguage">
+                        <option value="en" {% if app.locale == 'en' %}selected{% endif %}>English</option>
+                        <option value="it" {% if app.locale == 'it' %}selected{% endif %}>Italiano</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Privacy Policy Modal -->
+        <div class="modal fade" id="privacyModal" tabindex="-1" aria-labelledby="privacyModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="privacyModalLabel">{{ 'privacy.title'|trans }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="privacy-content">
+                            {{ 'privacy.content'|trans|raw|nl2br }}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">{{ 'privacy.close'|trans }}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="main-container">
             {% block body %}{% endblock %}
         </div>

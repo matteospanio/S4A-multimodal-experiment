@@ -5,7 +5,6 @@
 {% block body %}
 <div class="container" data-controller="stimulus-selector">
     <div class="app-header">
-        <h1 class="app-title">{{ task_name }}</h1>
         {% if task_type == 1 %}
             <p class="app-subtitle">{{ 'task.m2f.instructions'|trans }}</p>
         {% else %}

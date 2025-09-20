@@ -28,3 +28,28 @@ task:
     choose: Scegli
     back: Torna al Menu
     submit: Invia la Scelta
+
+topbar:
+    menu: Menu
+    settings: Impostazioni
+    theme: Tema
+    theme_light: Chiaro
+    theme_dark: Scuro
+    language: Lingua
+    info: Informazioni
+    privacy_policy: Politica sulla Privacy
+
+privacy:
+    title: Politica sulla Privacy
+    content: |
+        Questo esperimento raccoglie dati anonimi esclusivamente per scopi di ricerca scientifica.
+        Tutti i dati verranno utilizzati in forma aggregata per analizzare le associazioni sensoriali multimodali.
+        
+        • I tuoi dati sono completamente anonimi
+        • I dati sono utilizzati esclusivamente per la ricerca scientifica
+        • Tutte le analisi sono eseguite su dati aggregati
+        • Puoi abbandonare il sondaggio in qualsiasi momento
+        • Questo sistema è conforme al GDPR
+        
+        Partecipando a questo esperimento, acconsenti all'uso delle tue risposte anonime per scopi di ricerca.
+    close: Chiudi

@@ -39,7 +39,6 @@
 
 /* Card Component */
 .card {
-  background: #fff;
   border: 1px solid #dee2e6;
   border-radius: 0.375rem;
   box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
@@ -233,12 +232,12 @@
     flex: 0 0 100%;
     max-width: 100%;
   }
-  
+
   .col-md-4 {
     flex: 0 0 100%;
     max-width: 100%;
   }
-  
+
   .task-card .card-body {
     padding: 1.5rem;
   }
