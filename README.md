@@ -1,12 +1,10 @@
-# S4A Multimodal Experiment
-
 <p align="center">
   <img src="assets/images/logo-s4a.svg" alt="Science for All Logo" width="300">
 </p>
 
 A Symfony-based web application for conducting multimodal experiments exploring the relationships between music and sensory experiences. This project is specifically designed for the **Science4All** event in Padova, scheduled for the last weekend of September 2025.
 
-**Data Privacy Notice**: All participant data are collected anonymously and are processed and analyzed only in aggregated form to ensure privacy protection.
+> **Data Privacy Notice**: All participant data are collected anonymously and are processed and analyzed only in aggregated form to ensure privacy protection.
 
 ## About Science4All
 
@@ -202,7 +200,6 @@ If you use this software or reference this work, please cite:
 For questions about the experiment or technical issues:
 
 - Create an issue in this repository
-- Contact the Science4All organizers through their [website](https://science4all.it/)
 
 ## License
 
