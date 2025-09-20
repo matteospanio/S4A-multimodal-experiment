@@ -5,10 +5,10 @@
 {% block body %}
 <div class="container">
     <div class="app-header">
-        <h1 class="app-title">S4A Multimodal Experiment</h1>
+        <img src="{{ asset('images/logo-red-s4a.svg') }}" alt="S4A Logo" >
         <p class="app-subtitle">Please select one of the two experimental tasks</p>
     </div>
-    
+
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="card task-card" data-controller="task-selector" data-task-selector-url-value="{{ path('app_task', {type: 1}) }}">
@@ -18,7 +18,7 @@
                     </div>
                     <h3 class="card-title">Task 1: Audio-Perfume Matching</h3>
                     <p class="card-text">
-                        Listen to two audio stimuli and smell the perfume. 
+                        Listen to two audio stimuli and smell the perfume.
                         Choose which audio best matches the perfume scent.
                     </p>
                     <div class="mt-3">
@@ -28,7 +28,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="col-md-6">
             <div class="card task-card" data-controller="task-selector" data-task-selector-url-value="{{ path('app_task', {type: 2}) }}">
                 <div class="card-body">
@@ -37,7 +37,7 @@
                     </div>
                     <h3 class="card-title">Task 2: Perfume-Audio Association</h3>
                     <p class="card-text">
-                        Listen to one audio stimulus and choose between two perfumes. 
+                        Listen to one audio stimulus and choose between two perfumes.
                         Select which perfume best matches the audio.
                     </p>
                     <div class="mt-3">

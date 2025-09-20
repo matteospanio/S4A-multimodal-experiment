@@ -4,13 +4,17 @@ namespace App\Entity\Trial;
 
 use App\Entity\Stimulus\Flavor;
 use App\Entity\Stimulus\Song;
+use App\Entity\Stimulus\StimulusInterface;
 use App\Repository\MusicToFlavorTrialRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * @implements TrialInterface<Song>
+ */
 #[ORM\Entity(repositoryClass: MusicToFlavorTrialRepository::class)]
-class MusicToFlavorTrial extends Trial
+class MusicToFlavorTrial extends Trial implements TrialInterface
 {
     /**
      * @var Collection<int, Song>
@@ -72,7 +76,10 @@ class MusicToFlavorTrial extends Trial
         return $this->choice;
     }
 
-    public function setChoice(?Song $choice): static
+    /**
+     * @param Song|null $choice
+     */
+    public function setChoice(?StimulusInterface $choice): static
     {
         $this->choice = $choice;
 

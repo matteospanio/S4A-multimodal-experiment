@@ -10,7 +10,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: FlavorRepository::class)]
-class Flavor
+class Flavor implements StimulusInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
