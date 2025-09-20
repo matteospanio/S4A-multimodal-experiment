@@ -13,136 +13,159 @@
         {% endif %}
     </div>
 
-    <div class="row">
-        <div class="col-md-12">
-            {% if task_type == 1 %}
-                {# Task 1: Two audio stimuli + one perfume #}
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="card">
-                            <div class="card-body text-center">
-                                <h4 class="card-title">Audio Stimuli</h4>
-                                
-                                <div class="audio-control">
-                                    <h5>Audio Option A</h5>
-                                    <audio controls preload="metadata">
-                                        <source src="#" type="audio/mpeg">
-                                        Your browser does not support the audio element.
-                                    </audio>
-                                </div>
-                                
-                                <div class="audio-control">
-                                    <h5>Audio Option B</h5>
-                                    <audio controls preload="metadata">
-                                        <source src="#" type="audio/mpeg">
-                                        Your browser does not support the audio element.
-                                    </audio>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="col-md-6">
-                        <div class="card">
-                            <div class="card-body text-center">
-                                <h4 class="card-title">Perfume to Smell</h4>
-                                <div class="icon-lg text-primary mb-3">
-                                    💧
-                                </div>
-                                <p class="card-text">Please smell the perfume sample provided</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="row mt-4">
-                    <div class="col-md-12">
-                        <h4 class="text-center mb-3">Which audio best matches the perfume?</h4>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="card stimulus-card" data-controller="stimulus-selector" data-stimulus-selector-choice-value="A">
-                                    <div class="card-body text-center">
-                                        <div class="icon-md text-primary">
-                                            🎵
-                                        </div>
-                                        <h5>Choose Audio A</h5>
+    <form method="post" id="trial-form">
+        <input type="hidden" name="choice" id="choice-input" value="">
+        <div class="row">
+            <div class="col-md-12">
+                {% if task_type == 1 %}
+                    {# Task 1: Two audio stimuli + one perfume #}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <h4 class="card-title">Audio Stimuli</h4>
+
+                                    <div class="audio-control">
+                                        <h5>Audio Option A</h5>
+                                        <audio controls preload="metadata">
+                                            <source src="{{ trial.songs[0].url }}" type="audio/wav">
+                                            Your browser does not support the audio element.
+                                        </audio>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="card stimulus-card" data-controller="stimulus-selector" data-stimulus-selector-choice-value="B">
-                                    <div class="card-body text-center">
-                                        <div class="icon-md text-primary">
-                                            🎵
-                                        </div>
-                                        <h5>Choose Audio B</h5>
+
+                                    <div class="audio-control">
+                                        <h5>Audio Option B</h5>
+                                        <audio controls preload="metadata">
+                                            <source src="{{ trial.songs[1].url }}" type="audio/wav">
+                                            Your browser does not support the audio element.
+                                        </audio>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-                
-            {% else %}
-                {# Task 2: One audio stimulus + two perfume choices #}
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="card mb-4">
-                            <div class="card-body text-center">
-                                <h4 class="card-title">Audio Stimulus</h4>
-                                <div class="audio-control">
-                                    <audio controls preload="metadata">
-                                        <source src="#" type="audio/mpeg">
-                                        Your browser does not support the audio element.
-                                    </audio>
+
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <h4 class="card-title">Perfume to Smell</h4>
+                                    <div class="icon-lg text-primary mb-3">
+                                        {{ trial.flavor.icon }}
+                                    </div>
+                                    <p class="card-text">Please smell the perfume sample provided</p>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                
-                <div class="row">
-                    <div class="col-md-12">
-                        <h4 class="text-center mb-3">Which perfume best matches the audio?</h4>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="card stimulus-card" data-controller="stimulus-selector" data-stimulus-selector-choice-value="Perfume_1">
-                                    <div class="card-body text-center">
-                                        <div class="icon-md text-primary">
-                                            💧
+
+                    <div class="row mt-4">
+                        <div class="col-md-12">
+                            <h4 class="text-center mb-3">Which audio best matches the perfume?</h4>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="card stimulus-card"
+                                         data-controller="stimulus-selector"
+                                         data-stimulus-selector-choice-value="{{ trial.songs[0].id }}">
+                                        <div class="card-body text-center">
+                                            <div class="icon-md text-primary">
+                                                🎵
+                                            </div>
+                                            <h5>Choose Audio A</h5>
                                         </div>
-                                        <h5>Perfume Option 1</h5>
-                                        <p class="card-text">Smell this perfume sample</p>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="card stimulus-card" data-controller="stimulus-selector" data-stimulus-selector-choice-value="Perfume_2">
-                                    <div class="card-body text-center">
-                                        <div class="icon-md text-primary">
-                                            💧
+                                <div class="col-md-6">
+                                    <div class="card stimulus-card"
+                                         data-controller="stimulus-selector"
+                                         data-stimulus-selector-choice-value="{{ trial.songs[1].id }}">
+                                        <div class="card-body text-center">
+                                            <div class="icon-md text-primary">
+                                                🎵
+                                            </div>
+                                            <h5>Choose Audio B</h5>
                                         </div>
-                                        <h5>Perfume Option 2</h5>
-                                        <p class="card-text">Smell this perfume sample</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            {% endif %}
+
+                {% else %}
+                    {# Task 2: One audio stimulus + two perfume choices #}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card mb-4">
+                                <div class="card-body text-center">
+                                    <h4 class="card-title">Audio Stimulus</h4>
+                                    <div class="audio-control">
+                                        <audio controls preload="metadata">
+                                            <source src="{{ trial.song.url }}" type="audio/wav">
+                                            Your browser does not support the audio element.
+                                        </audio>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h4 class="text-center mb-3">Which perfume best matches the audio?</h4>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="card stimulus-card"
+                                         data-controller="stimulus-selector"
+                                         data-stimulus-selector-choice-value="{{ trial.flavors[0].id }}">
+                                        <div class="card-body text-center">
+                                            <div class="icon-md text-primary">
+                                                {{ trial.flavors[0].icon }}
+                                            </div>
+                                            <h5>Perfume Option 1</h5>
+                                            <p class="card-text">Smell the {{ trial.flavors[0] }} sample</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card stimulus-card"
+                                         data-controller="stimulus-selector"
+                                         data-stimulus-selector-choice-value="{{ trial.flavors[1].id }}">
+                                        <div class="card-body text-center">
+                                            <div class="icon-md text-primary">
+                                                {{ trial.flavors[1].icon }}
+                                            </div>
+                                            <h5>Perfume Option 2</h5>
+                                            <p class="card-text">Smell the {{ trial.flavors[1] }} sample</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
         </div>
-    </div>
-    
-    <div class="row mt-4">
-        <div class="col-md-12 text-center">
-            <button class="btn btn-secondary me-3" onclick="window.history.back()">
-                ← Back to Menu
-            </button>
-            <button class="btn btn-primary" id="submit-choice" disabled data-controller="submit-handler">
-                Submit Choice →
-            </button>
+
+        <div class="row mt-4">
+            <div class="col-md-12 text-center">
+                <button class="btn btn-secondary me-3" type="button" onclick="window.history.back()">
+                    ← Back to Menu
+                </button>
+                <button class="btn btn-primary" id="submit-choice" type="submit" disabled>
+                    Submit Choice →
+                </button>
+            </div>
         </div>
-    </div>
+    </form>
 </div>
+
+<script>
+    // Aggiorna il campo hidden e abilita il submit quando una carta viene selezionata
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.stimulus-card[data-controller="stimulus-selector"]').forEach(card => {
+            card.addEventListener('click', function () {
+                document.getElementById('choice-input').value = card.getAttribute('data-stimulus-selector-choice-value');
+                document.getElementById('submit-choice').disabled = false;
+            });
+        });
+    });
+</script>
 {% endblock %}

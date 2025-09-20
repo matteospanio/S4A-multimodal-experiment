@@ -2,8 +2,9 @@
 
 namespace App\Service;
 
-use App\Entity\Participant;
-use App\Entity\Trial\Trial;
+use App\Entity\Stimulus\StimulusInterface;
+use App\Entity\Trial\TrialInterface;
+use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * This service is responsible to collect and store data about the experiment.
@@ -13,8 +14,18 @@ use App\Entity\Trial\Trial;
  */
 class DataCollector
 {
-    public function recordVote(Participant $participant, Trial $trial): void
+    public function __construct(private readonly EntityManagerInterface $entityManager)
     {
-        // Logic to record the vote of the participant for the given trial
+    }
+
+    /**
+     * @param StimulusInterface $choice
+     * @param TrialInterface $trial
+     * @return void
+     */
+    public function recordVote(StimulusInterface $choice, TrialInterface $trial): void
+    {
+        $trial->setChoice($choice);
+        $this->entityManager->flush();
     }
 }

@@ -10,7 +10,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: SongRepository::class)]
-class Song
+class Song implements StimulusInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -36,6 +36,11 @@ class Song
     public function __construct()
     {
         $this->musicToFlavorTrials = new ArrayCollection();
+    }
+
+    public function __toString(): string
+    {
+        return sprintf('%s #%d', $this->flavor, $this->id);
     }
 
     public function getId(): ?int

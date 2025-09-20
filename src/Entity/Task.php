@@ -34,6 +34,11 @@ class Task
         $this->trials = new ArrayCollection();
     }
 
+    public function __toString(): string
+    {
+        return $this->type;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

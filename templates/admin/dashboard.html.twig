@@ -1,4 +1,10 @@
 {% extends '@EasyAdmin/layout.html.twig' %}
 
 {% block main %}
+    <h1>Admin Dashboard</h1>
+    <p>Welcome to the admin dashboard. Here you can manage your application.</p>
+
+    <div class="col-12">
+        {{ render_chart(songByFlavor) }}
+    </div>
 {% endblock main %}

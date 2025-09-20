@@ -9,7 +9,6 @@ use App\Entity\Trial\MusicToFlavorTrial;
 use App\Entity\Trial\Trial;
 use App\Repository\FlavorRepository;
 use App\Repository\SongRepository;
-use Doctrine\Common\Collections\Collection;
 
 /**
  * This service is responsible to manage the stimuli presentation logic.
@@ -26,299 +25,173 @@ final readonly class StimuliManager
     }
 
     /**
-     * @template T of Trial
      * Get the next trial for a participant based on balanced combination logic.
      *
      * @param string $taskType Either Trial::SMELLS2MUSIC or Trial::MUSICS2SMELL
-     * @return T Trial data with stimuli information
+     * @param array $usedCombinations
+     * @return Trial Trial data with stimuli information
      */
-    public function getNextTrial(string $taskType): Trial
+    public function getNextTrial(string $taskType, array $usedCombinations = []): Trial
     {
         $flavors = $this->flavorRepository->findAll();
+        $songs = $this->songRepository->findAll();
 
-        if (count($flavors) < 2) {
-            throw new \RuntimeException('At least 2 flavors are required for trial generation.');
+        if (count($flavors) < 2 || count($songs) < 2) {
+            throw new \RuntimeException('Servono almeno 2 profumi e 2 canzoni.');
         }
 
         return match ($taskType) {
-            Trial::SMELLS2MUSIC => $this->generateBalancedSmells2MusicTrial($flavors),
-            Trial::MUSICS2SMELL => $this->generateBalancedMusics2SmellTrial($flavors),
-            default => throw new \InvalidArgumentException('Invalid task type: ' . $taskType),
+            Trial::SMELLS2MUSIC => $this->generateFlavorToMusicTrial($flavors, $songs, $usedCombinations),
+            Trial::MUSICS2SMELL => $this->generateMusicToFlavorTrial($flavors, $songs, $usedCombinations),
+            default => throw new \InvalidArgumentException('Tipo task non valido: ' . $taskType),
         };
     }
 
     /**
-     * Generate a balanced trial for the Smells to Music task.
-     * This version ensures better distribution of flavor combinations.
-     *
-     * @param Flavor[] $flavors
-     * @return FlavorToMusicTrial
+     * Genera un trial Flavor→Music (2 profumi, 1 canzone).
      */
-    private function generateBalancedSmells2MusicTrial(array $flavors): FlavorToMusicTrial
+    private function generateFlavorToMusicTrial(array $flavors, array $songs, array $usedCombinations): FlavorToMusicTrial
     {
-        $trial = new FlavorToMusicTrial();
+        $allCombos = $this->getAllFlavorToMusicCombinations($flavors, $songs);
+        $available = $this->filterUnusedCombinations($allCombos, $usedCombinations);
 
-        // Get a balanced combination of flavors
-        $combination = $this->getBalancedFlavorCombination($flavors);
-        $primaryFlavorId = $combination['primary'];
-        $secondaryFlavorId = $combination['secondary'];
-
-        foreach ($flavors as $flavor) {
-            if ($flavor->getId() === $primaryFlavorId) {
-                $trial->addFlavor($flavor);
-            }
-            if ($flavor->getId() === $secondaryFlavorId) {
-                $trial->addFlavor($flavor);
-            }
+        if (empty($available)) {
+            // Tutte le combinazioni già usate: si ricomincia
+            $available = $allCombos;
         }
 
-        // Get songs for the primary flavor
-        $selectedSong = $this->randomPick($trial->getFlavors()->first()->getSongs());
-        $trial->setSong($selectedSong);
+        $combo = $available[array_rand($available)];
+
+        // Randomizza ordine dei profumi
+        $flavorObjs = [$combo['flavor1'], $combo['flavor2']];
+        shuffle($flavorObjs);
+
+        $trial = new FlavorToMusicTrial();
+        $trial->addFlavor($flavorObjs[0]);
+        $trial->addFlavor($flavorObjs[1]);
+        $trial->setSong($combo['song']);
 
         return $trial;
     }
 
     /**
-     * Generate a balanced trial for the Musics to Smell task.
-     * This version ensures better distribution of flavor combinations.
-     *
+     * Genera un trial Music→Flavor (2 canzoni, 1 profumo).
      * @param Flavor[] $flavors
-     * @return MusicToFlavorTrial
-     */
-    private function generateBalancedMusics2SmellTrial(array $flavors): MusicToFlavorTrial
-    {
-        // Get a balanced combination of flavors
-        $combination = $this->getBalancedFlavorCombination($flavors);
-        $firstFlavorId = $combination['primary'];
-        $secondFlavorId = $combination['secondary'];
-
-        // Find the actual flavor objects
-        $firstFlavor = null;
-        $secondFlavor = null;
-
-        foreach ($flavors as $flavor) {
-            if ($flavor->getId() === $firstFlavorId) {
-                $firstFlavor = $flavor;
-            }
-            if ($flavor->getId() === $secondFlavorId) {
-                $secondFlavor = $flavor;
-            }
-        }
-
-        if (!$firstFlavor || !$secondFlavor) {
-            throw new \RuntimeException('Could not find flavors for balanced combination.');
-        }
-
-        // Get songs for each flavor
-        $firstFlavorSongs = $this->songRepository->findBy(['flavor' => $firstFlavor]);
-        $secondFlavorSongs = $this->songRepository->findBy(['flavor' => $secondFlavor]);
-
-        if (empty($firstFlavorSongs)) {
-            throw new \RuntimeException('No songs found for flavor: ' . $firstFlavor->getName());
-        }
-
-        if (empty($secondFlavorSongs)) {
-            throw new \RuntimeException('No songs found for flavor: ' . $secondFlavor->getName());
-        }
-
-        // Pick random songs from each flavor
-        $firstSong = $firstFlavorSongs[array_rand($firstFlavorSongs)];
-        $secondSong = $secondFlavorSongs[array_rand($secondFlavorSongs)];
-
-        return [
-            'taskType' => Trial::MUSICS2SMELL,
-            'primarySong' => $firstSong,
-            'secondarySong' => $secondSong,
-            'primaryFlavor' => $firstFlavor,
-            'secondaryFlavor' => $secondFlavor,
-            'songLabels' => $this->getRandomizedSongLabels([$firstSong, $secondSong]),
-            'combination' => $combination
-        ];
-    }
-
-    /**
-     * Get a balanced flavor combination using a simple round-robin approach.
-     * This ensures all combinations are presented with roughly equal frequency.
-     *
-     * @param Flavor[] $flavors
-     * @return array
-     */
-    private function getBalancedFlavorCombination(array $flavors): array
-    {
-        $allCombinations = $this->getAllPossibleCombinations($flavors);
-
-        // For simplicity, use a time-based pseudo-random selection that cycles through combinations
-        // In a real application, this could be enhanced with session storage or database tracking
-        $index = (int)(time() / 60) % count($allCombinations); // Changes every minute
-        $selectedCombination = $allCombinations[$index];
-
-        // Add some randomness while maintaining balance
-        $randomOffset = rand(0, 2); // Small random offset to avoid strict predictability
-        $balancedIndex = ($index + $randomOffset) % count($allCombinations);
-
-        return $allCombinations[$balancedIndex];
-    }
-
-    /**
-     * Generate a trial for the Smells to Music task (legacy method).
-     * Pick a random song from flavor A, then pick a random second flavor B.
-     *
-     * @param Flavor[] $flavors
-     * @return array
-     * @deprecated Use generateBalancedSmells2MusicTrial for better balance
-     */
-    private function generateSmells2MusicTrial(array $flavors): array
-    {
-        // Pick a random flavor for the song
-        $primaryFlavor = $flavors[array_rand($flavors)];
-
-        // Get songs for this flavor
-        $songsForPrimaryFlavor = $this->songRepository->findBy(['flavor' => $primaryFlavor]);
-
-        if (empty($songsForPrimaryFlavor)) {
-            throw new \RuntimeException('No songs found for flavor: ' . $primaryFlavor->getName());
-        }
-
-        // Pick a random song from the primary flavor
-        $selectedSong = $songsForPrimaryFlavor[array_rand($songsForPrimaryFlavor)];
-
-        // Pick a different flavor for comparison
-        $availableFlavors = array_filter($flavors, fn($f) => $f->getId() !== $primaryFlavor->getId());
-        $secondaryFlavor = $availableFlavors[array_rand($availableFlavors)];
-
-        return [
-            'taskType' => Trial::SMELLS2MUSIC,
-            'primarySong' => $selectedSong,
-            'primaryFlavor' => $primaryFlavor,
-            'secondaryFlavor' => $secondaryFlavor,
-            'flavorLabels' => $this->getRandomizedFlavorLabels([$primaryFlavor, $secondaryFlavor])
-        ];
-    }
-
-    /**
-     * Generate a trial for the Musics to Smell task (legacy method).
-     * Pick two different songs from two different flavors.
-     *
-     * @param Flavor[] $flavors
-     * @return array
-     * @deprecated Use generateBalancedMusics2SmellTrial for better balance
-     */
-    private function generateMusics2SmellTrial(array $flavors): array
-    {
-        // Pick two different flavors
-        $shuffledFlavors = $flavors;
-        shuffle($shuffledFlavors);
-        $firstFlavor = $shuffledFlavors[0];
-        $secondFlavor = $shuffledFlavors[1];
-
-        // Get songs for each flavor
-        $firstFlavorSongs = $this->songRepository->findBy(['flavor' => $firstFlavor]);
-        $secondFlavorSongs = $this->songRepository->findBy(['flavor' => $secondFlavor]);
-
-        if (empty($firstFlavorSongs)) {
-            throw new \RuntimeException('No songs found for flavor: ' . $firstFlavor->getName());
-        }
-
-        if (empty($secondFlavorSongs)) {
-            throw new \RuntimeException('No songs found for flavor: ' . $secondFlavor->getName());
-        }
-
-        // Pick random songs from each flavor
-        $firstSong = $firstFlavorSongs[array_rand($firstFlavorSongs)];
-        $secondSong = $secondFlavorSongs[array_rand($secondFlavorSongs)];
-
-        return [
-            'taskType' => Trial::MUSICS2SMELL,
-            'primarySong' => $firstSong,
-            'secondarySong' => $secondSong,
-            'primaryFlavor' => $firstFlavor,
-            'secondaryFlavor' => $secondFlavor,
-            'songLabels' => $this->getRandomizedSongLabels([$firstSong, $secondSong])
-        ];
-    }
-
-    /**
-     * Get randomized flavor labels to avoid bias effects.
-     *
-     * @param Flavor[] $flavors
-     * @return array
-     */
-    private function getRandomizedFlavorLabels(array $flavors): array
-    {
-        $labels = [];
-        foreach ($flavors as $flavor) {
-            $labels[] = [
-                'id' => $flavor->getId(),
-                'name' => $flavor->getName(),
-                'icon' => $flavor->getIcon()
-            ];
-        }
-
-        shuffle($labels);
-        return $labels;
-    }
-
-    /**
-     * Get randomized song labels to avoid bias effects.
-     *
      * @param Song[] $songs
-     * @return array
      */
-    private function getRandomizedSongLabels(array $songs): array
+    private function generateMusicToFlavorTrial(array $flavors, array $songs, array $usedCombinations): MusicToFlavorTrial
     {
-        $labels = [];
-        foreach ($songs as $song) {
-            $labels[] = [
-                'id' => $song->getId(),
-                'url' => $song->getUrl(),
-                'prompt' => $song->getPrompt()
-            ];
+        $allCombos = $this->getAllMusicToFlavorCombinations($flavors, $songs);
+        $available = $this->filterUnusedCombinations($allCombos, $usedCombinations);
+
+        if (empty($available)) {
+            $available = $allCombos;
         }
 
-        shuffle($labels);
-        return $labels;
+        $combo = $available[array_rand($available)];
+
+        // Randomizza ordine delle canzoni
+        $songObjs = [$combo['song1'], $combo['song2']];
+        shuffle($songObjs);
+
+        $trial = new MusicToFlavorTrial();
+        $trial->addSong($songObjs[0]);
+        $trial->addSong($songObjs[1]);
+        $trial->setFlavor($combo['flavor']);
+
+        return $trial;
     }
 
     /**
-     * Get all possible flavor combinations for balanced presentation.
-     * With 4 flavors, this generates 2^4 = 16 combinations.
-     *
+     * Restituisce tutte le combinazioni possibili per Flavor→Music.
+     * Ogni combinazione: 2 profumi distinti, 1 canzone il cui intendedFlavor è uno dei due.
      * @param Flavor[] $flavors
-     * @return array
+     * @param Song[] $songs
+     * @return array [['flavor1'=>Flavor, 'flavor2'=>Flavor, 'song'=>Song, 'comboKey'=>string], ...]
      */
-    public function getAllPossibleCombinations(array $flavors): array
+    public function getAllFlavorToMusicCombinations(array $flavors, array $songs): array
     {
-        $combinations = [];
+        $combos = [];
+        foreach ($flavors as $f1) {
+            foreach ($flavors as $f2) {
+                if ($f1 === $f2) continue;
+                foreach ($songs as $song) {
+                    $intended = $song->getFlavor();
+                    if ($intended && ($intended === $f1 || $intended === $f2)) {
+                        // Chiave unica per la combinazione (id profumi ordinati + id canzone)
+                        $ids = [$f1->getId(), $f2->getId()];
+                        sort($ids);
+                        $comboKey = implode('-', $ids) . '-' . $song->getId();
+                        $combos[] = [
+                            'flavor1' => $f1,
+                            'flavor2' => $f2,
+                            'song' => $song,
+                            'comboKey' => $comboKey
+                        ];
+                    }
+                }
+            }
+        }
+        return $combos;
+    }
 
-        // Generate all possible pairs of flavors
-        for ($i = 0; $i < count($flavors); $i++) {
-            for ($j = 0; $j < count($flavors); $j++) {
-                if ($i !== $j) {
-                    $combinations[] = [
-                        'primary' => $flavors[$i]->getId(),
-                        'secondary' => $flavors[$j]->getId()
+    /**
+     * Restituisce tutte le combinazioni possibili per Music→Flavor.
+     * Ogni combinazione: 2 canzoni con intendedFlavor diversi, 1 profumo che corrisponde a uno dei due.
+     * @param Flavor[] $flavors
+     * @param Song[] $songs
+     * @return array [['song1'=>Song, 'song2'=>Song, 'flavor'=>Flavor, 'comboKey'=>string], ...]
+     */
+    public function getAllMusicToFlavorCombinations(array $flavors, array $songs): array
+    {
+        $combos = [];
+        foreach ($songs as $s1) {
+            foreach ($songs as $s2) {
+                if ($s1 === $s2) continue;
+                $f1 = $s1->getFlavor();
+                $f2 = $s2->getFlavor();
+                if (!$f1 || !$f2 || $f1 === $f2) continue;
+                foreach ([$f1, $f2] as $flavor) {
+                    // Chiave unica per la combinazione (id canzoni ordinati + id profumo)
+                    $ids = [$s1->getId(), $s2->getId()];
+                    sort($ids);
+                    $comboKey = implode('-', $ids) . '-' . $flavor->getId();
+                    $combos[] = [
+                        'song1' => $s1,
+                        'song2' => $s2,
+                        'flavor' => $flavor,
+                        'comboKey' => $comboKey
                     ];
                 }
             }
         }
-
-        return $combinations;
+        return $combos;
     }
 
     /**
-     * Pick a random element from a Doctrine Collection.
-     * @template T
-     * @param Collection<int, T> $collection
-     * @return T|null
+     * Filtra le combinazioni già usate.
+     * @param array $allCombos
+     * @param array $usedCombinations array di comboKey già usate
+     * @return array
      */
-    private function randomPick(Collection $collection): mixed
+    private function filterUnusedCombinations(array $allCombos, array $usedCombinations): array
     {
-        if ($collection->isEmpty()) {
-            return null;
-        }
+        return array_values(array_filter($allCombos, fn($c) => !in_array($c['comboKey'], $usedCombinations, true)));
+    }
 
-        $array = $collection->toArray();
-        return $array[array_rand($array)];
+    /**
+     * Helper: restituisce tutte le chiavi delle combinazioni possibili per il task richiesto.
+     * @param string $taskType
+     * @return string[]
+     */
+    public function getAllCombinationKeys(string $taskType): array
+    {
+        $flavors = $this->flavorRepository->findAll();
+        $songs = $this->songRepository->findAll();
+        return match ($taskType) {
+            Trial::SMELLS2MUSIC => array_column($this->getAllFlavorToMusicCombinations($flavors, $songs), 'comboKey'),
+            Trial::MUSICS2SMELL => array_column($this->getAllMusicToFlavorCombinations($flavors, $songs), 'comboKey'),
+            default => [],
+        };
     }
 }

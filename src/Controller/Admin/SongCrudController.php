@@ -4,6 +4,10 @@ namespace App\Controller\Admin;
 
 use App\Entity\Stimulus\Song;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\UrlField;
 
 class SongCrudController extends AbstractCrudController
 {
@@ -12,14 +16,13 @@ class SongCrudController extends AbstractCrudController
         return Song::class;
     }
 
-    /*
     public function configureFields(string $pageName): iterable
     {
         return [
-            IdField::new('id'),
-            TextField::new('title'),
-            TextEditorField::new('description'),
+            IdField::new('id')->hideOnForm(),
+            TextEditorField::new('prompt'),
+            AssociationField::new('flavor'),
+            UrlField::new('url'),
         ];
     }
-    */
 }
