@@ -15,14 +15,12 @@ class ExperimentCrudController extends AbstractCrudController
         return Experiment::class;
     }
 
-    /*
     public function configureFields(string $pageName): iterable
     {
         return [
-            IdField::new('id'),
+            IdField::new('id')->hideOnForm(),
             TextField::new('title'),
             TextEditorField::new('description'),
         ];
     }
-    */
 }
