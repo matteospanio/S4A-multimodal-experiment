@@ -30,10 +30,12 @@ class TrialsCleanCommand extends Command
     ): int
     {
         $io = new SymfonyStyle($input, $output);
-        $confirm = $io->ask('This will delete all trials without recorded choice. Are you sure you want to proceed? (yes/no)', 'yes');
-        if (strtolower($confirm) !== 'yes') {
-            $io->warning('Operation cancelled. No trials were deleted.');
-            return Command::SUCCESS;
+        if ($input->isInteractive()) {
+            $confirm = $io->ask('This will delete all trials without recorded choice. Are you sure you want to proceed? (yes/no)', 'no');
+            if (strtolower($confirm) !== 'yes') {
+                $io->warning('Operation cancelled. No trials were deleted.');
+                return Command::SUCCESS;
+            }
         }
 
         $this->dataCollector->deleteEmptyTrials();
