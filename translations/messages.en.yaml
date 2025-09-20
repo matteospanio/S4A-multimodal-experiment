@@ -30,3 +30,28 @@ task:
     back: Back to Menu
     choose: Choose
     submit: Submit Choice
+
+topbar:
+    menu: Menu
+    settings: Settings
+    theme: Theme
+    theme_light: Light
+    theme_dark: Dark
+    language: Language
+    info: Information
+    privacy_policy: Privacy Policy
+
+privacy:
+    title: Privacy Policy
+    content: |
+        This experiment collects data anonymously for scientific research purposes only. 
+        All data will be used in an aggregated form to analyze multimodal sensory associations.
+        
+        • Your data is completely anonymous
+        • Data is used exclusively for scientific research
+        • All analysis is performed on aggregated data
+        • You can quit the survey at any time
+        • This system is GDPR compliant
+        
+        By participating in this experiment, you consent to the use of your anonymous responses for research purposes.
+    close: Close
