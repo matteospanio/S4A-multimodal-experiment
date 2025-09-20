@@ -21,8 +21,8 @@ final class TaskController extends AbstractController
     {
     }
 
-    #[Route('/task/{type}', name: 'app_task', requirements: ['type' => '\d+'], methods: ['GET', 'POST'])]
-    public function index(Request $request, int $type = 1): Response
+    #[Route('/task/{type}', name: 'app_task', requirements: ['type' => '\d+'], methods: ['GET'])]
+    public function index(int $type = 1): Response
     {
         $task = match ($type) {
             1 => Trial::MUSICS2SMELL,
@@ -30,6 +30,29 @@ final class TaskController extends AbstractController
             default => throw $this->createNotFoundException('Invalid task type'),
         };
         $trial = $this->stimuliManager->getNextTrial($task);
+
+        $form = match($task) {
+            Trial::MUSICS2SMELL => $this->createForm(M2FTrialType::class, $trial),
+            Trial::SMELLS2MUSIC => $this->createForm(F2MTrialType::class, $trial),
+            default => throw $this->createNotFoundException('Invalid task type'),
+        };
+
+        return $this->render('task/index.html.twig', [
+            'task_type' => $type,
+            'trial' => $trial,
+            'form' => $form,
+            'task_name' => $type === 1 ? 'Audio-Perfume Matching' : 'Perfume-Audio Association',
+        ]);
+    }
+
+    #[Route('/task/{type}/{id:trial}/submit', name: 'app_task_submit', requirements: ['type' => '\d+'], methods: ['POST'])]
+    public function submit(Request $request, int $type, Trial $trial): Response
+    {
+        $task = match ($type) {
+            1 => Trial::MUSICS2SMELL,
+            2 => Trial::SMELLS2MUSIC,
+            default => throw $this->createNotFoundException('Invalid task type'),
+        };
 
         $form = match($task) {
             Trial::MUSICS2SMELL => $this->createForm(M2FTrialType::class, $trial),
@@ -45,11 +68,6 @@ final class TaskController extends AbstractController
             return $this->redirectToRoute('app_task', ['type' => $type]);
         }
 
-        return $this->render('task/index.html.twig', [
-            'task_type' => $type,
-            'trial' => $trial,
-            'form' => $form,
-            'task_name' => $type === 1 ? 'Audio-Perfume Matching' : 'Perfume-Audio Association',
-        ]);
+        return $this->redirectToRoute('app_task', ['type' => $type]);
     }
 }

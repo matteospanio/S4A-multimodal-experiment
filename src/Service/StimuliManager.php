@@ -29,9 +29,10 @@ final readonly class StimuliManager
     /**
      * Get the next trial for a participant based on balanced combination logic.
      *
+     * @template T of Trial
      * @param string $taskType Either Trial::SMELLS2MUSIC or Trial::MUSICS2SMELL
      * @param array $usedCombinations
-     * @return Trial Trial data with stimuli information
+     * @return T Trial data with stimuli information
      */
     public function getNextTrial(string $taskType, array $usedCombinations = []): Trial
     {

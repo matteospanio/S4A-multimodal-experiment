@@ -13,7 +13,7 @@
         {% endif %}
     </div>
 
-    {{ form_start(form, {'attr': {'id': 'trial-form'}}) }}
+    {{ form_start(form, {'action': path('app_task_submit', {'type': task_type, 'id': trial.id}), 'attr': {'id': 'trial-form'}}) }}
         {{ form_widget(form.choice, {'attr': {'id': 'choice-input', 'style': 'display: none;'}}) }}
         <div class="row">
             <div class="col-md-12">
