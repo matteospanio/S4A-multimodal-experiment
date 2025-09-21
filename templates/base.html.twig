@@ -25,7 +25,7 @@
             </button>
         </div>
 
-        <!-- Settings Offcanvas -->
+        <!-- Offcanvas -->
         <div
             data-controller="topbar"
             data-topbar-language-value="{{ app.locale }}"
@@ -51,12 +51,27 @@
                     </select>
                 </div>
 
-                <div class="mb-4">
-                    <label for="languageSelect" class="form-label">{{ 'topbar.language'|trans }}</label>
-                    <select class="form-select" id="languageSelect" data-topbar-target="languageSelect" data-action="change->topbar#changeLanguage">
-                        <option value="en" {% if app.locale == 'en' %}selected{% endif %}>English</option>
-                        <option value="it" {% if app.locale == 'it' %}selected{% endif %}>Italiano</option>
-                    </select>
+                <div class="row">
+                    <div class="col">
+                        <p>{{ 'topbar.language'|trans }}: {{ app.locale }}</p>
+                    </div>
+                    <div class="col">
+                        <div class="dropdown">
+                            <button
+                                class="btn btn-primary dropdown-toggle"
+                                type="button"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false"
+                            >{{ 'task.choose'|trans }}</button>
+                            <ul class="dropdown-menu">
+                                {% for locale in app.enabled_locales %}
+                                    <li>
+                                        <a class="dropdown-item {% if app.locale == locale %}active{% endif %}" href="{{ path(app.current_route, app.current_route_parameters|merge({_locale: locale})) }}">{{ locale }}</a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

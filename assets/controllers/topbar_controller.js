@@ -22,17 +22,4 @@ export default class extends Controller {
     changeTheme(event) {
         this.themeValue = event.currentTarget.value;
     }
-
-    /**
-     * @param {Event} event
-     */
-    changeLanguage(event) {
-        const locale = event.target.value;
-        // Redirect to current page with new locale
-        const currentPath = window.location.pathname;
-        const searchParams = new URLSearchParams(window.location.search);
-        searchParams.set('_locale', locale);
-
-        window.location.href = `${currentPath}?${searchParams.toString()}`;
-    }
 }

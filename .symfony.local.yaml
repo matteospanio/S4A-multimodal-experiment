@@ -1,0 +1,4 @@
+workers:
+    scheduler:
+        cmd: ['symfony', 'console', 'messenger:consume', 'scheduler_default']
+        watch: ['config', 'src', 'vendor']
