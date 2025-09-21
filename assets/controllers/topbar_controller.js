@@ -8,7 +8,7 @@ import { Controller } from '@hotwired/stimulus';
 export default class extends Controller {
     static targets = ['themeSelect', 'languageSelect']
     static values = {
-        theme: String,
+        theme: { type: String, default: 'light' },
         language: String,
     }
 
@@ -23,6 +23,9 @@ export default class extends Controller {
         this.themeValue = event.currentTarget.value;
     }
 
+    /**
+     * @param {Event} event
+     */
     changeLanguage(event) {
         const locale = event.target.value;
         // Redirect to current page with new locale

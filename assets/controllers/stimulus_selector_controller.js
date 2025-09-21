@@ -10,11 +10,12 @@ export default class extends Controller {
     static targets = ['card', 'choiceInput', 'submitButton']
 
     choiceValueChanged() {
-        // This method is called whenever the choiceValue changes
-        console.log(`Choice value changed to: ${this.choiceValue}`);
         this.choiceInputTarget.value = this.choiceValue;
     }
 
+    /**
+     * @param {Event} event
+     */
     unselectAllCards(event) {
         this.cardTargets.forEach(card => {
             card.classList.remove('selected');

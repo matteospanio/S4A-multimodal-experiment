@@ -10,11 +10,9 @@
 
     <div class="row justify-content-center">
         <div class="col-md-6">
-            <div
+            <a
                 class="card task-card"
-                data-controller="task-selector"
-                data-action="click->task-selector#selectTask"
-                data-task-selector-url-value="{{ path('app_task', {type: 1}) }}"
+                href="{{ path('app_task', {type: 1}) }}"
             >
                 <div class="card-body">
                     <div class="icon-lg text-primary">
@@ -30,15 +28,13 @@
                         <span class="text-secondary">👃 One perfume to smell</span>
                     </div>
                 </div>
-            </div>
+            </a>
         </div>
 
         <div class="col-md-6">
-            <div
+            <a
                 class="card task-card"
-                data-controller="task-selector"
-                data-action="click->task-selector#selectTask"
-                data-task-selector-url-value="{{ path('app_task', {type: 2}) }}"
+                href="{{ path('app_task', {type: 2}) }}"
             >
                 <div class="card-body">
                     <div class="icon-lg text-primary">
@@ -54,7 +50,7 @@
                         <span class="text-secondary">👃 Two perfumes to choose from</span>
                     </div>
                 </div>
-            </div>
+            </a>
         </div>
     </div>
 </div>

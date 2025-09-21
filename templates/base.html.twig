@@ -13,10 +13,10 @@
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
     </head>
-    <body data-controller="topbar" data-topbar-language-value="{{ app.locale }}" data-topbar-theme-value="light">
+    <body data-controller="topbar" data-topbar-language-value="{{ app.locale }}">
         <!-- Topbar -->
         <div class="topbar">
-            <button class="topbar-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#settingsOffcanvas" aria-controls="settingsOffcanvas" title="{{ 'topbar.menu'|trans }}">
+            <button class="topbar-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas" aria-controls="offcanvas" title="{{ 'topbar.menu'|trans }}">
                 <twig:ux:icon name="bi:list" height="1.5rem" />
             </button>
 
@@ -26,9 +26,9 @@
         </div>
 
         <!-- Settings Offcanvas -->
-        <div class="offcanvas offcanvas-start" tabindex="-1" id="settingsOffcanvas" aria-labelledby="settingsOffcanvasLabel">
+        <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvas" aria-labelledby="offcanvasLabel">
             <div class="offcanvas-header">
-                <h5 class="offcanvas-title" id="settingsOffcanvasLabel">{{ 'topbar.settings'|trans }}</h5>
+                <h5 class="offcanvas-title" id="offcanvasLavel">{{ 'topbar.settings'|trans }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
             </div>
             <div class="offcanvas-body">
