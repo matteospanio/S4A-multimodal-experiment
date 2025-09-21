@@ -34,10 +34,11 @@ class Mathematician
      */
     public function getMusicToFlavorStatistics(Flavor $flavor): array
     {
-        // Get all trials for this flavor
-        $trials = $this->musicToFlavorTrialRepository->findBy(['flavor' => $flavor]);
+        $flavorId = $flavor->getId();
+        $choiceStats = $this->musicToFlavorTrialRepository->getChoiceStatisticsByFlavor($flavorId);
+        $totalTrials = $this->musicToFlavorTrialRepository->countTrialsByFlavor($flavorId);
         
-        if (empty($trials)) {
+        if (empty($choiceStats) || $totalTrials === 0) {
             return [
                 'labels' => [],
                 'data' => [],
@@ -47,29 +48,9 @@ class Mathematician
             ];
         }
 
-        // Count choices for each song
-        $songChoices = [];
-        $totalTrials = count($trials);
-        $expectedSong = null;
-
-        /** @var MusicToFlavorTrial $trial */
-        foreach ($trials as $trial) {
-            $choice = $trial->getChoice();
-            if ($choice) {
-                $songId = $choice->getId();
-                $songChoices[$songId] = ($songChoices[$songId] ?? 0) + 1;
-                
-                // Find the expected song (the one associated with this flavor)
-                if ($choice->getFlavor() === $flavor) {
-                    $expectedSong = $choice;
-                }
-            }
-        }
-
-        // If no expected song was found from choices, get it from the flavor's songs
-        if (!$expectedSong && !$flavor->getSongs()->isEmpty()) {
-            $expectedSong = $flavor->getSongs()->first();
-        }
+        // Get the expected song (the one associated with this flavor)
+        $expectedSong = !$flavor->getSongs()->isEmpty() ? $flavor->getSongs()->first() : null;
+        $expectedSongId = $expectedSong?->getId();
 
         // Build the result arrays
         $labels = [];
@@ -77,24 +58,17 @@ class Mathematician
         $backgroundColors = [];
         $borderColors = [];
 
-        foreach ($songChoices as $songId => $count) {
-            // Get song details (we need to find the song somehow)
-            foreach ($trials as $trial) {
-                if ($trial->getChoice()?->getId() === $songId) {
-                    $song = $trial->getChoice();
-                    $labels[] = sprintf('Song #%d (%s)', $songId, $song->getFlavor()->getName());
-                    $data[] = round(($count / $totalTrials) * 100, 1);
-                    
-                    // Highlight the expected song with a different color
-                    if ($expectedSong && $song->getId() === $expectedSong->getId()) {
-                        $backgroundColors[] = 'rgba(255, 99, 132, 0.6)'; // Red for expected
-                        $borderColors[] = 'rgba(255, 99, 132, 1.0)';
-                    } else {
-                        $backgroundColors[] = 'rgba(54, 162, 235, 0.6)'; // Blue for others
-                        $borderColors[] = 'rgba(54, 162, 235, 1.0)';
-                    }
-                    break;
-                }
+        foreach ($choiceStats as $stat) {
+            $labels[] = sprintf('Song #%d (%s)', $stat['song_id'], $stat['choice_flavor_name']);
+            $data[] = round(($stat['count'] / $totalTrials) * 100, 1);
+            
+            // Highlight the expected song with a different color
+            if ($expectedSongId && (int)$stat['choice_id'] === $expectedSongId) {
+                $backgroundColors[] = 'rgba(255, 99, 132, 0.6)'; // Red for expected
+                $borderColors[] = 'rgba(255, 99, 132, 1.0)';
+            } else {
+                $backgroundColors[] = 'rgba(54, 162, 235, 0.6)'; // Blue for others
+                $borderColors[] = 'rgba(54, 162, 235, 1.0)';
             }
         }
 
@@ -103,7 +77,7 @@ class Mathematician
             'data' => $data,
             'backgroundColors' => $backgroundColors,
             'borderColors' => $borderColors,
-            'expectedSongId' => $expectedSong?->getId()
+            'expectedSongId' => $expectedSongId
         ];
     }
 
@@ -116,10 +90,11 @@ class Mathematician
      */
     public function getFlavorToMusicStatistics(Song $song): array
     {
-        // Get all trials for this song
-        $trials = $this->flavorToMusicTrialRepository->findBy(['song' => $song]);
+        $songId = $song->getId();
+        $choiceStats = $this->flavorToMusicTrialRepository->getChoiceStatisticsBySong($songId);
+        $totalTrials = $this->flavorToMusicTrialRepository->countTrialsBySong($songId);
         
-        if (empty($trials)) {
+        if (empty($choiceStats) || $totalTrials === 0) {
             return [
                 'labels' => [],
                 'data' => [],
@@ -129,19 +104,8 @@ class Mathematician
             ];
         }
 
-        // Count choices for each flavor
-        $flavorChoices = [];
-        $totalTrials = count($trials);
         $expectedFlavor = $song->getFlavor();
-
-        /** @var FlavorToMusicTrial $trial */
-        foreach ($trials as $trial) {
-            $choice = $trial->getChoice();
-            if ($choice) {
-                $flavorId = $choice->getId();
-                $flavorChoices[$flavorId] = ($flavorChoices[$flavorId] ?? 0) + 1;
-            }
-        }
+        $expectedFlavorId = $expectedFlavor?->getId();
 
         // Build the result arrays
         $labels = [];
@@ -149,24 +113,17 @@ class Mathematician
         $backgroundColors = [];
         $borderColors = [];
 
-        foreach ($flavorChoices as $flavorId => $count) {
-            // Get flavor details
-            foreach ($trials as $trial) {
-                if ($trial->getChoice()?->getId() === $flavorId) {
-                    $flavor = $trial->getChoice();
-                    $labels[] = sprintf('%s %s', $flavor->getIcon(), $flavor->getName());
-                    $data[] = round(($count / $totalTrials) * 100, 1);
-                    
-                    // Highlight the expected flavor with a different color
-                    if ($expectedFlavor && $flavor->getId() === $expectedFlavor->getId()) {
-                        $backgroundColors[] = 'rgba(255, 99, 132, 0.6)'; // Red for expected
-                        $borderColors[] = 'rgba(255, 99, 132, 1.0)';
-                    } else {
-                        $backgroundColors[] = 'rgba(54, 162, 235, 0.6)'; // Blue for others
-                        $borderColors[] = 'rgba(54, 162, 235, 1.0)';
-                    }
-                    break;
-                }
+        foreach ($choiceStats as $stat) {
+            $labels[] = sprintf('%s %s', $stat['choice_icon'], $stat['choice_name']);
+            $data[] = round(($stat['count'] / $totalTrials) * 100, 1);
+            
+            // Highlight the expected flavor with a different color
+            if ($expectedFlavorId && (int)$stat['choice_id'] === $expectedFlavorId) {
+                $backgroundColors[] = 'rgba(255, 99, 132, 0.6)'; // Red for expected
+                $borderColors[] = 'rgba(255, 99, 132, 1.0)';
+            } else {
+                $backgroundColors[] = 'rgba(54, 162, 235, 0.6)'; // Blue for others
+                $borderColors[] = 'rgba(54, 162, 235, 1.0)';
             }
         }
 
@@ -175,7 +132,7 @@ class Mathematician
             'data' => $data,
             'backgroundColors' => $backgroundColors,
             'borderColors' => $borderColors,
-            'expectedFlavorId' => $expectedFlavor?->getId()
+            'expectedFlavorId' => $expectedFlavorId
         ];
     }
 }
