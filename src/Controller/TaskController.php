@@ -83,42 +83,107 @@ final class TaskController extends AbstractController
     {
         $task = $this->getTask($type);
         $choice = $trial->getChoice();
+        $barChart = null;
 
         if ($task === Trial::MUSICS2SMELL) {
+            // Task 1: Show double bar chart for track choices given a perfume
             assert($trial instanceof MusicToFlavorTrial);
             $success = $choice === $trial->getFlavor();
-            // prepare data for musics to smell results
+            
+            $stats = $this->mathematician->getMusicToFlavorStatistics($trial->getFlavor());
+            
+            if (!empty($stats['labels'])) {
+                $barChart = $chartBuilder->createChart(Chart::TYPE_BAR);
+                $barChart->setOptions([
+                    'responsive' => true,
+                    'plugins' => [
+                        'title' => [
+                            'display' => true,
+                            'text' => sprintf('Track choices for perfume: %s %s', 
+                                $trial->getFlavor()->getIcon(), 
+                                $trial->getFlavor()->getName()
+                            ),
+                        ],
+                        'legend' => [
+                            'display' => false,
+                        ],
+                    ],
+                    'scales' => [
+                        'y' => [
+                            'beginAtZero' => true,
+                            'title' => [
+                                'display' => true,
+                                'text' => 'Percentage (%)',
+                            ],
+                        ],
+                    ],
+                ]);
+                $barChart->setData([
+                    'labels' => $stats['labels'],
+                    'datasets' => [
+                        [
+                            'label' => 'Percentage of participants',
+                            'backgroundColor' => $stats['backgroundColors'],
+                            'borderColor' => $stats['borderColors'],
+                            'borderWidth' => 2,
+                            'data' => $stats['data'],
+                        ],
+                    ],
+                ]);
+            }
         } else {
+            // Task 2: Show bar chart for perfume choices given a track
             assert($trial instanceof FlavorToMusicTrial);
             $success = $choice === $trial->getSong();
-            // prepare data for smells to music results
-            $barChart = $chartBuilder->createChart(Chart::TYPE_BAR);
-            $barChart->setOptions([
-                'indexAxis' => 'y',
-                'elements' => [
-                    'bar' => [
-                        'borderWidth' => 2,
+            
+            $stats = $this->mathematician->getFlavorToMusicStatistics($trial->getSong());
+            
+            if (!empty($stats['labels'])) {
+                $barChart = $chartBuilder->createChart(Chart::TYPE_BAR);
+                $barChart->setOptions([
+                    'responsive' => true,
+                    'plugins' => [
+                        'title' => [
+                            'display' => true,
+                            'text' => sprintf('Perfume choices for track: Song #%d (%s)',
+                                $trial->getSong()->getId(),
+                                $trial->getSong()->getFlavor()->getName()
+                            ),
+                        ],
+                        'legend' => [
+                            'display' => false,
+                        ],
                     ],
-                ],
-                'responsive' => true,
-            ]);
-            $barChart->setData([
-                'labels' => array_map(fn($f) => sprintf('%s %s', $f['icon'], $f['name']), $flavorRepository->getAllFlavorsIcons()),
-                'datasets' => [
-                    [
-                        'label' => 'Votes',
-                        'backgroundColor' => 'rgba(0, 99, 200, 0.6)',
-                        'borderColor' => 'rgba(0, 99, 200, 1.0)',
-                        'data' => [15, 10, 2, 7]
+                    'scales' => [
+                        'y' => [
+                            'beginAtZero' => true,
+                            'title' => [
+                                'display' => true,
+                                'text' => 'Percentage (%)',
+                            ],
+                        ],
                     ],
-                ],
-            ]);
+                ]);
+                $barChart->setData([
+                    'labels' => $stats['labels'],
+                    'datasets' => [
+                        [
+                            'label' => 'Percentage of participants',
+                            'backgroundColor' => $stats['backgroundColors'],
+                            'borderColor' => $stats['borderColors'],
+                            'borderWidth' => 2,
+                            'data' => $stats['data'],
+                        ],
+                    ],
+                ]);
+            }
         }
 
         return $this->render('task/results.html.twig', [
             'task' => $task,
             'trial' => $trial,
-            'barChart' => $barChart ?? null,
+            'barChart' => $barChart,
+            'success' => $success ?? false,
         ]);
     }
 
