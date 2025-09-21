@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Trial\FlavorToMusicTrial;
+use App\Entity\Trial\MusicToFlavorTrial;
 use App\Entity\Trial\Trial;
 use App\Form\F2MTrialType;
 use App\Form\M2FTrialType;
@@ -57,7 +59,7 @@ final class TaskController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $choice = $form->get('choice')->getData();
             $this->dataCollector->recordVote($choice, $trial);
-            return $this->redirectToRoute('app_task', ['type' => $type]);
+            return $this->redirectToRoute('app_task_results', ['type' => $type, 'id' => $trial->getId()]);
         }
 
         return $this->redirectToRoute('app_task', ['type' => $type]);
@@ -67,6 +69,17 @@ final class TaskController extends AbstractController
     public function showResults(int $type, Trial $trial, ChartBuilderInterface $chartBuilder): Response
     {
         $task = $this->getTask($type);
+        $choice = $trial->getChoice();
+
+        if ($task === Trial::MUSICS2SMELL) {
+            assert($trial instanceof MusicToFlavorTrial);
+            $success = $choice === $trial->getFlavor();
+            // prepare data for musics to smell results
+        } else {
+            assert($trial instanceof FlavorToMusicTrial);
+            $success = $choice === $trial->getSong();
+            // prepare data for smells to music results
+        }
 
         return $this->render('task/results.html.twig', []);
     }
