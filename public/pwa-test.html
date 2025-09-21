@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S4A Multimodal Experiment - PWA Test</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="description" content="Science4All multimodal experiment exploring the relationships between music and sensory experiences">
+    <meta name="theme-color" content="#007bff">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="S4A Experiment">
+    <meta name="application-name" content="S4A Multimodal Experiment">
+    
+    <!-- Favicon and Icons -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>🧪</text></svg>">
+    <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/icons/icon-512x512.png">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            min-height: 100vh;
+            color: white;
+        }
+        
+        .pwa-demo {
+            padding: 2rem 0;
+        }
+        
+        .feature-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-online { background-color: #28a745; }
+        .status-offline { background-color: #dc3545; }
+        .status-unknown { background-color: #ffc107; }
+        
+        .install-button {
+            display: none;
+        }
+        
+        .pwa-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container pwa-demo">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="text-center mb-5">
+                    <div class="pwa-icon">🧪</div>
+                    <h1 class="mb-3">S4A Multimodal Experiment</h1>
+                    <p class="lead">Progressive Web App - Ready for Mobile & Tablet</p>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <div class="feature-card">
+                            <h5>📱 PWA Status</h5>
+                            <p>
+                                <span class="status-indicator status-unknown" id="pwa-status"></span>
+                                <span id="pwa-text">Checking PWA support...</span>
+                            </p>
+                            <button class="btn btn-light btn-sm install-button" id="install-btn">
+                                📥 Install App
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-4">
+                        <div class="feature-card">
+                            <h5>🌐 Network Status</h5>
+                            <p>
+                                <span class="status-indicator" id="network-status"></span>
+                                <span id="network-text">Checking connection...</span>
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-4">
+                        <div class="feature-card">
+                            <h5>💾 Service Worker</h5>
+                            <p>
+                                <span class="status-indicator status-unknown" id="sw-status"></span>
+                                <span id="sw-text">Checking service worker...</span>
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-4">
+                        <div class="feature-card">
+                            <h5>📐 Screen Info</h5>
+                            <p id="screen-info">Screen: <span id="screen-size">Loading...</span></p>
+                            <p id="device-info">Device: <span id="device-type">Loading...</span></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="feature-card">
+                    <h5>🎯 PWA Features</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <ul class="list-unstyled">
+                                <li>✅ Web App Manifest</li>
+                                <li>✅ Service Worker</li>
+                                <li>✅ Offline Support</li>
+                                <li>✅ App Icons</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <ul class="list-unstyled">
+                                <li>✅ Mobile Optimized</li>
+                                <li>✅ Touch Friendly</li>
+                                <li>✅ Responsive Design</li>
+                                <li>✅ Install Prompt</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-4">
+                    <p class="text-light">Ready for Science4All - Padova 2025</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // PWA status check
+        function updatePWAStatus() {
+            const pwaStatus = document.getElementById('pwa-status');
+            const pwaText = document.getElementById('pwa-text');
+            
+            if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+                pwaStatus.className = 'status-indicator status-online';
+                pwaText.textContent = 'Running as installed PWA';
+            } else if ('serviceWorker' in navigator && 'manifest' in document.head.querySelector('link[rel="manifest"]')) {
+                pwaStatus.className = 'status-indicator status-online';
+                pwaText.textContent = 'PWA ready, not installed';
+            } else {
+                pwaStatus.className = 'status-indicator status-offline';
+                pwaText.textContent = 'PWA not supported';
+            }
+        }
+        
+        // Network status
+        function updateNetworkStatus() {
+            const networkStatus = document.getElementById('network-status');
+            const networkText = document.getElementById('network-text');
+            
+            if (navigator.onLine) {
+                networkStatus.className = 'status-indicator status-online';
+                networkText.textContent = 'Online';
+            } else {
+                networkStatus.className = 'status-indicator status-offline';
+                networkText.textContent = 'Offline';
+            }
+        }
+        
+        // Service Worker status
+        function updateServiceWorkerStatus() {
+            const swStatus = document.getElementById('sw-status');
+            const swText = document.getElementById('sw-text');
+            
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistration().then(registration => {
+                    if (registration) {
+                        swStatus.className = 'status-indicator status-online';
+                        swText.textContent = 'Service Worker active';
+                    } else {
+                        swStatus.className = 'status-indicator status-unknown';
+                        swText.textContent = 'Service Worker registering...';
+                        
+                        // Register service worker
+                        navigator.serviceWorker.register('/sw.js').then(() => {
+                            swStatus.className = 'status-indicator status-online';
+                            swText.textContent = 'Service Worker registered';
+                        }).catch(() => {
+                            swStatus.className = 'status-indicator status-offline';
+                            swText.textContent = 'Service Worker failed';
+                        });
+                    }
+                });
+            } else {
+                swStatus.className = 'status-indicator status-offline';
+                swText.textContent = 'Service Worker not supported';
+            }
+        }
+        
+        // Screen and device info
+        function updateDeviceInfo() {
+            const screenSize = document.getElementById('screen-size');
+            const deviceType = document.getElementById('device-type');
+            
+            screenSize.textContent = `${window.innerWidth}×${window.innerHeight}`;
+            
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            const isTablet = /iPad|Android(?!.*Mobile)/i.test(navigator.userAgent);
+            
+            if (isTablet) {
+                deviceType.textContent = 'Tablet';
+            } else if (isMobile) {
+                deviceType.textContent = 'Mobile';
+            } else {
+                deviceType.textContent = 'Desktop';
+            }
+        }
+        
+        // Install button
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('install-btn').style.display = 'inline-block';
+        });
+        
+        document.getElementById('install-btn').addEventListener('click', () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('User accepted the install prompt');
+                    }
+                    deferredPrompt = null;
+                    document.getElementById('install-btn').style.display = 'none';
+                });
+            }
+        });
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            updatePWAStatus();
+            updateNetworkStatus();
+            updateServiceWorkerStatus();
+            updateDeviceInfo();
+            
+            // Update network status on change
+            window.addEventListener('online', updateNetworkStatus);
+            window.addEventListener('offline', updateNetworkStatus);
+            
+            // Update screen size on resize
+            window.addEventListener('resize', updateDeviceInfo);
+        });
+    </script>
+</body>
+</html>
