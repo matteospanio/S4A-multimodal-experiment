@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Stimulus\Song;
 use App\Entity\Trial\FlavorToMusicTrial;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -14,6 +15,19 @@ class FlavorToMusicTrialRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, FlavorToMusicTrial::class);
+    }
+
+    /**
+     * @return FlavorToMusicTrial[] Returns an array of FlavorToMusicTrial objects
+     */
+    public function findTrialsByMusicId(int $musicId): array
+    {
+        return $this->createQueryBuilder('f')
+            ->andWhere('f.song = :musicId')
+            ->setParameter('musicId', $musicId)
+            ->orderBy('f.id', 'ASC')
+            ->getQuery()
+            ->getResult();
     }
 
 //    /**

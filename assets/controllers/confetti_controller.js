@@ -2,12 +2,12 @@ import { Controller } from '@hotwired/stimulus';
 import JSConfetti from 'js-confetti';
 
 const CONFETTI_ARGS  = [
-    // empty object is for default values
-    {},
+    {}, // empty object is for default values
     { confettiRadius: 12, confettiNumber: 100 },
     { emojis: ['🌈', '⚡️', '💥', '✨', '💫', '🌸'] },
-    { emojis: ['⚡️', '💥', '✨', '💫'] },
-    { emojis: ['🦄'], confettiRadius: 100, confettiNumber: 30 },
+    { emojis: ['🍋', '🍏', '🍉', '🍒'], confettiNumber: 40 },
+    { emojis: [' 🍬', '☕', '🍩', '🍪', '🍫'], confettiNumber: 40 },
+    { emojis: ['🦄'], confettiRadius: 100, confettiNumber: 50 },
     {
         confettiColors: ['#ffbe0b', '#fb5607', '#ff006e', '#8338ec', '#3a86ff'],
         confettiRadius: 10,

@@ -16,6 +16,18 @@ class FlavorRepository extends ServiceEntityRepository
         parent::__construct($registry, Flavor::class);
     }
 
+    /**
+     * @return array Returns an array of Flavor names and icons
+     */
+    public function getAllFlavorsIcons(): array
+    {
+        return $this->createQueryBuilder('f')
+            ->select('f.name, f.icon')
+            ->orderBy('f.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
     //    /**
     //     * @return Flavor[] Returns an array of Flavor objects
     //     */

@@ -7,19 +7,25 @@ use App\Entity\Trial\MusicToFlavorTrial;
 use App\Entity\Trial\Trial;
 use App\Form\F2MTrialType;
 use App\Form\M2FTrialType;
+use App\Repository\FlavorRepository;
+use App\Repository\FlavorToMusicTrialRepository;
+use App\Repository\MusicToFlavorTrialRepository;
 use App\Service\DataCollector;
+use App\Service\Mathematician;
 use App\Service\StimuliManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
+use Symfony\UX\Chartjs\Model\Chart;
 
 final class TaskController extends AbstractController
 {
     public function __construct(
         private readonly StimuliManager $stimuliManager,
         private readonly DataCollector $dataCollector,
+        private readonly Mathematician $mathematician,
     )
     {
     }
@@ -66,7 +72,14 @@ final class TaskController extends AbstractController
     }
 
     #[Route('/task/{type}/{id:trial}/results', name: 'app_task_results', requirements: ['type' => '\d+'], methods: ['GET'])]
-    public function showResults(int $type, Trial $trial, ChartBuilderInterface $chartBuilder): Response
+    public function showResults(
+        int $type,
+        Trial $trial,
+        ChartBuilderInterface $chartBuilder,
+        FlavorRepository $flavorRepository,
+        MusicToFlavorTrialRepository $musicToFlavorTrialRepository,
+        FlavorToMusicTrialRepository $flavorToMusicTrialRepository,
+    ): Response
     {
         $task = $this->getTask($type);
         $choice = $trial->getChoice();
@@ -79,9 +92,34 @@ final class TaskController extends AbstractController
             assert($trial instanceof FlavorToMusicTrial);
             $success = $choice === $trial->getSong();
             // prepare data for smells to music results
+            $barChart = $chartBuilder->createChart(Chart::TYPE_BAR);
+            $barChart->setOptions([
+                'indexAxis' => 'y',
+                'elements' => [
+                    'bar' => [
+                        'borderWidth' => 2,
+                    ],
+                ],
+                'responsive' => true,
+            ]);
+            $barChart->setData([
+                'labels' => array_map(fn($f) => sprintf('%s %s', $f['icon'], $f['name']), $flavorRepository->getAllFlavorsIcons()),
+                'datasets' => [
+                    [
+                        'label' => 'Votes',
+                        'backgroundColor' => 'rgba(0, 99, 200, 0.6)',
+                        'borderColor' => 'rgba(0, 99, 200, 1.0)',
+                        'data' => [15, 10, 2, 7]
+                    ],
+                ],
+            ]);
         }
 
-        return $this->render('task/results.html.twig', []);
+        return $this->render('task/results.html.twig', [
+            'task' => $task,
+            'trial' => $trial,
+            'barChart' => $barChart ?? null,
+        ]);
     }
 
     private function getTask(int $type): string
