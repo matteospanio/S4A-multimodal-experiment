@@ -4,7 +4,24 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>{% block title %}S4A Multimodal Experiment{% endblock %}</title>
+        
+        <!-- PWA Meta Tags -->
+        <meta name="description" content="Science4All multimodal experiment exploring the relationships between music and sensory experiences">
+        <meta name="theme-color" content="#007bff">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="default">
+        <meta name="apple-mobile-web-app-title" content="S4A Experiment">
+        <meta name="application-name" content="S4A Multimodal Experiment">
+        
+        <!-- Favicon and Icons -->
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>🧪</text></svg>">
+        <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
+        <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192x192.png">
+        <link rel="icon" type="image/png" sizes="512x512" href="/icons/icon-512x512.png">
+        
+        <!-- PWA Manifest -->
+        <link rel="manifest" href="/manifest.json">
 
         {% block stylesheets %}
         {% endblock %}

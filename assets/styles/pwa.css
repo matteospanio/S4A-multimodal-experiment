@@ -1,0 +1,205 @@
+/* PWA-specific styles for mobile optimization */
+
+/* Hide browser UI when in standalone mode */
+@media (display-mode: standalone) {
+    body {
+        /* Add padding for status bars on mobile */
+        padding-top: env(safe-area-inset-top);
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+    
+    /* Style adjustments for PWA mode */
+    .topbar {
+        /* Ensure topbar accounts for device notches/safe areas */
+        padding-top: env(safe-area-inset-top);
+    }
+}
+
+/* Mobile-first responsive improvements */
+@media (max-width: 768px) {
+    /* Better touch targets for mobile */
+    .btn {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    .topbar-btn {
+        min-height: 44px;
+        min-width: 44px;
+        padding: 10px;
+    }
+    
+    /* Improve form controls for touch */
+    .form-control,
+    .form-select {
+        min-height: 44px;
+        font-size: 16px; /* Prevent zoom on iOS */
+    }
+    
+    /* Better card spacing on mobile */
+    .card {
+        margin-bottom: 1rem;
+    }
+    
+    /* Improve audio controls */
+    audio {
+        width: 100%;
+        max-width: 100%;
+    }
+    
+    /* Better modal sizing on mobile */
+    .modal-dialog {
+        margin: 10px;
+    }
+    
+    /* Improve offcanvas for mobile */
+    .offcanvas {
+        max-width: 85vw;
+    }
+}
+
+/* Tablet specific optimizations */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .container {
+        max-width: 90%;
+    }
+    
+    /* Better use of tablet screen space */
+    .row > .col-md-12 {
+        padding: 0 15px;
+    }
+}
+
+/* Landscape orientation optimizations */
+@media (orientation: landscape) and (max-height: 500px) {
+    /* Reduce vertical spacing in landscape on phones */
+    .topbar {
+        padding: 5px 15px;
+    }
+    
+    .card {
+        margin-bottom: 0.5rem;
+    }
+    
+    .btn {
+        padding: 8px 16px;
+    }
+}
+
+/* High DPI display optimizations */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    /* Crisp icons and images on retina displays */
+    .icon-md {
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+    }
+}
+
+/* PWA Install prompt styles (for future use) */
+.pwa-install-prompt {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    background: var(--bs-primary);
+    color: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1050;
+    display: none;
+}
+
+.pwa-install-prompt.show {
+    display: block;
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Offline indicator */
+.offline-indicator {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: #dc3545;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    z-index: 1060;
+    transform: translateY(-100%);
+    transition: transform 0.3s ease;
+}
+
+.offline-indicator.show {
+    transform: translateY(0);
+}
+
+/* Better focus styles for accessibility */
+.btn:focus,
+.form-control:focus,
+.form-select:focus {
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+    outline: none;
+}
+
+/* Improve list item touch targets */
+.dropdown-item,
+.list-group-item {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+}
+
+/* Better spacing for experiment cards */
+.card.experiment-stimulus {
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card.experiment-stimulus:hover,
+.card.experiment-stimulus:focus {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.card.experiment-stimulus.selected {
+    border-color: var(--bs-primary);
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+/* Loading states */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid var(--bs-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
