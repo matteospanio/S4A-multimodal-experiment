@@ -18,4 +18,5 @@ return [
     Symfony\UX\Icons\UXIconsBundle::class => ['all' => true],
     Symfony\UX\Chartjs\ChartjsBundle::class => ['all' => true],
     Zenstruck\Foundry\ZenstruckFoundryBundle::class => ['dev' => true, 'test' => true],
+    Knp\Bundle\MenuBundle\KnpMenuBundle::class => ['all' => true],
 ];

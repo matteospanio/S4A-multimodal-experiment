@@ -156,6 +156,8 @@
       <path value="$PROJECT_DIR$/vendor/behat/mink" />
       <path value="$PROJECT_DIR$/vendor/zenstruck/callback" />
       <path value="$PROJECT_DIR$/vendor/zenstruck/browser" />
+      <path value="$PROJECT_DIR$/vendor/knplabs/knp-menu" />
+      <path value="$PROJECT_DIR$/vendor/knplabs/knp-menu-bundle" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.3">

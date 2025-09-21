@@ -13,7 +13,7 @@
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
     </head>
-    <body data-controller="topbar" data-topbar-language-value="{{ app.locale }}">
+    <body>
         <!-- Topbar -->
         <div class="topbar">
             <button class="topbar-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas" aria-controls="offcanvas" title="{{ 'topbar.menu'|trans }}">
@@ -26,12 +26,23 @@
         </div>
 
         <!-- Settings Offcanvas -->
-        <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvas" aria-labelledby="offcanvasLabel">
+        <div
+            data-controller="topbar"
+            data-topbar-language-value="{{ app.locale }}"
+            class="offcanvas offcanvas-start"
+            tabindex="-1"
+            id="offcanvas"
+            aria-labelledby="offcanvasLabel"
+        >
             <div class="offcanvas-header">
-                <h5 class="offcanvas-title" id="offcanvasLavel">{{ 'topbar.settings'|trans }}</h5>
+                <h5 class="offcanvas-title" id="offcanvasLavel">{{ 'topbar.menu'|trans }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
             </div>
             <div class="offcanvas-body">
+                {{ knp_menu_render('main') }}
+
+                <h5 class="mb-4 offcanvas-title">{{ 'topbar.settings'|trans }}</h5>
+
                 <div class="mb-4">
                     <label for="themeSelect" class="form-label">{{ 'topbar.theme'|trans }}</label>
                     <select class="form-select" id="themeSelect" data-topbar-target="themeSelect" data-action="change->topbar#changeTheme">

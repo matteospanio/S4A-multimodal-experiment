@@ -217,6 +217,11 @@
   box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
 }
 
+/* Offcanvas */
+.current > a {
+  font-weight: bold;
+}
+
 /* Audio controls */
 .audio-control {
   margin: 1rem 0;

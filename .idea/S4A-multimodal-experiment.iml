@@ -147,6 +147,8 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/rector/rector" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/scheduler" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/dragonmantank/cron-expression" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/knplabs/knp-menu" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/knplabs/knp-menu-bundle" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

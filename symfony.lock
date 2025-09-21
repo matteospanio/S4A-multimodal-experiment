@@ -47,6 +47,9 @@
             "config/routes/easyadmin.yaml"
         ]
     },
+    "knplabs/knp-menu-bundle": {
+        "version": "v3.6.0"
+    },
     "phpstan/phpstan": {
         "version": "2.1",
         "recipe": {
