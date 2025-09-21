@@ -11,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 
 final class TaskController extends AbstractController
 {
@@ -24,11 +25,7 @@ final class TaskController extends AbstractController
     #[Route('/task/{type}', name: 'app_task', requirements: ['type' => '\d+'], methods: ['GET'])]
     public function index(int $type = 1): Response
     {
-        $task = match ($type) {
-            1 => Trial::MUSICS2SMELL,
-            2 => Trial::SMELLS2MUSIC,
-            default => throw $this->createNotFoundException('Invalid task type'),
-        };
+        $task = $this->getTask($type);
         $trial = $this->stimuliManager->getNextTrial($task);
 
         $form = match($task) {
@@ -41,18 +38,13 @@ final class TaskController extends AbstractController
             'task_type' => $type,
             'trial' => $trial,
             'form' => $form,
-            'task_name' => $type === 1 ? 'Audio-Perfume Matching' : 'Perfume-Audio Association',
         ]);
     }
 
     #[Route('/task/{type}/{id:trial}/submit', name: 'app_task_submit', requirements: ['type' => '\d+'], methods: ['POST'])]
     public function submit(Request $request, int $type, Trial $trial): Response
     {
-        $task = match ($type) {
-            1 => Trial::MUSICS2SMELL,
-            2 => Trial::SMELLS2MUSIC,
-            default => throw $this->createNotFoundException('Invalid task type'),
-        };
+        $task = $this->getTask($type);
 
         $form = match($task) {
             Trial::MUSICS2SMELL => $this->createForm(M2FTrialType::class, $trial),
@@ -69,5 +61,22 @@ final class TaskController extends AbstractController
         }
 
         return $this->redirectToRoute('app_task', ['type' => $type]);
+    }
+
+    #[Route('/task/{type}/{id:trial}/results', name: 'app_task_results', requirements: ['type' => '\d+'], methods: ['GET'])]
+    public function showResults(int $type, Trial $trial, ChartBuilderInterface $chartBuilder): Response
+    {
+        $task = $this->getTask($type);
+
+        return $this->render('task/results.html.twig', []);
+    }
+
+    private function getTask(int $type): string
+    {
+        return match ($type) {
+            1 => Trial::MUSICS2SMELL,
+            2 => Trial::SMELLS2MUSIC,
+            default => throw $this->createNotFoundException('Invalid task type'),
+        };
     }
 }
