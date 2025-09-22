@@ -39,7 +39,10 @@ class Mathematician
         
         // If trial is provided, filter by the songs in that trial
         if ($trial !== null) {
-            $songIds = $trial->getSongs()->map(fn($song) => $song->getId())->toArray();
+            $songIds = [];
+            foreach ($trial->getSongs() as $song) {
+                $songIds[] = $song->getId();
+            }
             $choiceStats = $this->musicToFlavorTrialRepository->getChoiceStatisticsByFlavorAndSongs($flavorId, $songIds);
             $totalTrials = $this->musicToFlavorTrialRepository->countTrialsByFlavorAndSongs($flavorId, $songIds);
             
