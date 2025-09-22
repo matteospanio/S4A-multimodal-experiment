@@ -16,28 +16,39 @@ class TaskRepository extends ServiceEntityRepository
         parent::__construct($registry, Task::class);
     }
 
-    //    /**
-    //     * @return Task[] Returns an array of Task objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('t')
-    //            ->andWhere('t.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('t.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * Count completed trials by task type
+     * @return array Returns array with type and count
+     */
+    public function getTaskTypeCounts(): array
+    {
+        return $this->createQueryBuilder('t')
+            ->select('t.type, COUNT(tr.id) as trial_count')
+            ->leftJoin('t.trials', 'tr')
+            ->groupBy('t.type')
+            ->getQuery()
+            ->getResult();
+    }
 
-    //    public function findOneBySomeField($value): ?Task
-    //    {
-    //        return $this->createQueryBuilder('t')
-    //            ->andWhere('t.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    /**
+     * Get tasks with trial counts for the last 12 hours grouped by hour and type
+     * @return array Returns hourly statistics 
+     */
+    public function getHourlyTaskStats(): array
+    {
+        $since = new \DateTime('-12 hours');
+        
+        return $this->createQueryBuilder('t')
+            ->select('t.type, 
+                     HOUR(tr.createdAt) as hour_created,
+                     DATE(tr.createdAt) as date_created, 
+                     COUNT(tr.id) as trial_count')
+            ->leftJoin('t.trials', 'tr')
+            ->where('tr.createdAt >= :since')
+            ->setParameter('since', $since)
+            ->groupBy('t.type, hour_created, date_created')
+            ->orderBy('date_created, hour_created')
+            ->getQuery()
+            ->getResult();
+    }
 }
