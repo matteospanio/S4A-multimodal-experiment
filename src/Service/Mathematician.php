@@ -16,55 +16,49 @@ use App\Repository\MusicToFlavorTrialRepository;
  *
  * @author Matteo Spanio <spanio@dei.unipd.it>
  */
-class Mathematician
+readonly class Mathematician
 {
     public function __construct(
-        private readonly FlavorToMusicTrialRepository $flavorToMusicTrialRepository,
-        private readonly MusicToFlavorTrialRepository $musicToFlavorTrialRepository,
+        private FlavorToMusicTrialRepository $flavorToMusicTrialRepository,
+        private MusicToFlavorTrialRepository $musicToFlavorTrialRepository,
     )
     {
     }
 
     /**
-     * Calculate statistics for Task 1 (MUSICS2SMELL): for a given flavor, 
+     * Calculate statistics for Task 1 (MUSICS2SMELL): for a given flavor,
      * show which songs were chosen and their percentages.
-     * 
+     *
      * @param Flavor $flavor The flavor that was presented to participants
-     * @param MusicToFlavorTrial|null $trial The specific trial to filter songs by (if provided)
+     * @param MusicToFlavorTrial $trial The specific trial to filter songs by (if provided)
      * @return array{labels: array<string>, data: array<float>, backgroundColors: array<string>, borderColors: array<string>, expectedSongId: int|null}
      */
-    public function getMusicToFlavorStatistics(Flavor $flavor, ?MusicToFlavorTrial $trial = null): array
+    public function getMusicToFlavorStatistics(Flavor $flavor, MusicToFlavorTrial $trial): array
     {
         $flavorId = $flavor->getId();
-        
+
         // If trial is provided, filter by the songs in that trial
-        if ($trial !== null) {
-            $songIds = [];
-            foreach ($trial->getSongs() as $song) {
-                $songIds[] = $song->getId();
-            }
-            $choiceStats = $this->musicToFlavorTrialRepository->getChoiceStatisticsByFlavorAndSongs($flavorId, $songIds);
-            $totalTrials = $this->musicToFlavorTrialRepository->countTrialsByFlavorAndSongs($flavorId, $songIds);
-            
-            // If no statistics yet, create empty entries for each song in the trial
-            if (empty($choiceStats) || $totalTrials === 0) {
-                $choiceStats = [];
-                foreach ($trial->getSongs() as $song) {
-                    $choiceStats[] = [
-                        'choice_id' => (string)$song->getId(),
-                        'song_id' => $song->getId(),
-                        'choice_flavor_name' => $song->getFlavor()?->getName() ?? 'Unknown',
-                        'count' => 0
-                    ];
-                }
-                $totalTrials = 1; // Prevent division by zero
-            }
-        } else {
-            // Fallback to original behavior for backward compatibility
-            $choiceStats = $this->musicToFlavorTrialRepository->getChoiceStatisticsByFlavor($flavorId);
-            $totalTrials = $this->musicToFlavorTrialRepository->countTrialsByFlavor($flavorId);
+        $songIds = [];
+        foreach ($trial->getSongs() as $song) {
+            $songIds[] = $song->getId();
         }
-        
+        $choiceStats = $this->musicToFlavorTrialRepository->getChoiceStatisticsByFlavorAndSongs($flavorId, $songIds);
+        $totalTrials = $this->musicToFlavorTrialRepository->countTrialsByFlavorAndSongs($flavorId, $songIds);
+
+        // If no statistics yet, create empty entries for each song in the trial
+        if (empty($choiceStats) || $totalTrials === 0) {
+            $choiceStats = [];
+            foreach ($trial->getSongs() as $song) {
+                $choiceStats[] = [
+                    'choice_id' => (string)$song->getId(),
+                    'song_id' => $song->getId(),
+                    'choice_flavor_name' => $song->getFlavor()?->getName() ?? 'Unknown',
+                    'count' => 0
+                ];
+            }
+            $totalTrials = 1; // Prevent division by zero
+        }
+
         if (empty($choiceStats)) {
             return [
                 'labels' => [],
@@ -88,9 +82,9 @@ class Mathematician
         foreach ($choiceStats as $stat) {
             $labels[] = sprintf('Song #%d (%s)', $stat['song_id'], $stat['choice_flavor_name']);
             $data[] = round(($stat['count'] / $totalTrials) * 100, 1);
-            
+
             // Highlight the expected song with a different color
-            if ($expectedSongId && (int)$stat['choice_id'] === $expectedSongId) {
+            if ($expectedSongId && (int)$stat['song_id'] === $expectedSongId) {
                 $backgroundColors[] = 'rgba(255, 99, 132, 0.6)'; // Red for expected
                 $borderColors[] = 'rgba(255, 99, 132, 1.0)';
             } else {
@@ -111,7 +105,7 @@ class Mathematician
     /**
      * Calculate statistics for Task 2 (SMELLS2MUSIC): for a given song,
      * show which flavors were chosen and their percentages.
-     * 
+     *
      * @param Song $song The song that was presented to participants
      * @return array{labels: array<string>, data: array<float>, backgroundColors: array<string>, borderColors: array<string>, expectedFlavorId: int|null}
      */
@@ -120,7 +114,7 @@ class Mathematician
         $songId = $song->getId();
         $choiceStats = $this->flavorToMusicTrialRepository->getChoiceStatisticsBySong($songId);
         $totalTrials = $this->flavorToMusicTrialRepository->countTrialsBySong($songId);
-        
+
         if (empty($choiceStats) || $totalTrials === 0) {
             return [
                 'labels' => [],
@@ -143,7 +137,7 @@ class Mathematician
         foreach ($choiceStats as $stat) {
             $labels[] = sprintf('%s %s', $stat['choice_icon'], $stat['choice_name']);
             $data[] = round(($stat['count'] / $totalTrials) * 100, 1);
-            
+
             // Highlight the expected flavor with a different color
             if ($expectedFlavorId && (int)$stat['choice_id'] === $expectedFlavorId) {
                 $backgroundColors[] = 'rgba(255, 99, 132, 0.6)'; // Red for expected
