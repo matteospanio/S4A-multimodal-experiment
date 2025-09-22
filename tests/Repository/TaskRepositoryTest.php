@@ -1,0 +1,63 @@
+<?php
+
+namespace App\Tests\Repository;
+
+use App\Entity\Task;
+use App\Repository\TaskRepository;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+
+final class TaskRepositoryTest extends KernelTestCase
+{
+    private TaskRepository $repository;
+
+    protected function setUp(): void
+    {
+        $kernel = self::bootKernel();
+        $this->repository = static::getContainer()->get(TaskRepository::class);
+    }
+
+    public function testGetTaskTypeCountsReturnsArray(): void
+    {
+        $result = $this->repository->getTaskTypeCounts();
+        
+        $this->assertIsArray($result);
+        
+        // Each element should have type and trial_count keys
+        foreach ($result as $item) {
+            $this->assertArrayHasKey('type', $item);
+            $this->assertArrayHasKey('trial_count', $item);
+            $this->assertIsString($item['type']);
+            $this->assertIsNumeric($item['trial_count']);
+        }
+    }
+
+    public function testGetHourlyTaskStatsReturnsArray(): void
+    {
+        $result = $this->repository->getHourlyTaskStats();
+        
+        $this->assertIsArray($result);
+        
+        // Each element should have required keys for hourly stats
+        foreach ($result as $item) {
+            $this->assertArrayHasKey('type', $item);
+            $this->assertArrayHasKey('hour_created', $item);
+            $this->assertArrayHasKey('date_created', $item);
+            $this->assertArrayHasKey('trial_count', $item);
+            $this->assertIsString($item['type']);
+            $this->assertIsNumeric($item['trial_count']);
+        }
+    }
+
+    public function testGetHourlyTaskStatsReturnsOnlyLast12Hours(): void
+    {
+        $result = $this->repository->getHourlyTaskStats();
+        
+        $cutoffTime = new \DateTime('-12 hours');
+        
+        foreach ($result as $item) {
+            $itemDateTime = new \DateTime($item['date_created'] . ' ' . sprintf('%02d:00:00', $item['hour_created']));
+            $this->assertGreaterThanOrEqual($cutoffTime, $itemDateTime, 
+                'Result should only include data from the last 12 hours');
+        }
+    }
+}
