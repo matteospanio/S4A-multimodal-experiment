@@ -149,9 +149,11 @@
 
         <div class="row mt-4">
             <div class="col-md-12 text-center">
-                <button class="btn btn-secondary me-3" type="button" onclick="window.history.back()">
+                {% if is_granted('ROLE_ADMIN') %}
+                <a class="btn btn-secondary me-3" href="{{ path('app_home') }}">
                     ← {{ 'task.back'|trans }}
-                </button>
+                </a>
+                {% endif %}
                 <button class="btn btn-primary" data-stimulus-selector-target="submitButton" type="submit" disabled>
                     {{ 'task.submit'|trans }} →
                 </button>

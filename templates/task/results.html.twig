@@ -37,10 +37,18 @@
         </div>
     {% endif %}
 
-    <div class="mt-4">
-        <a href="{{ path('app_task', {'type': task == constant('App\\Entity\\Trial\\Trial::MUSICS2SMELL') ? 1 : 2}) }}" class="btn btn-primary">
-            Continue to next trial
-        </a>
+    <div class="row mt-4">
+        <div class="col-md-12 text-center">
+            {% if is_granted('ROLE_ADMIN') %}
+                <a class="btn btn-secondary me-3" href="{{ path('app_home') }}">
+                    ← {{ 'task.back'|trans }}
+                </a>
+            {% endif %}
+            <a href="{{ path('app_task', {'type': task == constant('App\\Entity\\Trial\\Trial::MUSICS2SMELL') ? 1 : 2}) }}" class="btn btn-primary">
+                Do another trial
+                <twig:ux:icon name="bi:arrow-repeat" height="1rem" />
+            </a>
+        </div>
     </div>
 </div>
 {% endblock %}
