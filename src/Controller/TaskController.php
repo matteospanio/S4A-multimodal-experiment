@@ -90,7 +90,7 @@ final class TaskController extends AbstractController
             assert($trial instanceof MusicToFlavorTrial);
             $success = $choice === $trial->getFlavor();
 
-            $stats = $this->mathematician->getMusicToFlavorStatistics($trial->getFlavor());
+            $stats = $this->mathematician->getMusicToFlavorStatistics($trial->getFlavor(), $trial);
 
             if (!empty($stats['labels'])) {
                 $barChart = $chartBuilder->createChart(Chart::TYPE_BAR);

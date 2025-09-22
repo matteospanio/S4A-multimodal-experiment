@@ -30,15 +30,39 @@ class Mathematician
      * show which songs were chosen and their percentages.
      * 
      * @param Flavor $flavor The flavor that was presented to participants
+     * @param MusicToFlavorTrial|null $trial The specific trial to filter songs by (if provided)
      * @return array{labels: array<string>, data: array<float>, backgroundColors: array<string>, borderColors: array<string>, expectedSongId: int|null}
      */
-    public function getMusicToFlavorStatistics(Flavor $flavor): array
+    public function getMusicToFlavorStatistics(Flavor $flavor, ?MusicToFlavorTrial $trial = null): array
     {
         $flavorId = $flavor->getId();
-        $choiceStats = $this->musicToFlavorTrialRepository->getChoiceStatisticsByFlavor($flavorId);
-        $totalTrials = $this->musicToFlavorTrialRepository->countTrialsByFlavor($flavorId);
         
-        if (empty($choiceStats) || $totalTrials === 0) {
+        // If trial is provided, filter by the songs in that trial
+        if ($trial !== null) {
+            $songIds = $trial->getSongs()->map(fn($song) => $song->getId())->toArray();
+            $choiceStats = $this->musicToFlavorTrialRepository->getChoiceStatisticsByFlavorAndSongs($flavorId, $songIds);
+            $totalTrials = $this->musicToFlavorTrialRepository->countTrialsByFlavorAndSongs($flavorId, $songIds);
+            
+            // If no statistics yet, create empty entries for each song in the trial
+            if (empty($choiceStats) || $totalTrials === 0) {
+                $choiceStats = [];
+                foreach ($trial->getSongs() as $song) {
+                    $choiceStats[] = [
+                        'choice_id' => (string)$song->getId(),
+                        'song_id' => $song->getId(),
+                        'choice_flavor_name' => $song->getFlavor()?->getName() ?? 'Unknown',
+                        'count' => 0
+                    ];
+                }
+                $totalTrials = 1; // Prevent division by zero
+            }
+        } else {
+            // Fallback to original behavior for backward compatibility
+            $choiceStats = $this->musicToFlavorTrialRepository->getChoiceStatisticsByFlavor($flavorId);
+            $totalTrials = $this->musicToFlavorTrialRepository->countTrialsByFlavor($flavorId);
+        }
+        
+        if (empty($choiceStats)) {
             return [
                 'labels' => [],
                 'data' => [],

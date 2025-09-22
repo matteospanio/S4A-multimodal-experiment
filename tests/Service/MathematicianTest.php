@@ -121,4 +121,115 @@ class MathematicianTest extends TestCase
         $this->assertEquals('rgba(255, 99, 132, 0.6)', $result['backgroundColors'][0]);
         $this->assertEquals('rgba(54, 162, 235, 0.6)', $result['backgroundColors'][1]);
     }
+
+    public function testGetMusicToFlavorStatisticsWithTrialFiltering(): void
+    {
+        $flavor = $this->createMock(Flavor::class);
+        $flavor->method('getId')->willReturn(1);
+        
+        $expectedSong = $this->createMock(Song::class);
+        $expectedSong->method('getId')->willReturn(10);
+        
+        $songs = new \Doctrine\Common\Collections\ArrayCollection([$expectedSong]);
+        $flavor->method('getSongs')->willReturn($songs);
+
+        // Create mock trial with specific songs
+        $trial = $this->createMock(\App\Entity\Trial\MusicToFlavorTrial::class);
+        $song1 = $this->createMock(Song::class);
+        $song1->method('getId')->willReturn(10);
+        $song2 = $this->createMock(Song::class);
+        $song2->method('getId')->willReturn(11);
+        
+        $trialSongs = new \Doctrine\Common\Collections\ArrayCollection([$song1, $song2]);
+        $trial->method('getSongs')->willReturn($trialSongs);
+
+        // Mock stats filtered by trial songs
+        $mockTrialStats = [
+            [
+                'choice_id' => '10',
+                'song_id' => 10,
+                'choice_flavor_name' => 'Vanilla',
+                'count' => 6
+            ],
+            [
+                'choice_id' => '11',
+                'song_id' => 11,
+                'choice_flavor_name' => 'Chocolate',
+                'count' => 4
+            ]
+        ];
+
+        $this->musicToFlavorTrialRepository
+            ->method('getChoiceStatisticsByFlavorAndSongs')
+            ->with(1, [10, 11])
+            ->willReturn($mockTrialStats);
+
+        $this->musicToFlavorTrialRepository
+            ->method('countTrialsByFlavorAndSongs')
+            ->with(1, [10, 11])
+            ->willReturn(10);
+
+        $result = $this->mathematician->getMusicToFlavorStatistics($flavor, $trial);
+
+        $this->assertCount(2, $result['labels']);
+        $this->assertEquals(['Song #10 (Vanilla)', 'Song #11 (Chocolate)'], $result['labels']);
+        $this->assertEquals([60.0, 40.0], $result['data']);
+        $this->assertEquals(10, $result['expectedSongId']);
+        
+        // First item should be highlighted (red) as it's the expected song
+        $this->assertEquals('rgba(255, 99, 132, 0.6)', $result['backgroundColors'][0]);
+        $this->assertEquals('rgba(54, 162, 235, 0.6)', $result['backgroundColors'][1]);
+    }
+
+    public function testGetMusicToFlavorStatisticsWithTrialFilteringAndNoData(): void
+    {
+        $flavor = $this->createMock(Flavor::class);
+        $flavor->method('getId')->willReturn(1);
+        
+        $expectedSong = $this->createMock(Song::class);
+        $expectedSong->method('getId')->willReturn(10);
+        
+        $songs = new \Doctrine\Common\Collections\ArrayCollection([$expectedSong]);
+        $flavor->method('getSongs')->willReturn($songs);
+
+        // Create mock trial with specific songs
+        $trial = $this->createMock(\App\Entity\Trial\MusicToFlavorTrial::class);
+        $song1 = $this->createMock(Song::class);
+        $song1->method('getId')->willReturn(10);
+        $song1Flavor = $this->createMock(Flavor::class);
+        $song1Flavor->method('getName')->willReturn('Vanilla');
+        $song1->method('getFlavor')->willReturn($song1Flavor);
+        
+        $song2 = $this->createMock(Song::class);
+        $song2->method('getId')->willReturn(11);
+        $song2Flavor = $this->createMock(Flavor::class);
+        $song2Flavor->method('getName')->willReturn('Chocolate');
+        $song2->method('getFlavor')->willReturn($song2Flavor);
+        
+        $trialSongs = new \Doctrine\Common\Collections\ArrayCollection([$song1, $song2]);
+        $trial->method('getSongs')->willReturn($trialSongs);
+
+        // Mock empty stats (no trials yet)
+        $this->musicToFlavorTrialRepository
+            ->method('getChoiceStatisticsByFlavorAndSongs')
+            ->with(1, [10, 11])
+            ->willReturn([]);
+
+        $this->musicToFlavorTrialRepository
+            ->method('countTrialsByFlavorAndSongs')
+            ->with(1, [10, 11])
+            ->willReturn(0);
+
+        $result = $this->mathematician->getMusicToFlavorStatistics($flavor, $trial);
+
+        // Should show both songs with 0% data
+        $this->assertCount(2, $result['labels']);
+        $this->assertEquals(['Song #10 (Vanilla)', 'Song #11 (Chocolate)'], $result['labels']);
+        $this->assertEquals([0.0, 0.0], $result['data']);
+        $this->assertEquals(10, $result['expectedSongId']);
+        
+        // First item should be highlighted (red) as it's the expected song
+        $this->assertEquals('rgba(255, 99, 132, 0.6)', $result['backgroundColors'][0]);
+        $this->assertEquals('rgba(54, 162, 235, 0.6)', $result['backgroundColors'][1]);
+    }
 }
