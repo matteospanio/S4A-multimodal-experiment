@@ -89,18 +89,19 @@ final class TaskController extends AbstractController
             // Task 1: Show double bar chart for track choices given a perfume
             assert($trial instanceof MusicToFlavorTrial);
             $success = $choice === $trial->getFlavor();
-            
+
             $stats = $this->mathematician->getMusicToFlavorStatistics($trial->getFlavor());
-            
+
             if (!empty($stats['labels'])) {
                 $barChart = $chartBuilder->createChart(Chart::TYPE_BAR);
                 $barChart->setOptions([
+                    'indexAxis' => 'y',
                     'responsive' => true,
                     'plugins' => [
                         'title' => [
                             'display' => true,
-                            'text' => sprintf('Track choices for perfume: %s %s', 
-                                $trial->getFlavor()->getIcon(), 
+                            'text' => sprintf('Track choices for perfume: %s %s',
+                                $trial->getFlavor()->getIcon(),
                                 $trial->getFlavor()->getName()
                             ),
                         ],
@@ -109,7 +110,7 @@ final class TaskController extends AbstractController
                         ],
                     ],
                     'scales' => [
-                        'y' => [
+                        'x' => [
                             'beginAtZero' => true,
                             'title' => [
                                 'display' => true,
@@ -135,12 +136,13 @@ final class TaskController extends AbstractController
             // Task 2: Show bar chart for perfume choices given a track
             assert($trial instanceof FlavorToMusicTrial);
             $success = $choice === $trial->getSong();
-            
+
             $stats = $this->mathematician->getFlavorToMusicStatistics($trial->getSong());
-            
+
             if (!empty($stats['labels'])) {
                 $barChart = $chartBuilder->createChart(Chart::TYPE_BAR);
                 $barChart->setOptions([
+                    'indexAxis' => 'y',
                     'responsive' => true,
                     'plugins' => [
                         'title' => [
@@ -155,7 +157,7 @@ final class TaskController extends AbstractController
                         ],
                     ],
                     'scales' => [
-                        'y' => [
+                        'x' => [
                             'beginAtZero' => true,
                             'title' => [
                                 'display' => true,

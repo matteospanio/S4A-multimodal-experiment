@@ -5,7 +5,6 @@
 {% block body %}
 <div class="container" data-controller="confetti">
     <div class="app-header">
-        <h1 class="app-title">Results</h1>
         {% if success %}
             <div class="alert alert-success mt-3">
                 <i class="fas fa-check-circle"></i> Great choice! Your selection matches the theoretical association.
@@ -33,7 +32,7 @@
         </div>
     {% else %}
         <div class="alert alert-warning mt-4">
-            <i class="fas fa-exclamation-triangle"></i> 
+            <i class="fas fa-exclamation-triangle"></i>
             Not enough data yet to show statistics. Your response has been recorded!
         </div>
     {% endif %}
