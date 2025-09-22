@@ -32,23 +32,39 @@ class TaskRepository extends ServiceEntityRepository
 
     /**
      * Get tasks with trial counts for the last 12 hours grouped by hour and type
-     * @return array Returns hourly statistics 
+     * @return array Returns hourly statistics
      */
     public function getHourlyTaskStats(): array
     {
         $since = new \DateTime('-12 hours');
-        
-        return $this->createQueryBuilder('t')
-            ->select('t.type, 
-                     HOUR(tr.createdAt) as hour_created,
-                     DATE(tr.createdAt) as date_created, 
-                     COUNT(tr.id) as trial_count')
+
+        $results = $this->createQueryBuilder('t')
+            ->select('t.type, tr.createdAt, tr.id')
             ->leftJoin('t.trials', 'tr')
             ->where('tr.createdAt >= :since')
             ->setParameter('since', $since)
-            ->groupBy('t.type, hour_created, date_created')
-            ->orderBy('date_created, hour_created')
             ->getQuery()
-            ->getResult();
+            ->getArrayResult();
+
+        // Group by type, date, hour
+        $stats = [];
+        foreach ($results as $row) {
+            if (!$row['createdAt']) continue;
+            $dt = new \DateTime($row['createdAt']->format('Y-m-d H:00:00'));
+            $type = $row['type'];
+            $date = $dt->format('Y-m-d');
+            $hour = $dt->format('H');
+            $key = $type . '|' . $date . '|' . $hour;
+            if (!isset($stats[$key])) {
+                $stats[$key] = [
+                    'type' => $type,
+                    'date_created' => $date,
+                    'hour_created' => $hour,
+                    'trial_count' => 0,
+                ];
+            }
+            $stats[$key]['trial_count']++;
+        }
+        return array_values($stats);
     }
 }
