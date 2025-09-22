@@ -4,6 +4,7 @@ namespace App\Factory\Trial;
 
 use App\Entity\Trial\MusicToFlavorTrial;
 use App\Factory\Stimulus\FlavorFactory;
+use App\Factory\Stimulus\SongFactory;
 use App\Repository\MusicToFlavorTrialRepository;
 use Doctrine\ORM\EntityRepository;
 use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
@@ -49,13 +50,9 @@ use Zenstruck\Foundry\Persistence\ProxyRepositoryDecorator;
  */
 final class MusicToFlavorTrialFactory extends PersistentObjectFactory
 {
-    /**
-     * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#factories-as-services
-     *
-     * @todo inject services if required
-     */
     public function __construct()
     {
+        parent::__construct();
     }
 
     public static function class(): string
@@ -63,22 +60,17 @@ final class MusicToFlavorTrialFactory extends PersistentObjectFactory
         return MusicToFlavorTrial::class;
     }
 
-    /**
-     * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#model-factories
-     *
-     * @todo add your default values here
-     */
     protected function defaults(): array|callable
     {
+        $songs = SongFactory::randomSet(2);
+
         return [
-            'createdAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
-            'flavor' => FlavorFactory::new(),
+            'flavor' => FlavorFactory::random(),
+            'songs' => $songs,
+            'choice' => $songs[array_rand($songs)],
         ];
     }
 
-    /**
-     * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#initialization
-     */
     protected function initialize(): static
     {
         return $this

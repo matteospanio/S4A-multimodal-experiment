@@ -6,6 +6,8 @@ use App\Factory\ExperimentFactory;
 use App\Factory\Stimulus\FlavorFactory;
 use App\Factory\Stimulus\SongFactory;
 use App\Factory\TaskFactory;
+use App\Factory\Trial\FlavorToMusicTrialFactory;
+use App\Factory\Trial\MusicToFlavorTrialFactory;
 use Zenstruck\Foundry\Story;
 
 final class S4AExperimentStory extends Story
@@ -14,7 +16,7 @@ final class S4AExperimentStory extends Story
     {
         FlavorStory::load();
         SongFactory::createMany(
-            30,
+            20,
             function () {
                 return ['flavor' => FlavorFactory::random()];
             }
@@ -28,5 +30,8 @@ final class S4AExperimentStory extends Story
             ['type' => 'music2aroma', 'experiment' => $experiment],
             ['type' => 'aroma2music', 'experiment' => $experiment],
         ]);
+
+        MusicToFlavorTrialFactory::createMany(200);
+        FlavorToMusicTrialFactory::createMany(200);
     }
 }

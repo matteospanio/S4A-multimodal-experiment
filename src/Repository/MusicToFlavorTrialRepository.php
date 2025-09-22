@@ -16,6 +16,49 @@ class MusicToFlavorTrialRepository extends ServiceEntityRepository
         parent::__construct($registry, MusicToFlavorTrial::class);
     }
 
+    /**
+     * Get choice statistics for a specific flavor in MusicToFlavor trials
+     * 
+     * @param int $flavorId
+     * @return array Array of ['choice_id', 'choice_name', 'choice_flavor_name', 'count']
+     */
+    public function getChoiceStatisticsByFlavor(int $flavorId): array
+    {
+        return $this->createQueryBuilder('m')
+            ->select([
+                'IDENTITY(m.choice) as choice_id',
+                's.id as song_id',
+                'f.name as choice_flavor_name',
+                'COUNT(m.id) as count'
+            ])
+            ->leftJoin('m.choice', 's')
+            ->leftJoin('s.flavor', 'f')
+            ->where('m.flavor = :flavorId')
+            ->andWhere('m.choice IS NOT NULL')
+            ->setParameter('flavorId', $flavorId)
+            ->groupBy('m.choice, s.id, f.name')
+            ->orderBy('count', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Get total number of trials for a specific flavor
+     * 
+     * @param int $flavorId
+     * @return int
+     */
+    public function countTrialsByFlavor(int $flavorId): int
+    {
+        return $this->createQueryBuilder('m')
+            ->select('COUNT(m.id)')
+            ->where('m.flavor = :flavorId')
+            ->andWhere('m.choice IS NOT NULL')
+            ->setParameter('flavorId', $flavorId)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     //    /**
     //     * @return MusicToFlavorTrial[] Returns an array of MusicToFlavorTrial objects
     //     */
