@@ -2,16 +2,25 @@
 
 namespace App\Tests\Controller\Admin;
 
+use App\Factory\UserFactory;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Zenstruck\Browser\Test\HasBrowser;
+use Zenstruck\Foundry\Test\Factories;
 
 final class DashboardControllerTest extends KernelTestCase
 {
     use HasBrowser;
+    use Factories;
+
+    protected function setUp(): void
+    {
+        $this->user = UserFactory::new()->asAdmin()->create();
+    }
 
     public function testDashboardIndex(): void
     {
         $this->browser()
+            ->actingAs($this->user)
             ->visit('/admin/en')
             ->assertSuccessful()
             ->assertSee('S4A Experiment Dashboard')
@@ -27,11 +36,12 @@ final class DashboardControllerTest extends KernelTestCase
     public function testDashboardContainsRequiredElements(): void
     {
         $this->browser()
+            ->actingAs($this->user)
             ->visit('/admin/en')
             ->assertSuccessful()
             // Check for statistics cards
-            ->assertElementCount('.card', 6) // 4 stat cards + 2 chart cards + 1 overview card
-            // Check for chart containers  
+            ->assertElementCount('.card', 7) // 4 stat cards + 2 chart cards + 1 overview card
+            // Check for chart containers
             ->assertContains('canvas') // Charts should render canvas elements
             // Check for Bootstrap icons
             ->assertContains('bi-music-note-beamed')

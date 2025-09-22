@@ -3,25 +3,27 @@
 namespace App\Tests\Repository;
 
 use App\Entity\Task;
+use App\Factory\ExperimentFactory;
+use App\Factory\Stimulus\FlavorFactory;
+use App\Factory\Stimulus\SongFactory;
+use App\Factory\TaskFactory;
+use App\Factory\Trial\MusicToFlavorTrialFactory;
 use App\Repository\TaskRepository;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Zenstruck\Foundry\Test\Factories;
+use Zenstruck\Foundry\Test\ResetDatabase;
 
 final class TaskRepositoryTest extends KernelTestCase
 {
-    private TaskRepository $repository;
-
-    protected function setUp(): void
-    {
-        $kernel = self::bootKernel();
-        $this->repository = static::getContainer()->get(TaskRepository::class);
-    }
+    use Factories;
+    use ResetDatabase;
 
     public function testGetTaskTypeCountsReturnsArray(): void
     {
-        $result = $this->repository->getTaskTypeCounts();
-        
+        $result = TaskFactory::repository()->getTaskTypeCounts();
+
         $this->assertIsArray($result);
-        
+
         // Each element should have type and trial_count keys
         foreach ($result as $item) {
             $this->assertArrayHasKey('type', $item);
@@ -33,10 +35,10 @@ final class TaskRepositoryTest extends KernelTestCase
 
     public function testGetHourlyTaskStatsReturnsArray(): void
     {
-        $result = $this->repository->getHourlyTaskStats();
-        
+        $result = TaskFactory::repository()->getHourlyTaskStats();
+
         $this->assertIsArray($result);
-        
+
         // Each element should have required keys for hourly stats
         foreach ($result as $item) {
             $this->assertArrayHasKey('type', $item);
@@ -50,13 +52,19 @@ final class TaskRepositoryTest extends KernelTestCase
 
     public function testGetHourlyTaskStatsReturnsOnlyLast12Hours(): void
     {
-        $result = $this->repository->getHourlyTaskStats();
-        
+        $task = TaskFactory::createOne();
+        SongFactory::createMany(10);
+        FlavorFactory::createMany(10);
+        MusicToFlavorTrialFactory::createMany(10, [
+            'task' => $task,
+        ]);
+        $result = TaskFactory::repository()->getHourlyTaskStats();
+
         $cutoffTime = new \DateTime('-12 hours');
-        
+
         foreach ($result as $item) {
             $itemDateTime = new \DateTime($item['date_created'] . ' ' . sprintf('%02d:00:00', $item['hour_created']));
-            $this->assertGreaterThanOrEqual($cutoffTime, $itemDateTime, 
+            $this->assertGreaterThanOrEqual($cutoffTime, $itemDateTime,
                 'Result should only include data from the last 12 hours');
         }
     }
