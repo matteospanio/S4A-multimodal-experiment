@@ -69,9 +69,14 @@ readonly class Mathematician
             ];
         }
 
-        // Get the expected song (the one associated with this flavor)
-        $expectedSong = !$flavor->getSongs()->isEmpty() ? $flavor->getSongs()->first() : null;
-        $expectedSongId = $expectedSong?->getId();
+        // Get the expected song (the one from the trial whose flavor matches the trial's flavor)
+        $expectedSongId = null;
+        foreach ($trial->getSongs() as $song) {
+            if ($song->getFlavor() && $song->getFlavor()->getId() === $flavor->getId()) {
+                $expectedSongId = $song->getId();
+                break;
+            }
+        }
 
         // Build the result arrays
         $labels = [];
