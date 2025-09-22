@@ -8,6 +8,7 @@ use App\Entity\Stimulus\Song;
 use App\Entity\Task;
 use App\Entity\Trial\Trial;
 use App\Repository\SongRepository;
+use App\Repository\TaskRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
@@ -22,6 +23,7 @@ class DashboardController extends AbstractDashboardController
 {
     public function __construct(
         private readonly SongRepository $songRepository,
+        private readonly TaskRepository $taskRepository,
         private readonly ChartBuilderInterface $chartBuilder
     )
     {
@@ -29,6 +31,7 @@ class DashboardController extends AbstractDashboardController
 
     public function index(): Response
     {
+        // Existing song by flavor chart
         $count = $this->songRepository->findGroupedByFlavor();
         $labels = array_column($count, 'flavor');
         $data = array_column($count, 'song_count');
@@ -49,8 +52,109 @@ class DashboardController extends AbstractDashboardController
             ])
         ;
 
+        // Get task statistics
+        $taskCounts = $this->taskRepository->getTaskTypeCounts();
+        $taskTypeCountMap = [];
+        foreach ($taskCounts as $taskCount) {
+            $taskTypeCountMap[$taskCount['type']] = $taskCount['trial_count'];
+        }
+
+        // Get hourly statistics for line chart
+        $hourlyStats = $this->taskRepository->getHourlyTaskStats();
+        
+        // Prepare data for the line chart - last 12 hours
+        $hoursLabels = [];
+        $music2aromaData = [];
+        $aroma2musicData = [];
+        
+        $now = new \DateTime();
+        for ($i = 11; $i >= 0; $i--) {
+            $hour = clone $now;
+            $hour->sub(new \DateInterval("PT{$i}H"));
+            $hourLabel = $hour->format('H:00');
+            $hoursLabels[] = $hourLabel;
+            
+            // Initialize data for this hour
+            $music2aromaCount = 0;
+            $aroma2musicCount = 0;
+            
+            // Find matching data for this hour
+            foreach ($hourlyStats as $stat) {
+                $statHour = sprintf('%02d:00', $stat['hour_created']);
+                $statDate = $stat['date_created'];
+                
+                if ($statHour === $hourLabel && $statDate === $hour->format('Y-m-d')) {
+                    if ($stat['type'] === 'music2aroma') {
+                        $music2aromaCount = $stat['trial_count'];
+                    } elseif ($stat['type'] === 'aroma2music') {
+                        $aroma2musicCount = $stat['trial_count'];
+                    }
+                }
+            }
+            
+            $music2aromaData[] = $music2aromaCount;
+            $aroma2musicData[] = $aroma2musicCount;
+        }
+
+        // Create line chart
+        $hourlyTaskChart = $this->chartBuilder->createChart(Chart::TYPE_LINE)
+            ->setData([
+                'labels' => $hoursLabels,
+                'datasets' => [
+                    [
+                        'label' => 'Music to Aroma Tasks',
+                        'data' => $music2aromaData,
+                        'borderColor' => '#ff8700',
+                        'backgroundColor' => 'rgba(255, 135, 0, 0.1)',
+                        'fill' => false,
+                        'tension' => 0.1,
+                    ],
+                    [
+                        'label' => 'Aroma to Music Tasks',
+                        'data' => $aroma2musicData,
+                        'borderColor' => '#45d73b',
+                        'backgroundColor' => 'rgba(69, 215, 59, 0.1)',
+                        'fill' => false,
+                        'tension' => 0.1,
+                    ],
+                ],
+            ])
+            ->setOptions([
+                'maintainAspectRatio' => false,
+                'scales' => [
+                    'y' => [
+                        'beginAtZero' => true,
+                        'title' => [
+                            'display' => true,
+                            'text' => 'Number of Completed Trials',
+                        ],
+                    ],
+                    'x' => [
+                        'title' => [
+                            'display' => true,
+                            'text' => 'Time (Last 12 Hours)',
+                        ],
+                    ],
+                ],
+                'plugins' => [
+                    'legend' => [
+                        'display' => true,
+                        'position' => 'top',
+                    ],
+                    'title' => [
+                        'display' => true,
+                        'text' => 'Trials Completed per Hour by Task Type',
+                    ],
+                ],
+            ])
+        ;
+
         return $this->render('admin/dashboard.html.twig', [
             'songByFlavor' => $songByFlavor,
+            'hourlyTaskChart' => $hourlyTaskChart,
+            'music2aromaCount' => $taskTypeCountMap['music2aroma'] ?? 0,
+            'aroma2musicCount' => $taskTypeCountMap['aroma2music'] ?? 0,
+            'totalTrials' => array_sum($taskTypeCountMap),
         ]);
     }
 

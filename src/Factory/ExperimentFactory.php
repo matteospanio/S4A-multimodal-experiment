@@ -48,13 +48,9 @@ use Zenstruck\Foundry\Persistence\ProxyRepositoryDecorator;
  */
 final class ExperimentFactory extends PersistentObjectFactory
 {
-    /**
-     * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#factories-as-services
-     *
-     * @todo inject services if required
-     */
     public function __construct()
     {
+        parent::__construct();
     }
 
     public static function class(): string
@@ -62,20 +58,14 @@ final class ExperimentFactory extends PersistentObjectFactory
         return Experiment::class;
     }
 
-    /**
-     * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#model-factories
-     *
-     * @todo add your default values here
-     */
     protected function defaults(): array|callable
     {
         return [
+            'title' => self::faker()->text(50),
+            'description' => self::faker()->optional()->text(),
         ];
     }
 
-    /**
-     * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#initialization
-     */
     protected function initialize(): static
     {
         return $this

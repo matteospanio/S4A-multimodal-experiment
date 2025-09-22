@@ -16,7 +16,7 @@ final class S4AExperimentStory extends Story
     {
         FlavorStory::load();
         SongFactory::createMany(
-            20,
+            30,
             function () {
                 return ['flavor' => FlavorFactory::random()];
             }
@@ -31,7 +31,7 @@ final class S4AExperimentStory extends Story
             ['type' => 'aroma2music', 'experiment' => $experiment],
         ]);
 
-        MusicToFlavorTrialFactory::createMany(200);
-        FlavorToMusicTrialFactory::createMany(200);
+        MusicToFlavorTrialFactory::createMany(200, ['task' => TaskFactory::repository()->findOneBy(['type' => 'music2aroma'])]);
+        FlavorToMusicTrialFactory::createMany(200, ['task' => TaskFactory::repository()->findOneBy(['type' => 'aroma2music'])]);
     }
 }
