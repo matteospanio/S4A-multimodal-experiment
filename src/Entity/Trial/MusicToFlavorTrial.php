@@ -31,7 +31,6 @@ class MusicToFlavorTrial extends Trial implements TrialInterface
 
     public function __construct()
     {
-        parent::__construct();
         $this->songs = new ArrayCollection();
     }
 
