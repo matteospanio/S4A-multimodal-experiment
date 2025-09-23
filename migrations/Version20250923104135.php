@@ -14,7 +14,7 @@ final class Version20250923104135 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return '';
+        return 'Add Doctrine extensions support: create ext_translations table for translatable entities; add created_at and updated_at columns for timestampable entities in trial and user tables.';
     }
 
     public function up(Schema $schema): void
