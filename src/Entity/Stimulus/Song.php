@@ -110,4 +110,9 @@ class Song implements StimulusInterface
 
         return $this;
     }
+
+    public function getUrlPath(): ?string
+    {
+        return '/uploads/' . basename($this->url);
+    }
 }

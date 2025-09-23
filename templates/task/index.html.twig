@@ -27,7 +27,7 @@
                                     <div class="audio-control">
                                         <h5>Audio Option A</h5>
                                         <audio controls preload="metadata">
-                                            <source src="{{ trial.songs[0].url }}" type="audio/wav">
+                                            <source src="{{ trial.songs[0].urlPath }}" type="audio/wav">
                                             {{ 'task.audio_error'|trans }}
                                         </audio>
                                     </div>
@@ -35,7 +35,7 @@
                                     <div class="audio-control">
                                         <h5>Audio Option B</h5>
                                         <audio controls preload="metadata">
-                                            <source src="{{ trial.songs[1].url }}" type="audio/wav">
+                                            <source src="{{ trial.songs[1].urlPath }}" type="audio/wav">
                                             {{ 'task.audio_error'|trans }}
                                         </audio>
                                     </div>
@@ -99,7 +99,7 @@
                                     <h4 class="card-title">Audio Stimulus</h4>
                                     <div class="audio-control">
                                         <audio controls preload="metadata">
-                                            <source src="{{ trial.song.url }}" type="audio/wav">
+                                            <source src="{{ trial.song.urlPath }}" type="audio/wav">
                                             {{ 'task.audio_error'|trans }}
                                         </audio>
                                     </div>

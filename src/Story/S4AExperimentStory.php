@@ -16,12 +16,12 @@ final class S4AExperimentStory extends Story
     public function build(): void
     {
         FlavorStory::load();
-        SongFactory::createMany(
-            30,
-            function () {
-                return ['flavor' => FlavorFactory::random()];
-            }
-        );
+        // SongFactory::createMany(
+        //     30,
+        //     function () {
+        //         return ['flavor' => FlavorFactory::random()];
+        //     }
+        // );
 
         $experiment = ExperimentFactory::createOne([
             'title' => 'S4A Experiment',
