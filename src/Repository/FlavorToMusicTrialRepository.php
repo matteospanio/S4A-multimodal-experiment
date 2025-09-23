@@ -19,7 +19,7 @@ class FlavorToMusicTrialRepository extends ServiceEntityRepository
 
     /**
      * Get choice statistics for a specific song in FlavorToMusic trials
-     * 
+     *
      * @param int $songId
      * @return array Array of ['choice_id', 'choice_name', 'choice_icon', 'count']
      */
@@ -44,7 +44,7 @@ class FlavorToMusicTrialRepository extends ServiceEntityRepository
 
     /**
      * Get total number of trials for a specific song
-     * 
+     *
      * @param int $songId
      * @return int
      */
@@ -70,6 +70,15 @@ class FlavorToMusicTrialRepository extends ServiceEntityRepository
             ->orderBy('f.id', 'ASC')
             ->getQuery()
             ->getResult();
+    }
+
+    public function countIncompleteTrials(): int
+    {
+        return $this->createQueryBuilder('f')
+            ->select('COUNT(f.id)')
+            ->where('f.choice IS NULL')
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
 //    /**

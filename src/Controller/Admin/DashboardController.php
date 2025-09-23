@@ -11,6 +11,7 @@ use App\Entity\Trial\MusicToFlavorTrial;
 use App\Entity\Trial\Trial;
 use App\Repository\SongRepository;
 use App\Repository\TaskRepository;
+use App\Repository\TrialRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
@@ -29,7 +30,8 @@ class DashboardController extends AbstractDashboardController
     public function __construct(
         private readonly SongRepository $songRepository,
         private readonly TaskRepository $taskRepository,
-        private readonly ChartBuilderInterface $chartBuilder
+        private readonly ChartBuilderInterface $chartBuilder,
+        private readonly TrialRepository $trialRepository,
     )
     {
     }
@@ -89,9 +91,9 @@ class DashboardController extends AbstractDashboardController
                 $statDate = $stat['date_created'];
 
                 if ($statHour === $hourLabel && $statDate === $hour->format('Y-m-d')) {
-                    if ($stat['type'] === 'music2aroma') {
+                    if ($stat['type'] === Trial::MUSICS2SMELL) {
                         $music2aromaCount = $stat['trial_count'];
-                    } elseif ($stat['type'] === 'aroma2music') {
+                    } elseif ($stat['type'] === Trial::SMELLS2MUSIC) {
                         $aroma2musicCount = $stat['trial_count'];
                     }
                 }
@@ -154,11 +156,17 @@ class DashboardController extends AbstractDashboardController
             ])
         ;
 
+        $totalTrials = $this->trialRepository->count();
+        $incompleteTrials = $this->trialRepository->countAllIncompleteTrials();
+
+        $percentageCompleted = $totalTrials > 0 ? round((($totalTrials - $incompleteTrials) / $totalTrials) * 100, 2) : 0;
+
         return $this->render('admin/dashboard.html.twig', [
             'songByFlavor' => $songByFlavor,
             'hourlyTaskChart' => $hourlyTaskChart,
-            'music2aromaCount' => $taskTypeCountMap['music2aroma'] ?? 0,
-            'aroma2musicCount' => $taskTypeCountMap['aroma2music'] ?? 0,
+            'music2aromaCount' => $taskTypeCountMap[Trial::MUSICS2SMELL] ?? 0,
+            'aroma2musicCount' => $taskTypeCountMap[Trial::SMELLS2MUSIC] ?? 0,
+            'percentageCompleted' => $percentageCompleted,
             'totalTrials' => array_sum($taskTypeCountMap),
         ]);
     }

@@ -85,6 +85,17 @@ class MusicToFlavorTrial extends Trial implements TrialInterface
         return $this;
     }
 
+    public function getIntendedSong(): Song
+    {
+        foreach ($this->songs as $song) {
+            if ($song->getFlavor() === $this->flavor) {
+                return $song;
+            }
+        }
+
+        throw new \LogicException('No song found for the intended flavor.');
+    }
+
     public function doesMatch(): ?bool
     {
         if ($this->choice === null || $this->flavor === null) {
