@@ -7,7 +7,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\UrlField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FileUploadType;
 
 class SongCrudController extends AbstractCrudController
 {
@@ -22,7 +23,13 @@ class SongCrudController extends AbstractCrudController
             IdField::new('id')->hideOnForm(),
             TextEditorField::new('prompt'),
             AssociationField::new('flavor'),
-            UrlField::new('url'),
+            TextField::new('url')->setFormType(FileUploadType::class)
+                ->setFormTypeOptions(
+                    [
+                        'upload_dir' => 'uploads',
+                        'upload_filename' => '[uuid].[extension]'
+                    ]
+                )
         ];
     }
 }

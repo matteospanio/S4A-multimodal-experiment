@@ -26,7 +26,7 @@ class Task
     /**
      * @var Collection<int, Trial>
      */
-    #[ORM\OneToMany(targetEntity: Trial::class, mappedBy: 'task')]
+    #[ORM\OneToMany(targetEntity: Trial::class, mappedBy: 'task', cascade: ['persist'])]
     private Collection $trials;
 
     public function __construct()

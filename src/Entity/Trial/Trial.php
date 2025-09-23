@@ -5,6 +5,7 @@ namespace App\Entity\Trial;
 use App\Entity\Task;
 use App\Repository\TrialRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity(repositoryClass: TrialRepository::class)]
 #[ORM\Table(name: 'trial')]
@@ -16,6 +17,8 @@ use Doctrine\ORM\Mapping as ORM;
 ])]
 class Trial
 {
+    use TimestampableEntity;
+
     const string SMELLS2MUSIC = 'smells2music';
     const string MUSICS2SMELL = 'musics2smell';
 
@@ -24,15 +27,12 @@ class Trial
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
-    public readonly ?\DateTimeImmutable $createdAt;
-
     #[ORM\ManyToOne(inversedBy: 'trials')]
     private ?Task $task = null;
 
-    public function __construct()
+    public function __toString(): string
     {
-        $this->createdAt = new \DateTimeImmutable();
+        return 'Trial #' . $this->id;
     }
 
     public function getId(): ?int
@@ -50,5 +50,13 @@ class Trial
         $this->task = $task;
 
         return $this;
+    }
+
+    public function getTimeInterval(): ?string
+    {
+        if ($this->getCreatedAt() && $this->getUpdatedAt()) {
+            return $this->getUpdatedAt()->diff($this->getCreatedAt())->format('%H:%I:%S');
+        }
+        return null;
     }
 }

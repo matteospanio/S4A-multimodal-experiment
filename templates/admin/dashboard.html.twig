@@ -30,7 +30,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="col-md-3">
                 <div class="card border-success">
                     <div class="card-body text-center">
@@ -47,7 +47,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="col-md-3">
                 <div class="card border-info">
                     <div class="card-body text-center">
@@ -64,7 +64,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="col-md-3">
                 <div class="card border-warning">
                     <div class="card-body text-center">
@@ -72,12 +72,7 @@
                             <div>
                                 <h5 class="card-title text-warning mb-1">Completion Rate</h5>
                                 <h2 class="mb-0 text-warning">
-                                    {% set currentTrials = music2aromaCount + aroma2musicCount %}
-                                    {% if currentTrials > 0 %}
-                                        100%
-                                    {% else %}
-                                        0%
-                                    {% endif %}
+                                    {{ percentageCompleted }}%
                                 </h2>
                                 <small class="text-muted">Trial Participation</small>
                             </div>
@@ -105,7 +100,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="col-lg-4">
                 <div class="card">
                     <div class="card-header bg-light">

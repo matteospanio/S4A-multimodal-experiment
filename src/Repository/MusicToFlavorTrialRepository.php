@@ -18,7 +18,7 @@ class MusicToFlavorTrialRepository extends ServiceEntityRepository
 
     /**
      * Get choice statistics for a specific flavor in MusicToFlavor trials
-     * 
+     *
      * @param int $flavorId
      * @return array Array of ['choice_id', 'choice_name', 'choice_flavor_name', 'count']
      */
@@ -44,7 +44,7 @@ class MusicToFlavorTrialRepository extends ServiceEntityRepository
 
     /**
      * Get total number of trials for a specific flavor
-     * 
+     *
      * @param int $flavorId
      * @return int
      */
@@ -61,7 +61,7 @@ class MusicToFlavorTrialRepository extends ServiceEntityRepository
 
     /**
      * Get choice statistics for a specific flavor, filtered by songs from a specific trial
-     * 
+     *
      * @param int $flavorId
      * @param array $songIds Array of song IDs that were presented in the trial
      * @return array Array of ['choice_id', 'choice_name', 'choice_flavor_name', 'count']
@@ -94,7 +94,7 @@ class MusicToFlavorTrialRepository extends ServiceEntityRepository
 
     /**
      * Get total number of trials for a specific flavor, filtered by songs from a specific trial
-     * 
+     *
      * @param int $flavorId
      * @param array $songIds Array of song IDs that were presented in the trial
      * @return int
@@ -112,6 +112,15 @@ class MusicToFlavorTrialRepository extends ServiceEntityRepository
             ->andWhere('m.choice IN (:songIds)')
             ->setParameter('flavorId', $flavorId)
             ->setParameter('songIds', $songIds)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function countIncompleteTrials(): int
+    {
+        return $this->createQueryBuilder('f')
+            ->select('COUNT(f.id)')
+            ->where('f.choice IS NULL')
             ->getQuery()
             ->getSingleScalarResult();
     }

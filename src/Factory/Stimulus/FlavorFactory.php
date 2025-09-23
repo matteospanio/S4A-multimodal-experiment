@@ -69,6 +69,9 @@ final class FlavorFactory extends PersistentObjectFactory
     protected function initialize(): static
     {
         return $this
+            ->afterInstantiate(function (Flavor $flavor) {
+                $flavor->setTranslatableLocale('en');
+            })
             // ->afterInstantiate(function(Flavor $flavor): void {})
         ;
     }

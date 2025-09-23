@@ -8,9 +8,11 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\Translatable\Translatable;
 
 #[ORM\Entity(repositoryClass: FlavorRepository::class)]
-class Flavor implements StimulusInterface
+class Flavor implements StimulusInterface, Translatable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -18,13 +20,18 @@ class Flavor implements StimulusInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Gedmo\Translatable]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
     private ?string $icon = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Gedmo\Translatable]
     private ?string $description = null;
+
+    #[Gedmo\Locale]
+    private ?string $locale = null;
 
     /**
      * @var Collection<int, Song>
@@ -148,5 +155,10 @@ class Flavor implements StimulusInterface
         }
 
         return $this;
+    }
+
+    public function setTranslatableLocale(string $locale): void
+    {
+        $this->locale = $locale;
     }
 }

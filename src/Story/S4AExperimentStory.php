@@ -2,6 +2,7 @@
 
 namespace App\Story;
 
+use App\Entity\Trial\Trial;
 use App\Factory\ExperimentFactory;
 use App\Factory\Stimulus\FlavorFactory;
 use App\Factory\Stimulus\SongFactory;
@@ -27,11 +28,11 @@ final class S4AExperimentStory extends Story
             'description' => 'An experiment for S4A'
         ]);
         TaskFactory::createSequence([
-            ['type' => 'music2aroma', 'experiment' => $experiment],
-            ['type' => 'aroma2music', 'experiment' => $experiment],
+            ['type' => Trial::MUSICS2SMELL, 'experiment' => $experiment],
+            ['type' => Trial::SMELLS2MUSIC, 'experiment' => $experiment],
         ]);
 
-        MusicToFlavorTrialFactory::createMany(200, ['task' => TaskFactory::repository()->findOneBy(['type' => 'music2aroma'])]);
-        FlavorToMusicTrialFactory::createMany(200, ['task' => TaskFactory::repository()->findOneBy(['type' => 'aroma2music'])]);
+        // MusicToFlavorTrialFactory::createMany(200, ['task' => TaskFactory::repository()->findOneBy(['type' => 'music2aroma'])]);
+        // FlavorToMusicTrialFactory::createMany(200, ['task' => TaskFactory::repository()->findOneBy(['type' => 'aroma2music'])]);
     }
 }

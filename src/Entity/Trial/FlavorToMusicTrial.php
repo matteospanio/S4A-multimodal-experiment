@@ -31,7 +31,6 @@ class FlavorToMusicTrial extends Trial implements TrialInterface
 
     public function __construct()
     {
-        parent::__construct();
         $this->flavors = new ArrayCollection();
     }
 
@@ -83,5 +82,19 @@ class FlavorToMusicTrial extends Trial implements TrialInterface
     {
         $this->choice = $choice;
         return $this;
+    }
+
+    public function getIntendedFlavor(): Flavor
+    {
+        return $this->song->getFlavor();
+    }
+
+    public function doesMatch(): ?bool
+    {
+        if ($this->choice === null || $this->song === null) {
+            return null;
+        }
+
+        return $this->song->getFlavor() === $this->choice;
     }
 }

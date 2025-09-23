@@ -11,33 +11,18 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class TrialRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(
+        ManagerRegistry $registry,
+        private readonly FlavorToMusicTrialRepository $flavorToMusicTrialRepository,
+        private readonly MusicToFlavorTrialRepository $musicToFlavorTrialRepository,
+    )
     {
         parent::__construct($registry, Trial::class);
     }
 
-//    /**
-//     * @return Trial[] Returns an array of Trial objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('t')
-//            ->andWhere('t.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('t.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Trial
-//    {
-//        return $this->createQueryBuilder('t')
-//            ->andWhere('t.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    public function countAllIncompleteTrials(): int
+    {
+        return $this->flavorToMusicTrialRepository->countIncompleteTrials() +
+               $this->musicToFlavorTrialRepository->countIncompleteTrials();
+    }
 }

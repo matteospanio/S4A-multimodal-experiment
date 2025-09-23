@@ -6,11 +6,13 @@ use App\Factory\UserFactory;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Zenstruck\Browser\Test\HasBrowser;
 use Zenstruck\Foundry\Test\Factories;
+use Zenstruck\Foundry\Test\ResetDatabase;
 
 final class DashboardControllerTest extends KernelTestCase
 {
     use HasBrowser;
     use Factories;
+    use ResetDatabase;
 
     protected function setUp(): void
     {

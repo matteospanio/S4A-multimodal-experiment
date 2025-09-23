@@ -9,6 +9,7 @@ use App\Entity\Trial\MusicToFlavorTrial;
 use App\Entity\Trial\Trial;
 use App\Repository\FlavorRepository;
 use App\Repository\SongRepository;
+use App\Repository\TaskRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
@@ -22,7 +23,8 @@ final readonly class StimuliManager
     public function __construct(
         private FlavorRepository $flavorRepository,
         private SongRepository   $songRepository,
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private TaskRepository $taskRepository,
     ) {
     }
 
@@ -55,6 +57,8 @@ final readonly class StimuliManager
      */
     private function generateFlavorToMusicTrial(array $flavors, array $songs, array $usedCombinations): FlavorToMusicTrial
     {
+        $task = $this->taskRepository->findOneBy(['type' => Trial::SMELLS2MUSIC]);
+
         $allCombos = $this->getAllFlavorToMusicCombinations($flavors, $songs);
         $available = $this->filterUnusedCombinations($allCombos, $usedCombinations);
 
@@ -73,6 +77,7 @@ final readonly class StimuliManager
         $trial->addFlavor($flavorObjs[0]);
         $trial->addFlavor($flavorObjs[1]);
         $trial->setSong($combo['song']);
+        $trial->setTask($task);
 
         return $trial;
     }
@@ -84,6 +89,8 @@ final readonly class StimuliManager
      */
     private function generateMusicToFlavorTrial(array $flavors, array $songs, array $usedCombinations): MusicToFlavorTrial
     {
+        $task = $this->taskRepository->findOneBy(['type' => Trial::MUSICS2SMELL]);
+
         $allCombos = $this->getAllMusicToFlavorCombinations($flavors, $songs);
         $available = $this->filterUnusedCombinations($allCombos, $usedCombinations);
 
@@ -101,6 +108,7 @@ final readonly class StimuliManager
         $trial->addSong($songObjs[0]);
         $trial->addSong($songObjs[1]);
         $trial->setFlavor($combo['flavor']);
+        $trial->setTask($task);
 
         return $trial;
     }
