@@ -30,6 +30,11 @@ class Trial
     #[ORM\ManyToOne(inversedBy: 'trials')]
     private ?Task $task = null;
 
+    public function __toString(): string
+    {
+        return 'Trial #' . $this->id;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -45,5 +50,13 @@ class Trial
         $this->task = $task;
 
         return $this;
+    }
+
+    public function getTimeInterval(): ?string
+    {
+        if ($this->getCreatedAt() && $this->getUpdatedAt()) {
+            return $this->getUpdatedAt()->diff($this->getCreatedAt())->format('%H:%I:%S');
+        }
+        return null;
     }
 }

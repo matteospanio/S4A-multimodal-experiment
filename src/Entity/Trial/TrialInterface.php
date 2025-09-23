@@ -20,4 +20,6 @@ interface TrialInterface
      * @param S|null $choice
      */
     public function setChoice(?StimulusInterface $choice): static;
+
+    public function doesMatch(): ?bool;
 }

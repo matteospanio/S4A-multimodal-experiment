@@ -6,11 +6,16 @@ use App\Entity\Experiment;
 use App\Entity\Stimulus\Flavor;
 use App\Entity\Stimulus\Song;
 use App\Entity\Task;
+use App\Entity\Trial\FlavorToMusicTrial;
+use App\Entity\Trial\MusicToFlavorTrial;
 use App\Entity\Trial\Trial;
 use App\Repository\SongRepository;
 use App\Repository\TaskRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
@@ -61,28 +66,28 @@ class DashboardController extends AbstractDashboardController
 
         // Get hourly statistics for line chart
         $hourlyStats = $this->taskRepository->getHourlyTaskStats();
-        
+
         // Prepare data for the line chart - last 12 hours
         $hoursLabels = [];
         $music2aromaData = [];
         $aroma2musicData = [];
-        
+
         $now = new \DateTime();
         for ($i = 11; $i >= 0; $i--) {
             $hour = clone $now;
             $hour->sub(new \DateInterval("PT{$i}H"));
             $hourLabel = $hour->format('H:00');
             $hoursLabels[] = $hourLabel;
-            
+
             // Initialize data for this hour
             $music2aromaCount = 0;
             $aroma2musicCount = 0;
-            
+
             // Find matching data for this hour
             foreach ($hourlyStats as $stat) {
                 $statHour = sprintf('%02d:00', $stat['hour_created']);
                 $statDate = $stat['date_created'];
-                
+
                 if ($statHour === $hourLabel && $statDate === $hour->format('Y-m-d')) {
                     if ($stat['type'] === 'music2aroma') {
                         $music2aromaCount = $stat['trial_count'];
@@ -91,7 +96,7 @@ class DashboardController extends AbstractDashboardController
                     }
                 }
             }
-            
+
             $music2aromaData[] = $music2aromaCount;
             $aroma2musicData[] = $aroma2musicCount;
         }
@@ -163,8 +168,8 @@ class DashboardController extends AbstractDashboardController
         return Dashboard::new()
             ->setTitle('S4A Experiment')
             ->setLocales([
-                'en' => 'English',
-                'it' => 'Italiano',
+                'en' => '🇬🇧 English',
+                'it' => '🇮🇹 Italiano',
             ])
         ;
     }
@@ -186,9 +191,20 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::section('Experiments');
         yield MenuItem::linkToCrud('Experiments', 'flask', Experiment::class);
         yield MenuItem::linkToCrud('Tasks', 'list-task', Task::class);
-        yield MenuItem::linkToCrud('Trials', 'check2-square', Trial::class);
+        // yield MenuItem::linkToCrud('Trials', 'check2-square', Trial::class);
+        yield MenuItem::subMenu('Trials', 'check2-square')->setSubItems([
+            MenuItem::linkToCrud('Music to Aroma', 'arrow-right-circle', MusicToFlavorTrial::class),
+            MenuItem::linkToCrud('Aroma to Music', 'arrow-left-circle', FlavorToMusicTrial::class),
+        ]);
         yield MenuItem::section();
-        yield MenuItem::linkToRoute('Home', 'house', 'app_home');
+        yield MenuItem::linkToUrl('Home', 'house', $this->generateUrl('app_home'));
         yield MenuItem::linkToLogout('Logout', 'door-open');
+    }
+
+    public function configureActions(): Actions
+    {
+        return parent::configureActions()
+            ->add(Crud::PAGE_INDEX, Action::DETAIL)
+        ;
     }
 }

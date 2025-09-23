@@ -84,4 +84,13 @@ class MusicToFlavorTrial extends Trial implements TrialInterface
 
         return $this;
     }
+
+    public function doesMatch(): ?bool
+    {
+        if ($this->choice === null || $this->flavor === null) {
+            return null;
+        }
+
+        return $this->choice->getFlavor() === $this->flavor;
+    }
 }
