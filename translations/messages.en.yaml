@@ -12,8 +12,8 @@ admin:
         participation: Trial Participation
         completion_rate: Completion Rate
     chart:
-        activity: 'Trials Activity - Last %hours%h'
-        distribution: 'Song by Flavor Distribution'
+        activity: 'Trials Activity - Last %hours% Hours'
+        distribution: 'Songs by Flavor Distribution'
 
 general:
     audio: 'One audio stimulus|%count% audio stimuli'
