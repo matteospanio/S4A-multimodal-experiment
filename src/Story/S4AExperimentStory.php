@@ -16,12 +16,12 @@ final class S4AExperimentStory extends Story
     public function build(): void
     {
         FlavorStory::load();
-        // SongFactory::createMany(
-        //     30,
-        //     function () {
-        //         return ['flavor' => FlavorFactory::random()];
-        //     }
-        // );
+        SongFactory::createMany(
+            30,
+            function () {
+                return ['flavor' => FlavorFactory::random()];
+            }
+        );
 
         $experiment = ExperimentFactory::createOne([
             'title' => 'S4A Experiment',
@@ -32,7 +32,7 @@ final class S4AExperimentStory extends Story
             ['type' => Trial::SMELLS2MUSIC, 'experiment' => $experiment],
         ]);
 
-        // MusicToFlavorTrialFactory::createMany(200, ['task' => TaskFactory::repository()->findOneBy(['type' => 'music2aroma'])]);
-        // FlavorToMusicTrialFactory::createMany(200, ['task' => TaskFactory::repository()->findOneBy(['type' => 'aroma2music'])]);
+        MusicToFlavorTrialFactory::createMany(200, ['task' => TaskFactory::repository()->findOneBy(['type' => 'music2aroma'])]);
+        FlavorToMusicTrialFactory::createMany(200, ['task' => TaskFactory::repository()->findOneBy(['type' => 'aroma2music'])]);
     }
 }
