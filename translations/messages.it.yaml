@@ -1,37 +1,50 @@
-Home: Pagina Iniziale
-Admin: Pannello di Amministrazione
-
+Home: 'Pagina Iniziale'
+Admin: 'Pannello di Amministrazione'
 general:
-    audio: Suono|Suoni
-    perfume: Profumo|Profumi
-    stimulus: Stimolo|Stimoli
-    task: Compito|Compiti
-    experiment: Esperimento|Esperimenti
-
+    audio: 'Un suono|%count% suoni'
+    perfume: 'Un profumo|%count% profumi'
+    task: Compito
+    experiment: Esperimento
+    music: __general.music
+    aroma: __general.aroma
 home:
-    task_1: 'Associazione Suoni-Profumo'
-    task_2: 'Associazione Profumi-Suono'
-
+    task_1:
+        title: 'Associazione Suoni-Profumo'
+        description: __home.task_1.description
+    task_2:
+        title: 'Associazione Profumi-Suono'
+        description: __home.task_2.description
+    to:
+        smell: __home.to.smell
+        choose_from: __home.to.choose_from
 login:
     sign_in: Accedi
-    already_logged_in: Hai già effettuato l'accesso come
-    click_to_logout: Clicca qui per uscire
-    sign_in_to_continue: Accedi per continuare
-    username_placeholder: Inserisci il tuo nome utente
-    password_placeholder: Inserisci la tua password
-
+    already_logged_in: "Hai già effettuato l'accesso come"
+    click_to_logout: 'Clicca qui per uscire'
+    sign_in_to_continue: 'Accedi per continuare'
+    username_placeholder: 'Inserisci il tuo nome utente'
+    password_placeholder: 'Inserisci la tua password'
 task:
     m2f:
-        instructions: Mentre ascolti entrambi gli stimoli sonori, annusa il profumo, poi scegli quale suono corrisponde meglio alla fragranza
-        question: Quale suono accompagna meglio il profumo?
+        instructions: 'Mentre ascolti entrambi gli stimoli sonori, annusa il profumo, poi scegli quale suono corrisponde meglio alla fragranza'
+        question: 'Quale suono accompagna meglio il profumo?'
     f2m:
-        instructions: Ascolta il file audio, poi scegli a quale dei due profumi si abbina meglio
-        question: Quale profumo risuona meglio con il brano?
-    audio_error: Il tuo browser non supporta l'elemento audio.
+        instructions: 'Ascolta il file audio, poi scegli a quale dei due profumi si abbina meglio'
+        question: 'Quale profumo risuona meglio con il brano?'
+        specific_instruction: __task.f2m.specific_instruction
     choose: Scegli
-    back: Torna al Menu
-    submit: Invia la Scelta
-
+    back: 'Torna al Menu'
+    submit: 'Invia la Scelta'
+    repeat: __task.repeat
+    audio:
+        stimuli: __task.audio.stimuli
+        option: __task.audio.option
+        error: __task.audio.error
+        stimulus: __task.audio.stimulus
+    perfume:
+        to_smell: __task.perfume.to_smell
+        instruction: __task.perfume.instruction
+        option: __task.perfume.option
 topbar:
     menu: Menu
     settings: Impostazioni
@@ -40,19 +53,30 @@ topbar:
     theme_dark: Scuro
     language: Lingua
     info: Informazioni
-    privacy_policy: Politica sulla Privacy
-
+    privacy_policy: 'Politica sulla Privacy'
 privacy:
-    title: Politica sulla Privacy
-    content: |
-        Questo esperimento raccoglie dati anonimi esclusivamente per scopi di ricerca scientifica.
-        Tutti i dati verranno utilizzati in forma aggregata per analizzare le associazioni sensoriali multimodali.
-
-        • I tuoi dati sono completamente anonimi
-        • I dati sono utilizzati esclusivamente per la ricerca scientifica
-        • Tutte le analisi sono eseguite su dati aggregati
-        • Puoi abbandonare il sondaggio in qualsiasi momento
-        • Questo sistema è conforme al GDPR
-
-        Partecipando a questo esperimento, acconsenti all'uso delle tue risposte anonime per scopi di ricerca.
+    title: 'Politica sulla Privacy'
+    content: "Questo esperimento raccoglie dati anonimi esclusivamente per scopi di ricerca scientifica.\nTutti i dati verranno utilizzati in forma aggregata per analizzare le associazioni sensoriali multimodali.\n\n• I tuoi dati sono completamente anonimi\n• I dati sono utilizzati esclusivamente per la ricerca scientifica\n• Tutte le analisi sono eseguite su dati aggregati\n• Puoi abbandonare il sondaggio in qualsiasi momento\n• Questo sistema è conforme al GDPR\n\nPartecipando a questo esperimento, acconsenti all'uso delle tue risposte anonime per scopi di ricerca.\n"
     close: Chiudi
+results:
+    alert:
+        success: __results.alert.success
+        wrong: __results.alert.wrong
+    chart:
+        title: __results.chart.title
+        task_1: __results.chart.task_1
+        task_2: __results.chart.task_2
+        not_data: __results.chart.not_data
+admin:
+    message: __admin.message
+    trials:
+        completed: __admin.trials.completed
+        total: __admin.trials.total
+        all_completed: __admin.trials.all_completed
+        completion_rate: __admin.trials.completion_rate
+        participation: __admin.trials.participation
+    chart:
+        activity: __admin.chart.activity
+        distribution: __admin.chart.distribution
+    task1: __admin.task1
+    task2: __admin.task2

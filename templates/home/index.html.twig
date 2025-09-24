@@ -18,14 +18,13 @@
                     <div class="icon-lg text-primary">
                         🎵
                     </div>
-                    <h3 class="card-title">{{ 'general.task'|trans }} 1: {{ 'home.task_1'|trans }}</h3>
+                    <h3 class="card-title">{{ 'general.task'|trans }} 1: {{ 'home.task_1.title'|trans }}</h3>
                     <p class="card-text">
-                        Listen to two audio stimuli and smell the perfume.
-                        Choose which audio best matches the perfume scent.
+                        {{ 'home.task_1.description'|trans }}
                     </p>
                     <div class="mt-3">
-                        <span class="text-secondary">🎵 Two audio stimuli</span><br>
-                        <span class="text-secondary">👃 One perfume to smell</span>
+                        <span class="text-secondary">🎵 {{ 'general.audio'|trans({'%count%': 2}) }}</span><br>
+                        <span class="text-secondary">👃 {{ 'general.perfume'|trans({'%count%': 1}) }} {{ 'home.to.smell'|trans }}</span>
                     </div>
                 </div>
             </a>
@@ -40,14 +39,13 @@
                     <div class="icon-lg text-primary">
                         🌺
                     </div>
-                    <h3 class="card-title">{{ 'general.task'|trans }} 2: {{ 'home.task_2'|trans }}</h3>
+                    <h3 class="card-title">{{ 'general.task'|trans }} 2: {{ 'home.task_2.title'|trans }}</h3>
                     <p class="card-text">
-                        Listen to one audio stimulus and choose between two perfumes.
-                        Select which perfume best matches the audio.
+                        {{ 'home.task_2.description'|trans }}
                     </p>
                     <div class="mt-3">
-                        <span class="text-secondary">🎵 One audio stimulus</span><br>
-                        <span class="text-secondary">👃 Two perfumes to choose from</span>
+                        <span class="text-secondary">🎵 {{ 'general.audio'|trans({'%count%': 1}) }}</span><br>
+                        <span class="text-secondary">👃 {{ 'general.perfume'|trans({'%count%': 2}) }} {{ 'home.to.choose_from'|trans }}</span>
                     </div>
                 </div>
             </a>

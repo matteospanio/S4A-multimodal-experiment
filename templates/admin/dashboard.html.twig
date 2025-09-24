@@ -8,7 +8,7 @@
                     <i class="bi bi-speedometer2"></i>
                     S4A Experiment Dashboard
                 </h1>
-                <p class="text-muted mb-4">Welcome to the admin dashboard. Monitor your multimodal experiment progress.</p>
+                <p class="text-muted mb-4">{{ 'admin.message'|trans }}</p>
             </div>
         </div>
 
@@ -19,9 +19,9 @@
                     <div class="card-body text-center">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <h5 class="card-title text-primary mb-1">Music → Aroma</h5>
+                                <h5 class="card-title text-primary mb-1">{{ 'general.music'|trans }} → {{ 'general.aroma'|trans }}</h5>
                                 <h2 class="mb-0 text-primary">{{ music2aromaCount }}</h2>
-                                <small class="text-muted">Completed Trials</small>
+                                <small class="text-muted">{{ 'admin.trials.completed'|trans }}</small>
                             </div>
                             <div class="text-primary">
                                 <i class="bi bi-music-note-beamed" style="font-size: 2rem;"></i>
@@ -36,9 +36,9 @@
                     <div class="card-body text-center">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <h5 class="card-title text-success mb-1">Aroma → Music</h5>
+                                <h5 class="card-title text-success mb-1">{{ 'general.aroma'|trans }} → {{ 'general.music'|trans }}</h5>
                                 <h2 class="mb-0 text-success">{{ aroma2musicCount }}</h2>
-                                <small class="text-muted">Completed Trials</small>
+                                <small class="text-muted">{{ 'admin.trials.completed'|trans }}</small>
                             </div>
                             <div class="text-success">
                                 <i class="bi bi-flask-florence" style="font-size: 2rem;"></i>
@@ -53,9 +53,9 @@
                     <div class="card-body text-center">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <h5 class="card-title text-info mb-1">Total Trials</h5>
+                                <h5 class="card-title text-info mb-1">{{ 'admin.trials.total'|trans }}</h5>
                                 <h2 class="mb-0 text-info">{{ totalTrials }}</h2>
-                                <small class="text-muted">All Completed</small>
+                                <small class="text-muted">{{ 'admin.trials.all_completed'|trans }}</small>
                             </div>
                             <div class="text-info">
                                 <i class="bi bi-check2-square" style="font-size: 2rem;"></i>
@@ -70,11 +70,11 @@
                     <div class="card-body text-center">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <h5 class="card-title text-warning mb-1">Completion Rate</h5>
+                                <h5 class="card-title text-warning mb-1">{{ 'admin.trials.completion_rate'|trans }}</h5>
                                 <h2 class="mb-0 text-warning">
                                     {{ percentageCompleted }}%
                                 </h2>
-                                <small class="text-muted">Trial Participation</small>
+                                <small class="text-muted">{{ 'admin.trials.participation'|trans }}</small>
                             </div>
                             <div class="text-warning">
                                 <i class="bi bi-graph-up-arrow" style="font-size: 2rem;"></i>
@@ -89,10 +89,10 @@
         <div class="row">
             <div class="col-lg-8">
                 <div class="card">
-                    <div class="card-header bg-light">
+                    <div class="card-header">
                         <h5 class="card-title mb-0">
                             <i class="bi bi-graph-up"></i>
-                            Trials Activity - Last 12 Hours
+                            {{ 'admin.chart.activity'|trans({'%hours%': 12}) }}
                         </h5>
                     </div>
                     <div class="card-body" style="height: 400px;">
@@ -103,10 +103,10 @@
 
             <div class="col-lg-4">
                 <div class="card">
-                    <div class="card-header bg-light">
+                    <div class="card-header">
                         <h5 class="card-title mb-0">
                             <i class="bi bi-pie-chart"></i>
-                            Songs by Flavor Distribution
+                            {{ 'admin.chart.distribution'|trans }}
                         </h5>
                     </div>
                     <div class="card-body" style="height: 400px;">
@@ -120,7 +120,7 @@
         <div class="row mt-4">
             <div class="col-12">
                 <div class="card">
-                    <div class="card-header bg-light">
+                    <div class="card-header">
                         <h5 class="card-title mb-0">
                             <i class="bi bi-info-circle"></i>
                             Experiment Overview
@@ -129,12 +129,12 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-6">
-                                <h6>Music to Aroma Task</h6>
-                                <p class="text-muted">Participants listen to music and match it with corresponding aromas, testing cross-modal sensory associations.</p>
+                                <h6>{{ 'home.task_1.title'|trans }}</h6>
+                                <p class="text-muted">{{ 'admin.task1'|trans }}</p>
                             </div>
                             <div class="col-md-6">
-                                <h6>Aroma to Music Task</h6>
-                                <p class="text-muted">Participants experience aromas and select matching musical pieces, exploring how scents influence musical preferences.</p>
+                                <h6>{{ 'home.task_2.title'|trans }}</h6>
+                                <p class="text-muted">{{ 'admin.task2'|trans }}</p>
                             </div>
                         </div>
                     </div>

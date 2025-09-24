@@ -1,16 +1,38 @@
 Home: Home
 Admin: Admin
 
+admin:
+    message: Welcome to the admin dashboard. Monitor your multimodal experiment progress.
+    task1: Participants listen to music and match it with corresponding aromas, testing cross-modal sensory associations.
+    task2: Participants experience aromas and select matching musical pieces, exploring how scents influence musical preferences.
+    trials:
+        completed: Completed Trials
+        total: Total Trials
+        all_completed: All Completed
+        participation: Trial Participation
+        completion_rate: Completion Rate
+    chart:
+        activity: 'Trials Activity - Last %hours%h'
+        distribution: 'Song by Flavor Distribution'
+
 general:
-    audio: Audio|Audio
-    experiment: Experiment|Experiments
-    perfume: Perfume|Perfumes
-    stimulus: Stimulus|Stimuli
-    task: Task|Tasks
+    audio: 'One audio stimulus|%count% audio stimuli'
+    music: Music
+    aroma: Aroma
+    experiment: Experiment
+    perfume: 'One perfume|%count% perfumes'
+    task: Task
 
 home:
-    task_1: Audio-Perfume Matching
-    task_2: Perfume-Audio Association
+    to:
+        choose_from: to choose from
+        smell: to smell
+    task_1:
+        title: Audio-Perfume Matching
+        description: Listen to two audio stimuli and smell the perfume. Choose which audio best matches the perfume scent.
+    task_2:
+        title: Perfume-Audio Association
+        description: Listen to one audio stimulus and choose between two perfumes. Select which perfume best matches the audio.
 
 login:
     already_logged_in: You are already logged in as
@@ -21,18 +43,36 @@ login:
     username_placeholder: Enter your username
 
 task:
-    audio_option: Audio Option
-    perfume_option: Perfume Option
-    audio_error: Your browser does not support the audio element.
+    perfume:
+        to_smell: Perfume to Smell
+        option: Perfume Option
+        instruction: Please smell the perfume sample provided
+    audio:
+        stimuli: Audio Stimuli
+        stimulus: Audio Stimulus
+        option: Audio Option
+        error: Your browser does not support the audio element.
     m2f:
         instructions: Listen to both audio stimuli, smell the perfume, then choose which audio best matches the scent
         question: Which audio best matches the perfume?
     f2m:
         instructions: Listen to the audio stimulus, then choose which of the two perfumes best matches
         question: Which perfume best matches the audio?
+        specific_instruction: 'Smell the %flavor% sample'
     back: Back to Menu
     choose: Choose
+    repeat: Do another trial
     submit: Submit Choice
+
+results:
+    alert:
+        success: Great choice! Your selection matches the theoretical association.
+        wrong: Your choice helps us understand how people associate music and scents.
+    chart:
+        title: How other participants responded
+        task_1: This chart shows which tracks other participants chose for the same perfume. The red bar (if present) represents the theoretically expected track.
+        task_2: This chart shows which perfumes other participants chose for the same track. The red bar (if present) represents the theoretically expected perfume.
+        not_data: Not enough data yet to show statistics. Your response has been recorded!
 
 topbar:
     menu: Menu

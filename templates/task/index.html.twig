@@ -22,21 +22,21 @@
                         <div class="col-md-6">
                             <div class="card">
                                 <div class="card-body text-center">
-                                    <h4 class="card-title">Audio Stimuli</h4>
+                                    <h4 class="card-title">{{ 'task.audio.stimuli'|trans }}</h4>
 
                                     <div class="audio-control">
-                                        <h5>Audio Option A</h5>
+                                        <h5>{{ 'task.audio.option'|trans }} A</h5>
                                         <audio controls preload="metadata">
                                             <source src="{{ trial.songs[0].urlPath }}" type="audio/wav">
-                                            {{ 'task.audio_error'|trans }}
+                                            {{ 'task.audio.error'|trans }}
                                         </audio>
                                     </div>
 
                                     <div class="audio-control">
-                                        <h5>Audio Option B</h5>
+                                        <h5>{{ 'task.audio.option'|trans }} B</h5>
                                         <audio controls preload="metadata">
                                             <source src="{{ trial.songs[1].urlPath }}" type="audio/wav">
-                                            {{ 'task.audio_error'|trans }}
+                                            {{ 'task.audio.error'|trans }}
                                         </audio>
                                     </div>
                                 </div>
@@ -46,11 +46,11 @@
                         <div class="col-md-6">
                             <div class="card">
                                 <div class="card-body text-center">
-                                    <h4 class="card-title">Perfume to Smell</h4>
+                                    <h4 class="card-title">{{ 'task.perfume.to_smell'|trans }}</h4>
                                     <div class="icon-lg text-primary mb-3">
                                         {{ trial.flavor.icon }}
                                     </div>
-                                    <p class="card-text">Please smell the perfume sample provided</p>
+                                    <p class="card-text">{{ 'task.perfume.instruction'|trans }}</p>
                                 </div>
                             </div>
                         </div>
@@ -69,7 +69,7 @@
                                             <div class="icon-md text-primary">
                                                 🎵
                                             </div>
-                                            <h5>{{ 'task.choose'|trans }} Audio A</h5>
+                                            <h5>{{ 'task.choose'|trans }} {{ 'general.music'|trans }} A</h5>
                                         </div>
                                     </div>
                                 </div>
@@ -82,7 +82,7 @@
                                             <div class="icon-md text-primary">
                                                 🎵
                                             </div>
-                                            <h5>{{ 'task.choose'|trans }} Audio B</h5>
+                                            <h5>{{ 'task.choose'|trans }} {{ 'general.music'|trans }} B</h5>
                                         </div>
                                     </div>
                                 </div>
@@ -96,11 +96,11 @@
                         <div class="col-md-12">
                             <div class="card mb-4">
                                 <div class="card-body text-center">
-                                    <h4 class="card-title">Audio Stimulus</h4>
+                                    <h4 class="card-title">{{ 'task.audio.stimulus'|trans }}</h4>
                                     <div class="audio-control">
                                         <audio controls preload="metadata">
                                             <source src="{{ trial.song.urlPath }}" type="audio/wav">
-                                            {{ 'task.audio_error'|trans }}
+                                            {{ 'task.audio.error'|trans }}
                                         </audio>
                                     </div>
                                 </div>
@@ -121,8 +121,8 @@
                                             <div class="icon-md text-primary">
                                                 {{ trial.flavors[0].icon }}
                                             </div>
-                                            <h5>Perfume Option 1</h5>
-                                            <p class="card-text">Smell the {{ trial.flavors[0] }} sample</p>
+                                            <h5>{{ 'task.perfume.option'|trans }} 1</h5>
+                                            <p class="card-text">{{ 'task.f2m.specific_instruction'|trans({'%flavor%': trial.flavors[0]}) }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -135,8 +135,8 @@
                                             <div class="icon-md text-primary">
                                                 {{ trial.flavors[1].icon }}
                                             </div>
-                                            <h5>Perfume Option 2</h5>
-                                            <p class="card-text">Smell the {{ trial.flavors[1] }} sample</p>
+                                            <h5>{{ 'task.perfume.option'|trans }} 2</h5>
+                                            <p class="card-text">{{ 'task.f2m.specific_instruction'|trans({'%flavor%': trial.flavors[1]}) }}</p>
                                         </div>
                                     </div>
                                 </div>

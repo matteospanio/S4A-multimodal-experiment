@@ -32,7 +32,7 @@ final class S4AExperimentStory extends Story
             ['type' => Trial::SMELLS2MUSIC, 'experiment' => $experiment],
         ]);
 
-        MusicToFlavorTrialFactory::createMany(200, ['task' => TaskFactory::repository()->findOneBy(['type' => 'music2aroma'])]);
-        FlavorToMusicTrialFactory::createMany(200, ['task' => TaskFactory::repository()->findOneBy(['type' => 'aroma2music'])]);
+        MusicToFlavorTrialFactory::createMany(200, ['task' => TaskFactory::repository()->findOneBy(['type' => Trial::MUSICS2SMELL])]);
+        FlavorToMusicTrialFactory::createMany(200, ['task' => TaskFactory::repository()->findOneBy(['type' => Trial::SMELLS2MUSIC])]);
     }
 }
