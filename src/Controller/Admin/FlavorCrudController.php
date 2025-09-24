@@ -15,6 +15,7 @@ class FlavorCrudController extends AbstractCrudController
         return Flavor::class;
     }
 
+    #[\Override]
     public function configureFields(string $pageName): iterable
     {
         return [

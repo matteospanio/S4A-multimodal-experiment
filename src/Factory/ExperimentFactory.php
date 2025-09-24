@@ -66,6 +66,7 @@ final class ExperimentFactory extends PersistentObjectFactory
         ];
     }
 
+    #[\Override]
     protected function initialize(): static
     {
         return $this

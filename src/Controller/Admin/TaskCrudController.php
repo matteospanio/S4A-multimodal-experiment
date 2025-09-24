@@ -15,6 +15,7 @@ class TaskCrudController extends AbstractCrudController
         return Task::class;
     }
 
+    #[\Override]
     public function configureFields(string $pageName): iterable
     {
         return [

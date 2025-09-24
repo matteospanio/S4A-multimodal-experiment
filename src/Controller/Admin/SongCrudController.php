@@ -17,6 +17,7 @@ class SongCrudController extends AbstractCrudController
         return Song::class;
     }
 
+    #[\Override]
     public function configureFields(string $pageName): iterable
     {
         return [

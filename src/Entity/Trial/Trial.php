@@ -15,7 +15,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
     'flavor2music' => FlavorToMusicTrial::class,
     'music2flavor' => MusicToFlavorTrial::class,
 ])]
-class Trial
+class Trial implements \Stringable
 {
     use TimestampableEntity;
 

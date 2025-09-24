@@ -15,6 +15,7 @@ class ExperimentCrudController extends AbstractCrudController
         return Experiment::class;
     }
 
+    #[\Override]
     public function configureFields(string $pageName): iterable
     {
         return [

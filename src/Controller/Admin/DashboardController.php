@@ -36,6 +36,7 @@ class DashboardController extends AbstractDashboardController
     {
     }
 
+    #[\Override]
     public function index(): Response
     {
         // Existing song by flavor chart
@@ -171,6 +172,7 @@ class DashboardController extends AbstractDashboardController
         ]);
     }
 
+    #[\Override]
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
@@ -182,6 +184,7 @@ class DashboardController extends AbstractDashboardController
         ;
     }
 
+    #[\Override]
     public function configureAssets(): Assets
     {
         return Assets::new()
@@ -190,6 +193,7 @@ class DashboardController extends AbstractDashboardController
         ;
     }
 
+    #[\Override]
     public function configureMenuItems(): iterable
     {
         yield MenuItem::linkToDashboard('Dashboard', 'speedometer2');
@@ -209,6 +213,7 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToLogout('Logout', 'door-open');
     }
 
+    #[\Override]
     public function configureActions(): Actions
     {
         return parent::configureActions()

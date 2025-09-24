@@ -9,7 +9,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ExperimentRepository::class)]
-class Experiment
+class Experiment implements \Stringable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -35,7 +35,7 @@ class Experiment
 
     public function __toString(): string
     {
-        return $this->title;
+        return (string) $this->title;
     }
 
     public function getId(): ?int

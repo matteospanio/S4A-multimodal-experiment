@@ -71,6 +71,7 @@ final class FlavorToMusicTrialFactory extends PersistentObjectFactory
         ];
     }
 
+    #[\Override]
     protected function initialize(): static
     {
         return $this

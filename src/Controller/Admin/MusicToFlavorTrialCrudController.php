@@ -21,6 +21,7 @@ class MusicToFlavorTrialCrudController extends AbstractCrudController
         return MusicToFlavorTrial::class;
     }
 
+    #[\Override]
     public function configureActions(Actions $actions): Actions
     {
         return parent::configureActions($actions)
@@ -28,6 +29,7 @@ class MusicToFlavorTrialCrudController extends AbstractCrudController
         ;
     }
 
+    #[\Override]
     public function configureFields(string $pageName): iterable
     {
         $common = [

@@ -7,7 +7,7 @@ use Zenstruck\Foundry\Story;
 
 final class UserStory extends Story
 {
-    const DEFAULT_PASSWORD = 'password';
+    const string DEFAULT_PASSWORD = 'password';
 
     public function build(): void
     {

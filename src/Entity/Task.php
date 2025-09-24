@@ -9,7 +9,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: TaskRepository::class)]
-class Task
+class Task implements \Stringable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -36,7 +36,7 @@ class Task
 
     public function __toString(): string
     {
-        return $this->type;
+        return (string) $this->type;
     }
 
     public function getId(): ?int
