@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
 use App\Entity\Trial\MusicToFlavorTrial;
@@ -68,7 +70,7 @@ class MusicToFlavorTrialRepository extends ServiceEntityRepository
      */
     public function getChoiceStatisticsByFlavorAndSongs(int $flavorId, array $songIds): array
     {
-        if (empty($songIds)) {
+        if ($songIds === []) {
             return [];
         }
 
@@ -101,7 +103,7 @@ class MusicToFlavorTrialRepository extends ServiceEntityRepository
      */
     public function countTrialsByFlavorAndSongs(int $flavorId, array $songIds): int
     {
-        if (empty($songIds)) {
+        if ($songIds === []) {
             return 0;
         }
 

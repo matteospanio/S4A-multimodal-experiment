@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity\Trial;
 
 use App\Entity\Task;
@@ -20,6 +22,7 @@ class Trial implements \Stringable
     use TimestampableEntity;
 
     const string SMELLS2MUSIC = 'smells2music';
+
     const string MUSICS2SMELL = 'musics2smell';
 
     #[ORM\Id]
@@ -57,6 +60,7 @@ class Trial implements \Stringable
         if ($this->getCreatedAt() && $this->getUpdatedAt()) {
             return $this->getUpdatedAt()->diff($this->getCreatedAt())->format('%H:%I:%S');
         }
+
         return null;
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity\Trial;
 
 use App\Entity\Stimulus\Flavor;
@@ -98,7 +100,7 @@ class MusicToFlavorTrial extends Trial implements TrialInterface
 
     public function doesMatch(): ?bool
     {
-        if ($this->choice === null || $this->flavor === null) {
+        if (!$this->choice instanceof \App\Entity\Stimulus\Song || !$this->flavor instanceof \App\Entity\Stimulus\Flavor) {
             return null;
         }
 

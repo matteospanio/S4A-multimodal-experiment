@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service;
 
 use App\Entity\Stimulus\Flavor;
@@ -62,7 +64,7 @@ final readonly class StimuliManager
         $allCombos = $this->getAllFlavorToMusicCombinations($flavors, $songs);
         $available = $this->filterUnusedCombinations($allCombos, $usedCombinations);
 
-        if (empty($available)) {
+        if ($available === []) {
             // Tutte le combinazioni già usate: si ricomincia
             $available = $allCombos;
         }
@@ -94,7 +96,7 @@ final readonly class StimuliManager
         $allCombos = $this->getAllMusicToFlavorCombinations($flavors, $songs);
         $available = $this->filterUnusedCombinations($allCombos, $usedCombinations);
 
-        if (empty($available)) {
+        if ($available === []) {
             $available = $allCombos;
         }
 
@@ -125,7 +127,10 @@ final readonly class StimuliManager
         $combos = [];
         foreach ($flavors as $f1) {
             foreach ($flavors as $f2) {
-                if ($f1 === $f2) continue;
+                if ($f1 === $f2) {
+                    continue;
+                }
+
                 foreach ($songs as $song) {
                     $intended = $song->getFlavor();
                     if ($intended && ($intended === $f1 || $intended === $f2)) {
@@ -143,6 +148,7 @@ final readonly class StimuliManager
                 }
             }
         }
+
         return $combos;
     }
 
@@ -158,10 +164,24 @@ final readonly class StimuliManager
         $combos = [];
         foreach ($songs as $s1) {
             foreach ($songs as $s2) {
-                if ($s1 === $s2) continue;
+                if ($s1 === $s2) {
+                    continue;
+                }
+
                 $f1 = $s1->getFlavor();
                 $f2 = $s2->getFlavor();
-                if (!$f1 || !$f2 || $f1 === $f2) continue;
+                if (!$f1) {
+                    continue;
+                }
+
+                if (!$f2) {
+                    continue;
+                }
+
+                if ($f1 === $f2) {
+                    continue;
+                }
+
                 foreach ([$f1, $f2] as $flavor) {
                     // Chiave unica per la combinazione (id canzoni ordinati + id profumo)
                     $ids = [$s1->getId(), $s2->getId()];
@@ -176,6 +196,7 @@ final readonly class StimuliManager
                 }
             }
         }
+
         return $combos;
     }
 
@@ -187,7 +208,7 @@ final readonly class StimuliManager
      */
     private function filterUnusedCombinations(array $allCombos, array $usedCombinations): array
     {
-        return array_values(array_filter($allCombos, fn($c) => !in_array($c['comboKey'], $usedCombinations, true)));
+        return array_values(array_filter($allCombos, fn(array $c): bool => !in_array($c['comboKey'], $usedCombinations, true)));
     }
 
     /**

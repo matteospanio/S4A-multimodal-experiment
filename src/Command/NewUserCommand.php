@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Command;
 
 use App\Repository\UserRepository;
@@ -32,10 +34,11 @@ class NewUserCommand extends Command
         }
 
         if ($input->getOption('random')) {
-            $password = bin2hex(random_bytes(4)); // Generate a random 8-character password
+            $password = bin2hex(random_bytes(4));
+            // Generate a random 8-character password
             $io->writeln('Generated random password: ' . $password);
             $input->setOption('password', $password);
-        } else if (null === $input->getOption('password')) {
+        } elseif (null === $input->getOption('password')) {
             $password = $io->askHidden('Please provide a password');
             $input->setOption('password', $password);
         }
@@ -59,8 +62,8 @@ class NewUserCommand extends Command
 
         try {
             $this->userRepository->create($username, $password, $admin);
-        } catch (\Exception $e) {
-            $output->writeln('<error>Error creating user: ' . $e->getMessage() . '</error>');
+        } catch (\Exception $exception) {
+            $output->writeln('<error>Error creating user: ' . $exception->getMessage() . '</error>');
             return Command::FAILURE;
         }
 

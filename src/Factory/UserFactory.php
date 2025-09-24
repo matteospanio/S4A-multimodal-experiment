@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Factory;
 
 use App\Entity\User;
@@ -88,7 +90,7 @@ final class UserFactory extends PersistentObjectFactory
     {
         return $this
             ->afterInstantiate(function(User $user): void {
-                if ($this->passwordHasher !== null) {
+                if ($this->passwordHasher instanceof \Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface) {
                     $user->setPassword($this->passwordHasher->hashPassword($user, $user->getPassword()));
                 }
             })

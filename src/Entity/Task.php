@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Entity\Trial\Trial;
@@ -88,11 +90,9 @@ class Task implements \Stringable
 
     public function removeTrial(Trial $trial): static
     {
-        if ($this->trials->removeElement($trial)) {
-            // set the owning side to null (unless already changed)
-            if ($trial->getTask() === $this) {
-                $trial->setTask(null);
-            }
+        // set the owning side to null (unless already changed)
+        if ($this->trials->removeElement($trial) && $trial->getTask() === $this) {
+            $trial->setTask(null);
         }
 
         return $this;

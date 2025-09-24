@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Service;
 
 use App\Entity\Stimulus\Flavor;
@@ -11,11 +13,13 @@ use App\Service\Mathematician;
 use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\TestCase;
 
-class MathematicianTest extends TestCase
+final class MathematicianTest extends TestCase
 {
     private Mathematician $mathematician;
-    private MusicToFlavorTrialRepository $musicToFlavorTrialRepository;
-    private FlavorToMusicTrialRepository $flavorToMusicTrialRepository;
+
+    private \PHPUnit\Framework\MockObject\MockObject $musicToFlavorTrialRepository;
+
+    private \PHPUnit\Framework\MockObject\MockObject $flavorToMusicTrialRepository;
 
     protected function setUp(): void
     {
@@ -64,7 +68,7 @@ class MathematicianTest extends TestCase
         $song1Flavor = $this->createMock(Flavor::class);
         $song1Flavor->method('getId')->willReturn(1); // Same as trial flavor
         $song1->method('getFlavor')->willReturn($song1Flavor);
-        
+
         $song2 = $this->createMock(Song::class);
         $song2->method('getId')->willReturn(11);
         $song2Flavor = $this->createMock(Flavor::class);
@@ -172,7 +176,7 @@ class MathematicianTest extends TestCase
         $song1Flavor = $this->createMock(Flavor::class);
         $song1Flavor->method('getId')->willReturn(1); // Different from trial flavor
         $song1->method('getFlavor')->willReturn($song1Flavor);
-        
+
         $song2 = $this->createMock(Song::class);
         $song2->method('getId')->willReturn(11);
         $song2Flavor = $this->createMock(Flavor::class);

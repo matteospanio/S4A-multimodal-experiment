@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Controller\Admin;
 
 use App\Factory\UserFactory;
@@ -10,6 +12,8 @@ use Zenstruck\Foundry\Test\ResetDatabase;
 
 final class DashboardControllerTest extends KernelTestCase
 {
+    public $user;
+
     use HasBrowser;
     use Factories;
     use ResetDatabase;

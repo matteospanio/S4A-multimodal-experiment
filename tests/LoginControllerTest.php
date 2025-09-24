@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests;
 
 use App\Entity\User;
@@ -12,7 +14,7 @@ use Zenstruck\Browser\Test\HasBrowser;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 
-class LoginControllerTest extends KernelTestCase
+final class LoginControllerTest extends KernelTestCase
 {
     use HasBrowser;
     use Factories;

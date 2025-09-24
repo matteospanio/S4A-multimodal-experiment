@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller\Admin;
 
 use App\Entity\Experiment;
@@ -76,9 +78,9 @@ class DashboardController extends AbstractDashboardController
         $aroma2musicData = [];
 
         $now = new \DateTime();
-        for ($i = 11; $i >= 0; $i--) {
+        for ($i = 11; $i >= 0; --$i) {
             $hour = clone $now;
-            $hour->sub(new \DateInterval("PT{$i}H"));
+            $hour->sub(new \DateInterval(sprintf('PT%dH', $i)));
             $hourLabel = $hour->format('H:00');
             $hoursLabels[] = $hourLabel;
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service;
 
 use App\Entity\Stimulus\Flavor;
@@ -42,11 +44,12 @@ readonly class Mathematician
         foreach ($trial->getSongs() as $song) {
             $songIds[] = $song->getId();
         }
+
         $choiceStats = $this->musicToFlavorTrialRepository->getChoiceStatisticsByFlavorAndSongs($flavorId, $songIds);
         $totalTrials = $this->musicToFlavorTrialRepository->countTrialsByFlavorAndSongs($flavorId, $songIds);
 
         // If no statistics yet, create empty entries for each song in the trial
-        if (empty($choiceStats) || $totalTrials === 0) {
+        if ($choiceStats === [] || $totalTrials === 0) {
             $choiceStats = [];
             foreach ($trial->getSongs() as $song) {
                 $choiceStats[] = [
@@ -56,10 +59,11 @@ readonly class Mathematician
                     'count' => 0
                 ];
             }
+
             $totalTrials = 1; // Prevent division by zero
         }
 
-        if (empty($choiceStats)) {
+        if ($choiceStats === []) {
             return [
                 'labels' => [],
                 'data' => [],
@@ -120,7 +124,7 @@ readonly class Mathematician
         $choiceStats = $this->flavorToMusicTrialRepository->getChoiceStatisticsBySong($songId);
         $totalTrials = $this->flavorToMusicTrialRepository->countTrialsBySong($songId);
 
-        if (empty($choiceStats) || $totalTrials === 0) {
+        if ($choiceStats === [] || $totalTrials === 0) {
             return [
                 'labels' => [],
                 'data' => [],

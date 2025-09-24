@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
 use App\Entity\Task;
@@ -49,7 +51,10 @@ class TaskRepository extends ServiceEntityRepository
         // Group by type, date, hour
         $stats = [];
         foreach ($results as $row) {
-            if (!$row['createdAt']) continue;
+            if (!$row['createdAt']) {
+                continue;
+            }
+
             $dt = new \DateTime($row['createdAt']->format('Y-m-d H:00:00'));
             $type = $row['type'];
             $date = $dt->format('Y-m-d');
@@ -63,8 +68,10 @@ class TaskRepository extends ServiceEntityRepository
                     'trial_count' => 0,
                 ];
             }
-            $stats[$key]['trial_count']++;
+
+            ++$stats[$key]['trial_count'];
         }
+
         return array_values($stats);
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Story;
 
 use App\Entity\Trial\Trial;
@@ -18,9 +20,7 @@ final class S4AExperimentStory extends Story
         FlavorStory::load();
         SongFactory::createMany(
             30,
-            function () {
-                return ['flavor' => FlavorFactory::random()];
-            }
+            fn(): array => ['flavor' => FlavorFactory::random()]
         );
 
         $experiment = ExperimentFactory::createOne([

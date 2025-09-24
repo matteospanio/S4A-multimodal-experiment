@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Factory\Trial;
 
 use App\Entity\Trial\MusicToFlavorTrial;

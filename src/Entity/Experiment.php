@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Repository\ExperimentRepository;
@@ -63,11 +65,9 @@ class Experiment implements \Stringable
 
     public function removeTask(Task $task): static
     {
-        if ($this->tasks->removeElement($task)) {
-            // set the owning side to null (unless already changed)
-            if ($task->getExperiment() === $this) {
-                $task->setExperiment(null);
-            }
+        // set the owning side to null (unless already changed)
+        if ($this->tasks->removeElement($task) && $task->getExperiment() === $this) {
+            $task->setExperiment(null);
         }
 
         return $this;

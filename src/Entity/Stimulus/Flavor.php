@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity\Stimulus;
 
 use App\Entity\Trial\MusicToFlavorTrial;
@@ -117,11 +119,9 @@ class Flavor implements StimulusInterface, Translatable
 
     public function removeSong(Song $song): static
     {
-        if ($this->songs->removeElement($song)) {
-            // set the owning side to null (unless already changed)
-            if ($song->getFlavor() === $this) {
-                $song->setFlavor(null);
-            }
+        // set the owning side to null (unless already changed)
+        if ($this->songs->removeElement($song) && $song->getFlavor() === $this) {
+            $song->setFlavor(null);
         }
 
         return $this;
@@ -147,11 +147,9 @@ class Flavor implements StimulusInterface, Translatable
 
     public function removeMusicToFlavorTrial(MusicToFlavorTrial $musicToFlavorTrial): static
     {
-        if ($this->musicToFlavorTrials->removeElement($musicToFlavorTrial)) {
-            // set the owning side to null (unless already changed)
-            if ($musicToFlavorTrial->getFlavor() === $this) {
-                $musicToFlavorTrial->setFlavor(null);
-            }
+        // set the owning side to null (unless already changed)
+        if ($this->musicToFlavorTrials->removeElement($musicToFlavorTrial) && $musicToFlavorTrial->getFlavor() === $this) {
+            $musicToFlavorTrial->setFlavor(null);
         }
 
         return $this;
