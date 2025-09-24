@@ -90,7 +90,7 @@ final class TaskController extends AbstractController
         if ($task === Trial::MUSICS2SMELL) {
             // Task 1: Show double bar chart for track choices given a perfume
             assert($trial instanceof MusicToFlavorTrial);
-            $success = $choice === $trial->getFlavor();
+            $success = $choice->getFlavor() === $trial->getFlavor();
 
             $stats = $this->mathematician->getMusicToFlavorStatistics($trial->getFlavor(), $trial);
 
@@ -137,7 +137,7 @@ final class TaskController extends AbstractController
         } else {
             // Task 2: Show bar chart for perfume choices given a track
             assert($trial instanceof FlavorToMusicTrial);
-            $success = $choice === $trial->getSong();
+            $success = $choice === $trial->getSong()->getFlavor();
 
             $stats = $this->mathematician->getFlavorToMusicStatistics($trial->getSong());
 
