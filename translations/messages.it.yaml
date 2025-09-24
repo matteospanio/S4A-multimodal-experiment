@@ -5,18 +5,18 @@ general:
     perfume: 'Un profumo|%count% profumi'
     task: Compito
     experiment: Esperimento
-    music: __general.music
-    aroma: __general.aroma
+    music: Musica
+    aroma: Aroma
 home:
     task_1:
         title: 'Associazione Suoni-Profumo'
-        description: __home.task_1.description
+        description: 'Ascolta due stimoli sonori e annusa il profumo. Scegli quale suono si abbina meglio alla fragranza del profumo.'
     task_2:
         title: 'Associazione Profumi-Suono'
-        description: __home.task_2.description
+        description: 'Ascolta uno stimolo sonoro e scegli tra due profumi. Seleziona quale profumo si abbina meglio al suono.'
     to:
-        smell: __home.to.smell
-        choose_from: __home.to.choose_from
+        smell: 'da annusare'
+        choose_from: 'tra cui scegliere'
 login:
     sign_in: Accedi
     already_logged_in: "Hai già effettuato l'accesso come"
@@ -31,20 +31,20 @@ task:
     f2m:
         instructions: 'Ascolta il file audio, poi scegli a quale dei due profumi si abbina meglio'
         question: 'Quale profumo risuona meglio con il brano?'
-        specific_instruction: __task.f2m.specific_instruction
+        specific_instruction: 'Annusa il campione %flavor%'
     choose: Scegli
     back: 'Torna al Menu'
     submit: 'Invia la Scelta'
-    repeat: __task.repeat
+    repeat: 'Fai un altro esperimento'
     audio:
-        stimuli: __task.audio.stimuli
-        option: __task.audio.option
-        error: __task.audio.error
-        stimulus: __task.audio.stimulus
+        stimuli: 'Stimoli Sonori'
+        option: 'Opzione Audio'
+        error: 'Il tuo browser non supporta l''elemento audio.'
+        stimulus: 'Stimolo Sonoro'
     perfume:
-        to_smell: __task.perfume.to_smell
-        instruction: __task.perfume.instruction
-        option: __task.perfume.option
+        to_smell: 'Profumo da Annusare'
+        instruction: 'Per favore annusa il campione di profumo fornito'
+        option: 'Opzione Profumo'
 topbar:
     menu: Menu
     settings: Impostazioni
@@ -60,23 +60,23 @@ privacy:
     close: Chiudi
 results:
     alert:
-        success: __results.alert.success
-        wrong: __results.alert.wrong
+        success: 'Ottima scelta! La tua selezione corrisponde all''associazione teorica.'
+        wrong: 'La tua scelta ci aiuta a capire come le persone associano musica e profumi.'
     chart:
-        title: __results.chart.title
-        task_1: __results.chart.task_1
-        task_2: __results.chart.task_2
-        not_data: __results.chart.not_data
+        title: 'Come hanno risposto gli altri partecipanti'
+        task_1: 'Questo grafico mostra quali brani hanno scelto gli altri partecipanti per lo stesso profumo. La barra rossa (se presente) rappresenta il brano teoricamente previsto.'
+        task_2: 'Questo grafico mostra quali profumi hanno scelto gli altri partecipanti per lo stesso brano. La barra rossa (se presente) rappresenta il profumo teoricamente previsto.'
+        not_data: 'Non ci sono ancora abbastanza dati per mostrare le statistiche. La tua risposta è stata registrata!'
 admin:
-    message: __admin.message
+    message: 'Benvenuto nella dashboard di amministrazione. Monitora i progressi del tuo esperimento multimodale.'
     trials:
-        completed: __admin.trials.completed
-        total: __admin.trials.total
-        all_completed: __admin.trials.all_completed
-        completion_rate: __admin.trials.completion_rate
-        participation: __admin.trials.participation
+        completed: 'Prove Completate'
+        total: 'Prove Totali'
+        all_completed: 'Tutte Completate'
+        completion_rate: 'Tasso di Completamento'
+        participation: 'Partecipazione alle Prove'
     chart:
-        activity: __admin.chart.activity
-        distribution: __admin.chart.distribution
-    task1: __admin.task1
-    task2: __admin.task2
+        activity: 'Attività delle Prove - Ultime %hours%h'
+        distribution: 'Distribuzione Brano per Fragranza'
+    task1: 'I partecipanti ascoltano la musica e la abbinano ai profumi corrispondenti, testando le associazioni sensoriali cross-modali.'
+    task2: 'I partecipanti sperimentano i profumi e selezionano i brani musicali corrispondenti, esplorando come i profumi influenzano le preferenze musicali.'
