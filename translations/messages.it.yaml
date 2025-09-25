@@ -25,6 +25,42 @@ login:
     username_placeholder: 'Inserisci il tuo nome utente'
     password_placeholder: 'Inserisci la tua password'
 task:
+    consent:
+        title: 'Consenso Informato'
+        button: Comprendo e accetto le condizioni di questo studio
+        tldr: |
+            Cliccando sul pulsante qui sotto, acconsenti a partecipare a questo studio di ricerca.
+            Il team di ricerca non si assume alcuna responsabilità in caso di disturbi olfattivi non diagnosticati o reazioni allergiche individuali ai campioni di profumo.
+        el1:
+            section: Di cosa tratta questa ricerca?
+            description: "Sei cordialmente invitato/a a partecipare a questo studio di ricerca. L'obiettivo principale dello studio è indagare come le persone associano stimoli uditivi a profumi (e viceversa). Questa ricerca fa parte di un progetto di dottorato presso l'Università di Padova."
+        el2:
+            section: Chi sta conducendo questa ricerca?
+            description: "Questa ricerca è condotta dai seguenti ricercatori: Matteo Spanio, sotto la supervisione del Prof. Antonio Rodà (Università di Padova) e del Prof. Massimiliano Zampini (Università di Trento)."
+        el3:
+            section: Criteri di inclusione/esclusione
+            description: "Prima di decidere di partecipare a questo studio, dobbiamo verificare la tua idoneità. Puoi partecipare se: 1) hai almeno 18 anni; se hai meno di 18 anni è necessario il consenso dei genitori; 2) non hai disturbi olfattivi noti (es. anosmia); in caso di dubbi, ti invitiamo a consultare un medico. Il team di ricerca non si assume alcuna responsabilità in caso di disturbi olfattivi non diagnosticati o reazioni allergiche individuali ai campioni di profumo."
+        el4:
+            section: La partecipazione a questo studio è obbligatoria?
+            description: "La partecipazione è completamente volontaria e puoi interrompere la tua partecipazione in qualsiasi momento semplicemente chiudendo la finestra del browser. Se scegli di partecipare, ti verrà richiesto di leggere attentamente le informazioni fornite e completare un questionario online."
+        el5:
+            section: In cosa consiste la partecipazione a questo studio? Ci sono rischi associati?
+            description: "Se scegli di partecipare, ti verrà richiesto di completare un questionario online composto da due compiti. Nel primo compito ascolterai due stimoli audio e sentirai un campione di profumo, quindi dovrai scegliere quale audio corrisponde meglio al profumo. Nel secondo compito ascolterai uno stimolo audio e sceglierai tra due campioni di profumo, indicando quale profumo corrisponde meglio all’audio. Non sono noti rischi associati alla partecipazione a questo studio. Tuttavia, se dovessi avvertire disagio o reazioni avverse mentre senti i profumi, ti invitiamo a interrompere immediatamente la partecipazione."
+        el6:
+            section: Quali sono i potenziali benefici della partecipazione?
+            description: "Questo esperimento rappresenta una componente importante di un progetto di dottorato presso l'Università di Padova. Le informazioni raccolte potrebbero risultare utili per chi si occupa della generazione di stimoli audio tramite l’intelligenza artificiale."
+        el7:
+            section: Cosa succede ai miei dati?
+            description: "La compilazione del questionario online implica il tuo consenso alla partecipazione. Cliccando sul pulsante “Comprendo le condizioni di questo studio” qui sotto, autorizzi il team di ricerca a raccogliere e utilizzare le tue informazioni per questo studio. I dati raccolti saranno conservati per un periodo minimo di 5 anni dopo la pubblicazione dei risultati della ricerca."
+        el8:
+            section: Come e quando riceverò i risultati dello studio?
+            description: "Il team di ricerca ha intenzione di pubblicare i risultati dello studio. Tutte le informazioni saranno pubblicate in modo da garantire l’anonimato. Se desideri ricevere una copia dei risultati, ti invitiamo a contattare il ricercatore responsabile Matteo Spanio."
+        el9:
+            section: Cosa succede se desidero ritirarmi dallo studio?
+            description: "Se decidi di partecipare ma successivamente vuoi ritirarti, puoi farlo in qualsiasi momento semplicemente chiudendo il browser. Le informazioni già raccolte non saranno utilizzate nello studio."
+        el10:
+            section: Cosa devo fare se ho ulteriori domande sulla mia partecipazione?
+            description: "Per richiedere ulteriori informazioni riguardo a questo studio, ti invitiamo a contattare Matteo Spanio <spanio@dei.unipd.it>."
     m2f:
         instructions: 'Mentre ascolti entrambi gli stimoli sonori, annusa il profumo, poi scegli quale suono corrisponde meglio alla fragranza'
         question: 'Quale suono accompagna meglio il profumo?'
@@ -36,6 +72,7 @@ task:
     back: 'Torna al Menu'
     submit: 'Invia la Scelta'
     repeat: 'Fai un altro esperimento'
+    finish: 'Termina l''Esperimento'
     audio:
         stimuli: 'Stimoli Sonori'
         option: 'Opzione Audio'

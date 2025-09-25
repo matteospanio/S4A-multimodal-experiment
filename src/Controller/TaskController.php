@@ -15,6 +15,7 @@ use App\Service\StimuliManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
@@ -31,7 +32,7 @@ final class TaskController extends AbstractController
     }
 
     #[Route('/task/{type}', name: 'app_task', requirements: ['type' => '\d+'], methods: ['GET'])]
-    public function index(int $type = 1): Response
+    public function index(int $type = 1, #[MapQueryParameter] bool $openModal = true): Response
     {
         $task = $this->getTask($type);
         $trial = $this->stimuliManager->getNextTrial($task);
@@ -46,6 +47,7 @@ final class TaskController extends AbstractController
             'task_type' => $type,
             'trial' => $trial,
             'form' => $form,
+            'openModal' => $openModal,
         ]);
     }
 

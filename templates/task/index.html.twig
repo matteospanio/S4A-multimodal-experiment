@@ -3,13 +3,81 @@
 {% block title %}Trial - S4A Experiment{% endblock %}
 
 {% block body %}
-<div class="container" data-controller="stimulus-selector">
+<div
+    class="container"
+    data-controller="stimulus-selector opened-modal"
+    data-opened-modal-open-modal-value="{{ openModal }}"
+>
     <div class="app-header">
         {% if task_type == 1 %}
             <p class="app-subtitle">{{ 'task.m2f.instructions'|trans }}</p>
         {% else %}
             <p class="app-subtitle">{{ 'task.f2m.instructions'|trans }}</p>
         {% endif %}
+    </div>
+
+    <!-- Modal -->
+    <div data-opened-modal-target="modal" class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">{{ 'task.consent.title'|trans }}</h1>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-info" role="alert">
+                        <h4>TL;DR</h4>
+                        <p>
+                            {{ 'task.consent.tldr'|trans|raw|nl2br }}
+                        </p>
+                    </div>
+                    <ol>
+                        <li>
+                            <p><strong>{{ 'task.consent.el1.section'|trans }}</strong></p>
+                            <p>{{ 'task.consent.el1.description'|trans }}</p>
+                        </li>
+                        <li>
+                            <p><strong>{{ 'task.consent.el2.section'|trans }}</strong></p>
+                            <p>{{ 'task.consent.el2.description'|trans }}</p>
+                        </li>
+                        <li>
+                            <p><strong>{{ 'task.consent.el3.section'|trans }}</strong></p>
+                            <p>{{ 'task.consent.el3.description'|trans }}</p>
+                        </li>
+                        <li>
+                            <p><strong>{{ 'task.consent.el4.section'|trans }}</strong></p>
+                            <p>{{ 'task.consent.el4.description'|trans }}</p>
+                        </li>
+                        <li>
+                            <p><strong>{{ 'task.consent.el5.section'|trans }}</strong></p>
+                            <p>{{ 'task.consent.el5.description'|trans }}</p>
+                        </li>
+                        <li>
+                            <p><strong>{{ 'task.consent.el6.section'|trans }}</strong></p>
+                            <p>{{ 'task.consent.el6.description'|trans }}</p>
+                        </li>
+                        <li>
+                            <p><strong>{{ 'task.consent.el7.section'|trans }}</strong></p>
+                            <p>{{ 'task.consent.el7.description'|trans }}</p>
+                        </li>
+                        <li>
+                            <p><strong>{{ 'task.consent.el8.section'|trans }}</strong></p>
+                            <p>{{ 'task.consent.el8.description'|trans }}</p>
+                        </li>
+                        <li>
+                            <p><strong>{{ 'task.consent.el9.section'|trans }}</strong></p>
+                            <p>{{ 'task.consent.el9.description'|trans }}</p>
+                        </li>
+                        <li>
+                            <p><strong>{{ 'task.consent.el10.section'|trans }}</strong></p>
+                            <p>{{ 'task.consent.el10.description'|trans }}</p>
+                        </li>
+                    </ol>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">{{ 'task.consent.button'|trans }}</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     {{ form_start(form, {'action': path('app_task_submit', {'type': task_type, 'id': trial.id}), 'attr': {'id': 'trial-form'}}) }}

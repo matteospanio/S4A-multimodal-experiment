@@ -42,9 +42,13 @@
                     ← {{ 'task.back'|trans }}
                 </a>
             {% endif %}
-            <a href="{{ path('app_task', {'type': task == constant('App\\Entity\\Trial\\Trial::MUSICS2SMELL') ? 1 : 2}) }}" class="btn btn-primary">
+            <a href="{{ path('app_task', {'type': task == constant('App\\Entity\\Trial\\Trial::MUSICS2SMELL') ? 1 : 2, 'openModal': false }) }}" class="btn btn-primary">
                 {{ 'task.repeat'|trans }}
                 <twig:ux:icon name="bi:arrow-repeat" height="1rem" />
+            </a>
+            <a href="{{ path('app_task', {'type': task == constant('App\\Entity\\Trial\\Trial::MUSICS2SMELL') ? 1 : 2, 'openModal': true }) }}" class="btn btn-danger">
+                {{ 'task.finish'|trans }}
+                <twig:ux:icon name="bi:x-circle" height="1rem" />
             </a>
         </div>
     </div>

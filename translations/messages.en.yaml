@@ -43,6 +43,42 @@ login:
     username_placeholder: Enter your username
 
 task:
+    consent:
+        title: Informed Consent
+        button: I understand and accept the conditions of this study
+        tldr: |
+            By clicking the button below, you consent to participate in this research study.
+            The research team does not take any responsibility in case of undiagnosed olfactory impairments or manifestations of individual allergic reactions to the perfume samples.
+        el1:
+            section: What is this research about?
+            description: "You are cordially invited to participate in this research study. The main goal of this study is to investigate how people associate audio stimuli with perfume scents (and vice versa). This research is part of a PhD project at the University of Padova."
+        el2:
+            section: Who is conducting this research?
+            description: "The research endeavor is conducted by the following researchers: Matteo Spanio, under the supervision of Prof. Antonio Rodà (University of Padova) and Prof. Massimiliano Zampini (University of Trento)."
+        el3:
+            section: Inclusion/Exclusion Criteria
+            description: "Before deciding to take part in this research study, we need to ensure your eligibility. You are eligible to participate if you: 1) are 18 years of age or older, if you are under 18 you need parental consent; 2) have no known olfactory impairments (e.g., anosmia), in case of doubts please refer to a medical professional, the research team does not take any responsibility in case of undiagnosed olfactory impairments or manifestations of individual allergic reactions to the perfume samples;"
+        el4:
+            section: Is participation in this research study mandatory?
+            description: "Participation is entirely voluntary, and you have the autonomy to discontinue your involvement at any time by simply closing the browser window. If you chose to participate, you will be required to carefully read the provided information and complete an online questionnaire."
+        el5:
+            section: What does participation in this research entail, and are there any associated risks?
+            description: If you opt to participate, you will be asked to complete an online questionnaire that consists of two tasks. In the first task, you will listen to two audio stimuli and smell a perfume sample, then choose which audio best matches the perfume scent. In the second task, you will listen to one audio stimulus and choose between two perfume samples, selecting which perfume best matches the audio. There are no known risks associated with participating in this research study. However, if you experience any discomfort or adverse reactions while smelling the perfume samples, please discontinue your participation immediately.
+        el6:
+            section: What potential benefits are there to participating?
+            description: This experiment is an important component of a PhD project at the University of Padova. The information gathered from this research study has the potential to benefit individuals involved in the generation of audio samples using AI.
+        el7:
+            section: What happens to my information?
+            description: The submission of the online questionnaire indicates your consent to participate. By clicking the "I understand the conditions of this study" button below, you grant permission for the research team to collect and use your information for this research study. The research team will retain the collected data for a minimum of 5 years following the publication of the research results.
+        el8:
+            section: How and when will I receive the research study results?
+            description: The research team intends to publish the finding of the study. All information will be published in a manner that preserves you anonymity. If you wish to to receive a copy of the results, please contact the corresponding researcher Matteo Spanio.
+        el9:
+            section: What if I wish to withdraw from the research study?
+            description: If you decide to participate but later choose to withdraw, you may do so at any time by simply closing the browser. Any information already collected will not be used in the study.
+        el10:
+            section: What should I do if I have additional questions about my participation in the research study?
+            description: To require further information regarding this study, please feel free to contact Matteo Spanio <spanio@dei.unipd.it>.
     perfume:
         to_smell: Perfume to Smell
         option: Perfume Option
@@ -62,6 +98,7 @@ task:
     back: Back to Menu
     choose: Choose
     repeat: Do another trial
+    finish: Finish Experiment
     submit: Submit Choice
     chart:
         percentage: Percentage (%)
