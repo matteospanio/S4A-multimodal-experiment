@@ -9,9 +9,6 @@ use App\Entity\Trial\MusicToFlavorTrial;
 use App\Entity\Trial\Trial;
 use App\Form\F2MTrialType;
 use App\Form\M2FTrialType;
-use App\Repository\FlavorRepository;
-use App\Repository\FlavorToMusicTrialRepository;
-use App\Repository\MusicToFlavorTrialRepository;
 use App\Service\DataCollector;
 use App\Service\Mathematician;
 use App\Service\StimuliManager;
@@ -19,6 +16,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 use Symfony\UX\Chartjs\Model\Chart;
 
@@ -78,9 +76,7 @@ final class TaskController extends AbstractController
         int $type,
         Trial $trial,
         ChartBuilderInterface $chartBuilder,
-        FlavorRepository $flavorRepository,
-        MusicToFlavorTrialRepository $musicToFlavorTrialRepository,
-        FlavorToMusicTrialRepository $flavorToMusicTrialRepository,
+        TranslatorInterface $translator,
     ): Response
     {
         $task = $this->getTask($type);
@@ -102,7 +98,7 @@ final class TaskController extends AbstractController
                     'plugins' => [
                         'title' => [
                             'display' => true,
-                            'text' => sprintf('Track choices for perfume: %s %s',
+                            'text' => sprintf($translator->trans('task.chart.task_1'),
                                 $trial->getFlavor()->getIcon(),
                                 $trial->getFlavor()->getName()
                             ),
@@ -116,7 +112,7 @@ final class TaskController extends AbstractController
                             'beginAtZero' => true,
                             'title' => [
                                 'display' => true,
-                                'text' => 'Percentage (%)',
+                                'text' => $translator->trans('task.chart.percentage'),
                             ],
                         ],
                     ],
@@ -125,7 +121,7 @@ final class TaskController extends AbstractController
                     'labels' => $stats['labels'],
                     'datasets' => [
                         [
-                            'label' => 'Percentage of participants',
+                            'label' => $translator->trans('task.chart.participants'),
                             'backgroundColor' => $stats['backgroundColors'],
                             'borderColor' => $stats['borderColors'],
                             'borderWidth' => 2,
@@ -149,7 +145,7 @@ final class TaskController extends AbstractController
                     'plugins' => [
                         'title' => [
                             'display' => true,
-                            'text' => sprintf('Perfume choices for track: Song #%d (%s)',
+                            'text' => sprintf($translator->trans('task.chart.task_2'),
                                 $trial->getSong()->getId(),
                                 $trial->getSong()->getFlavor()->getName()
                             ),
@@ -163,7 +159,7 @@ final class TaskController extends AbstractController
                             'beginAtZero' => true,
                             'title' => [
                                 'display' => true,
-                                'text' => 'Percentage (%)',
+                                'text' => $translator->trans('task.chart.percentage'),
                             ],
                         ],
                     ],
@@ -172,7 +168,7 @@ final class TaskController extends AbstractController
                     'labels' => $stats['labels'],
                     'datasets' => [
                         [
-                            'label' => 'Percentage of participants',
+                            'label' => $translator->trans('task.chart.participants'),
                             'backgroundColor' => $stats['backgroundColors'],
                             'borderColor' => $stats['borderColors'],
                             'borderWidth' => 2,

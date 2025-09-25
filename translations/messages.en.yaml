@@ -63,6 +63,11 @@ task:
     choose: Choose
     repeat: Do another trial
     submit: Submit Choice
+    chart:
+        percentage: Percentage (%)
+        participants: Percentage of participants
+        task_1: 'Track choices for perfume: %s %s'
+        task_2: 'Perfume choices for track: Song #%d (%s)'
 
 results:
     alert:

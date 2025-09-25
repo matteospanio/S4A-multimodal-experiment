@@ -45,6 +45,11 @@ task:
         to_smell: 'Profumo da Annusare'
         instruction: 'Per favore annusa il campione di profumo fornito'
         option: 'Opzione Profumo'
+    chart:
+        percentage: Percentuale (%)
+        participants: Percentuale di partecipanti
+        task_1: 'Scelte per profumo: %s %s'
+        task_2: 'Scelte di profumo per la traccia: Brano #%d (%s)'
 topbar:
     menu: Menu
     settings: Impostazioni
