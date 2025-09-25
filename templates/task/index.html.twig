@@ -6,7 +6,7 @@
 <div
     class="container"
     data-controller="stimulus-selector opened-modal"
-    data-opened-modal-open-modal-value="{{ openModal }}"
+    data-opened-modal-open-modal-value="{{ openModal ? 'true' : 'false' }}"
 >
     <div class="app-header">
         {% if task_type == 1 %}
