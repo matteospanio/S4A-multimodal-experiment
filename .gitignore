@@ -24,3 +24,5 @@ phpstan.neon
 ###< phpstan/phpstan ###
 
 /public/uploads/
+
+.idea

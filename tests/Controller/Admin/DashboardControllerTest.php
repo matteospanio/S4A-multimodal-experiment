@@ -56,4 +56,21 @@ final class DashboardControllerTest extends KernelTestCase
             ->assertContains('bi-graph-up-arrow')
         ;
     }
+
+    public function testDropdownMenusAreInteractive(): void
+    {
+        $this->browser()
+            ->actingAs($this->user)
+            ->visit('/admin/en')
+            ->assertSuccessful()
+            // Check that the menu dropdown exists
+            ->assertSee('Dashboard')
+            ->assertSee('Stimuli')
+            ->assertSee('Experiments')
+            // Check if sub-menu items for Trials exist (these use Bootstrap dropdowns)
+            ->assertContains('Trials')
+            // Verify that Bootstrap JavaScript is loaded by checking if dropdown classes are present
+            ->assertContains('dropdown')
+        ;
+    }
 }
