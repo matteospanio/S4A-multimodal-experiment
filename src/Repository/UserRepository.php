@@ -66,6 +66,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         if ($newUser->getCreatedAt() === null) {
             $newUser->setCreatedAt($now);
         }
+
         if ($newUser->getUpdatedAt() === null) {
             $newUser->setUpdatedAt($now);
         }

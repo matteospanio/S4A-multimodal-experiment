@@ -27,10 +27,11 @@ final class NewUserCommandTest extends KernelTestCase
 
         // Execute the command with test inputs
         $commandTester->setInputs(['testuser', 'testpass123']);
+
         $exitCode = $commandTester->execute([]);
 
         // Assert command succeeded
-        $this->assertEquals(0, $exitCode);
+        $this->assertSame(0, $exitCode);
         $this->assertStringContainsString('User successfully created!', $commandTester->getDisplay());
 
         // Verify the user was created in the database with proper timestamps
@@ -62,9 +63,10 @@ final class NewUserCommandTest extends KernelTestCase
 
         // Execute the command with admin flag
         $commandTester->setInputs(['adminuser', 'adminpass123']);
+
         $exitCode = $commandTester->execute(['--admin' => true]);
 
-        $this->assertEquals(0, $exitCode);
+        $this->assertSame(0, $exitCode);
 
         // Verify the user was created with admin role and timestamps
         $entityManager = self::getContainer()->get(EntityManagerInterface::class);
@@ -92,7 +94,7 @@ final class NewUserCommandTest extends KernelTestCase
             '--random' => true
         ]);
 
-        $this->assertEquals(0, $exitCode);
+        $this->assertSame(0, $exitCode);
         $output = $commandTester->getDisplay();
         $this->assertStringContainsString('Generated random password:', $output);
         $this->assertStringContainsString('User successfully created!', $output);
@@ -118,7 +120,7 @@ final class NewUserCommandTest extends KernelTestCase
         // Execute the command with short password
         $commandTester->setInputs(['testuser', '123']);
         $exitCode = $commandTester->execute([]);
-        $this->assertEquals(1, $exitCode);
+        $this->assertSame(1, $exitCode);
     }
 
     public function testNewUserCommandFailsWithDuplicateUsername(): void
@@ -131,15 +133,17 @@ final class NewUserCommandTest extends KernelTestCase
         $commandTester = new CommandTester($command);
 
         $commandTester->setInputs(['duplicate', 'password123']);
+
         $exitCode = $commandTester->execute([]);
-        $this->assertEquals(0, $exitCode);
+        $this->assertSame(0, $exitCode);
 
         // Try to create another user with the same username
         $commandTester2 = new CommandTester($command);
         $commandTester2->setInputs(['duplicate', 'password456']);
+
         $exitCode2 = $commandTester2->execute([]);
 
-        $this->assertEquals(1, $exitCode2);
+        $this->assertSame(1, $exitCode2);
         $this->assertStringContainsString('Error creating user:', $commandTester2->getDisplay());
     }
 }
