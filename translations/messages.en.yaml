@@ -127,7 +127,7 @@ topbar:
     privacy_policy: Privacy Policy
 
 privacy:
-    title: Privacy Policy
+    title: Information
     content: |
         This experiment collects data anonymously for scientific research purposes only.
         All data will be used in an aggregated form to analyze multimodal sensory associations.
@@ -136,7 +136,7 @@ privacy:
         • Data is used exclusively for scientific research
         • All analysis is performed on aggregated data
         • You can quit the survey at any time
-        • This system is GDPR compliant
+        • In case of adverse reactions to the perfume samples, immediately stop participation and consult a doctor if necessary
 
-        By participating in this experiment, you consent to the use of your anonymous responses for research purposes.
+        By participating in this experiment, you consent to the use of your anonymous responses for research purposes, in addition, you take responsibility for any individual allergic reactions to the perfume samples.
     close: Close
