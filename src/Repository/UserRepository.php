@@ -59,6 +59,15 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $hashedPassword = $this->passwordHasher->hashPassword($newUser, $password);
         $newUser->setPassword($hashedPassword);
 
+        // Ensure timestamps are set - fallback for when Gedmo listeners don't work in production
+        $now = new \DateTimeImmutable();
+        if ($newUser->getCreatedAt() === null) {
+            $newUser->setCreatedAt($now);
+        }
+        if ($newUser->getUpdatedAt() === null) {
+            $newUser->setUpdatedAt($now);
+        }
+
         $errors = $this->validator->validate($newUser);
 
         if (count($errors) > 0) {
