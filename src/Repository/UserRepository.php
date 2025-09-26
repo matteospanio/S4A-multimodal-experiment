@@ -60,6 +60,8 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $newUser->setPassword($hashedPassword);
 
         // Ensure timestamps are set - fallback for when Gedmo listeners don't work in production
+        // In production mode, Gedmo's TimestampableListener may not be properly registered,
+        // causing created_at and updated_at to remain null, which violates NOT NULL constraints
         $now = new \DateTimeImmutable();
         if ($newUser->getCreatedAt() === null) {
             $newUser->setCreatedAt($now);
