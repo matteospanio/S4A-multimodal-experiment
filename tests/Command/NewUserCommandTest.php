@@ -36,16 +36,16 @@ final class NewUserCommandTest extends KernelTestCase
         // Verify the user was created in the database with proper timestamps
         $entityManager = self::getContainer()->get(EntityManagerInterface::class);
         $userRepository = $entityManager->getRepository(User::class);
-        
+
         $user = $userRepository->findOneBy(['username' => 'testuser']);
-        
+
         $this->assertNotNull($user);
         $this->assertEquals('testuser', $user->getUsername());
-        
+
         // These are the critical assertions to ensure the fix works
         $this->assertNotNull($user->getCreatedAt(), 'User should have created_at timestamp - this was the main issue in production');
         $this->assertNotNull($user->getUpdatedAt(), 'User should have updated_at timestamp - this was the main issue in production');
-        
+
         // Verify timestamps are recent (within last minute)
         $now = new \DateTimeImmutable();
         $this->assertLessThan(60, $now->getTimestamp() - $user->getCreatedAt()->getTimestamp());
@@ -69,9 +69,9 @@ final class NewUserCommandTest extends KernelTestCase
         // Verify the user was created with admin role and timestamps
         $entityManager = self::getContainer()->get(EntityManagerInterface::class);
         $userRepository = $entityManager->getRepository(User::class);
-        
+
         $user = $userRepository->findOneBy(['username' => 'adminuser']);
-        
+
         $this->assertNotNull($user);
         $this->assertContains('ROLE_ADMIN', $user->getRoles());
         $this->assertNotNull($user->getCreatedAt(), 'Admin user should have created_at timestamp');
@@ -100,7 +100,7 @@ final class NewUserCommandTest extends KernelTestCase
         // Verify timestamps are set even with random password
         $entityManager = self::getContainer()->get(EntityManagerInterface::class);
         $userRepository = $entityManager->getRepository(User::class);
-        
+
         $user = $userRepository->findOneBy(['username' => 'randomuser']);
         $this->assertNotNull($user->getCreatedAt());
         $this->assertNotNull($user->getUpdatedAt());
@@ -114,12 +114,11 @@ final class NewUserCommandTest extends KernelTestCase
         $command = $application->find('app:new:user');
         $commandTester = new CommandTester($command);
 
+        $this->expectExceptionMessage('The password must be at least 6 characters long');
         // Execute the command with short password
         $commandTester->setInputs(['testuser', '123']);
         $exitCode = $commandTester->execute([]);
-
         $this->assertEquals(1, $exitCode);
-        $this->assertStringContainsString('The password must be at least 6 characters long', $commandTester->getDisplay());
     }
 
     public function testNewUserCommandFailsWithDuplicateUsername(): void
