@@ -7,10 +7,15 @@ import * as bootstrap from 'bootstrap';
 // Make Bootstrap available globally for EasyAdmin components
 window.bootstrap = bootstrap;
 
-// Initialize Bootstrap components after DOM is ready
-// This ensures dropdowns work in production mode
-document.addEventListener('DOMContentLoaded', function() {
+// Robust initialization function with retry mechanism
+function initializeBootstrapDropdowns() {
     console.log('Bootstrap admin.js initializing...', { bootstrap: !!window.bootstrap });
+    
+    if (!window.bootstrap || !window.bootstrap.Dropdown) {
+        console.warn('Bootstrap not fully loaded yet, retrying in 100ms...');
+        setTimeout(initializeBootstrapDropdowns, 100);
+        return;
+    }
     
     // Initialize all dropdowns explicitly
     const dropdownElements = document.querySelectorAll('[data-bs-toggle="dropdown"]');
@@ -18,11 +23,24 @@ document.addEventListener('DOMContentLoaded', function() {
     
     dropdownElements.forEach(function(element) {
         try {
-            new bootstrap.Dropdown(element);
+            // Check if already initialized
+            if (window.bootstrap.Dropdown.getInstance(element)) {
+                console.log('Dropdown already initialized:', element);
+                return;
+            }
+            
+            new window.bootstrap.Dropdown(element);
+            console.log('Successfully initialized dropdown:', element);
         } catch (error) {
             console.error('Error initializing dropdown:', error, element);
         }
     });
+}
+
+// Initialize Bootstrap components after DOM is ready
+// This ensures dropdowns work in production mode
+document.addEventListener('DOMContentLoaded', function() {
+    initializeBootstrapDropdowns();
     
     // Re-initialize dropdowns after any dynamic content is loaded (for AJAX content)
     const observer = new MutationObserver(function(mutations) {
@@ -32,9 +50,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (node.nodeType === Node.ELEMENT_NODE) {
                         const newDropdowns = node.querySelectorAll('[data-bs-toggle="dropdown"]');
                         newDropdowns.forEach(function(element) {
-                            if (!bootstrap.Dropdown.getInstance(element)) {
+                            if (window.bootstrap && window.bootstrap.Dropdown && !window.bootstrap.Dropdown.getInstance(element)) {
                                 try {
-                                    new bootstrap.Dropdown(element);
+                                    new window.bootstrap.Dropdown(element);
+                                    console.log('Initialized dynamic dropdown:', element);
                                 } catch (error) {
                                     console.error('Error initializing new dropdown:', error, element);
                                 }
@@ -51,6 +70,12 @@ document.addEventListener('DOMContentLoaded', function() {
         childList: true,
         subtree: true
     });
+});
+
+// Additional fallback: try initialization on window load as well
+window.addEventListener('load', function() {
+    // Wait a bit more to ensure all assets are loaded
+    setTimeout(initializeBootstrapDropdowns, 200);
 });
 
 console.log('This log comes from assets/admin.js - welcome to AssetMapper! 🎉');
