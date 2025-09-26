@@ -1,0 +1,55 @@
+name: Code Quality
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+permissions:
+  contents: read
+
+jobs:
+  code-quality:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@2cb9b829437ee246e9b3cac53555a39208ca6d28
+      with:
+        php-version: '8.3'
+        extensions: mbstring, intl, pdo, pdo_pgsql
+        coverage: none
+
+    - name: Copy .env.test.local
+      run: php -r "file_exists('.env.test.local') || copy('.env.test', '.env.test.local');"
+
+    - name: Cache Composer packages
+      id: composer-cache
+      uses: actions/cache@v3
+      with:
+        path: vendor
+        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-php-
+
+    - name: Install Dependencies
+      run: composer install --no-progress --prefer-dist --no-interaction
+
+    - name: Rector Checks
+      run: vendor/bin/rector process --dry-run --no-progress-bar
+
+    - name: Lint Twig Templates
+      run: php bin/console lint:twig templates/
+
+    - name: Lint YAML Configuration Files
+      run: php bin/console lint:yaml config/
+
+    - name: Lint Translation Files
+      run: php bin/console lint:yaml translations/
+
+    - name: Lint Container
+      run: php bin/console lint:container
