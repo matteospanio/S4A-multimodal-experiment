@@ -1,4 +1,3 @@
-import 'bootstrap';
 import './bootstrap.js';
 
 // Ensure Bootstrap JavaScript components are properly initialized
@@ -11,10 +10,18 @@ window.bootstrap = bootstrap;
 // Initialize Bootstrap components after DOM is ready
 // This ensures dropdowns work in production mode
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('Bootstrap admin.js initializing...', { bootstrap: !!window.bootstrap });
+    
     // Initialize all dropdowns explicitly
     const dropdownElements = document.querySelectorAll('[data-bs-toggle="dropdown"]');
+    console.log(`Found ${dropdownElements.length} dropdown elements to initialize`);
+    
     dropdownElements.forEach(function(element) {
-        new bootstrap.Dropdown(element);
+        try {
+            new bootstrap.Dropdown(element);
+        } catch (error) {
+            console.error('Error initializing dropdown:', error, element);
+        }
     });
     
     // Re-initialize dropdowns after any dynamic content is loaded (for AJAX content)
@@ -26,7 +33,11 @@ document.addEventListener('DOMContentLoaded', function() {
                         const newDropdowns = node.querySelectorAll('[data-bs-toggle="dropdown"]');
                         newDropdowns.forEach(function(element) {
                             if (!bootstrap.Dropdown.getInstance(element)) {
-                                new bootstrap.Dropdown(element);
+                                try {
+                                    new bootstrap.Dropdown(element);
+                                } catch (error) {
+                                    console.error('Error initializing new dropdown:', error, element);
+                                }
                             }
                         });
                     }

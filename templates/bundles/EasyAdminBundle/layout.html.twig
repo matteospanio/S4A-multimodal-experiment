@@ -19,7 +19,30 @@
                 popoverTriggerList.map(function (popoverTriggerEl) {
                     return new window.bootstrap.Popover(popoverTriggerEl);
                 });
+                
+                // Additional specific initialization for EasyAdmin dropdowns
+                const adminDropdowns = document.querySelectorAll('.dropdown-toggle, [data-bs-toggle="dropdown"]');
+                adminDropdowns.forEach(function(dropdown) {
+                    if (!window.bootstrap.Dropdown.getInstance(dropdown)) {
+                        new window.bootstrap.Dropdown(dropdown);
+                    }
+                });
             }
+            
+            // Fallback: re-initialize on click if dropdown is not working
+            document.addEventListener('click', function(e) {
+                const dropdownToggle = e.target.closest('[data-bs-toggle="dropdown"]');
+                if (dropdownToggle && typeof window.bootstrap !== 'undefined') {
+                    const existingInstance = window.bootstrap.Dropdown.getInstance(dropdownToggle);
+                    if (!existingInstance) {
+                        try {
+                            new window.bootstrap.Dropdown(dropdownToggle);
+                        } catch (error) {
+                            console.warn('Could not initialize dropdown on click:', error);
+                        }
+                    }
+                }
+            });
         });
     </script>
 {% endblock %}
