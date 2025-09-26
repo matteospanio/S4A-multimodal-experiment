@@ -1,0 +1,25 @@
+{% extends '@!EasyAdmin/layout.html.twig' %}
+
+{% block configured_javascripts %}
+    {{ parent() }}
+    {# Ensure Bootstrap is properly initialized in production mode #}
+    <script>
+        // Additional Bootstrap initialization for production mode
+        document.addEventListener('DOMContentLoaded', function() {
+            // Force initialization of any Bootstrap components that might not be auto-initialized
+            if (typeof window.bootstrap !== 'undefined') {
+                // Initialize tooltips
+                const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+                tooltipTriggerList.map(function (tooltipTriggerEl) {
+                    return new window.bootstrap.Tooltip(tooltipTriggerEl);
+                });
+                
+                // Initialize popovers
+                const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+                popoverTriggerList.map(function (popoverTriggerEl) {
+                    return new window.bootstrap.Popover(popoverTriggerEl);
+                });
+            }
+        });
+    </script>
+{% endblock %}
