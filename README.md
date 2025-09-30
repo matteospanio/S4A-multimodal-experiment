@@ -90,6 +90,13 @@ This application facilitates research into multimodal perception by presenting p
    - Review trial data
    - Export results for analysis
 
+4. **Export trial data**:
+   - Navigate to "Music to Aroma" or "Aroma to Music" trial lists in the admin panel
+   - Use the "Export CSV" button to download all trial results
+   - Filter trials by date using the date filter before exporting
+   - CSV files include all trial data: ID, stimuli, choices, match status, time intervals, task info, and timestamps
+   - Alternatively, append `?date=YYYY-MM-DD` to the export URL to filter by a specific date
+
 ### For Participants
 
 1. **Visit the main application** URL
