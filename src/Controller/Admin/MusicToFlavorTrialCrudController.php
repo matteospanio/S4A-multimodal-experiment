@@ -76,6 +76,8 @@ class MusicToFlavorTrialCrudController extends AbstractCrudController
     #[Route('/admin/music-to-flavor-trial/export-csv', name: 'admin_music_to_flavor_trial_export_csv')]
     public function exportCsv(Request $request): Response
     {
+        // Support date parameter for filtering by specific date
+        // Usage: /admin/music-to-flavor-trial/export-csv?date=2024-09-30
         $date = $request->query->get('date');
         
         $qb = $this->repository->createQueryBuilder('t')
