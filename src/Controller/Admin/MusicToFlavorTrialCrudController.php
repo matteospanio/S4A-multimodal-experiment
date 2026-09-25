@@ -80,7 +80,7 @@ class MusicToFlavorTrialCrudController extends AbstractCrudController
 
         $trials = $queryBuilder->getQuery()->getResult();
 
-        $response = new StreamedResponse(function () use ($trials) {
+        $response = new StreamedResponse(function () use ($trials): void {
             $handle = fopen('php://output', 'w');
 
             fputcsv($handle, [
